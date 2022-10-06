@@ -60,7 +60,7 @@ class ApiService {
     );
 
     try {
-      var response = await client.post(url, body: body);
+      var response = await client.post(Uri.parse(url), body: body);
       var json = jsonDecode(response.body);
       var data = json['data'];
       var parsedTokenList = data as List;
@@ -80,7 +80,7 @@ class ApiService {
         getWithoutLogoApiRoute;
     log.i('getIssueTokens url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
 
       var parsedTokenList = json as List;
@@ -109,8 +109,8 @@ class ApiService {
 
     log.i('getTronTsWalletBalance url $tronGetAccountUrl - body $body');
     try {
-      var response =
-          await client.post(tronGetAccountUrl, body: jsonEncode(body));
+      var response = await client.post(Uri.parse(tronGetAccountUrl),
+          body: jsonEncode(body));
       var json = jsonDecode(response.body);
       if (json != null) {
         log.e('getTronTsWalletBalance $json}');
@@ -144,8 +144,8 @@ class ApiService {
     debugPrint(
         'getTronTsWalletBalance url $tronUsdtAccountBalanceUrl - body $body');
     try {
-      var response =
-          await client.post(tronUsdtAccountBalanceUrl, body: jsonEncode(body));
+      var response = await client.post(Uri.parse(tronUsdtAccountBalanceUrl),
+          body: jsonEncode(body));
       var json = jsonDecode(response.body);
       if (json != null) {
         log.e('getTronUsdtTsWalletBalance $json}');
@@ -173,7 +173,7 @@ class ApiService {
     log.i('getBanner url $getTronLatestBlockUrl');
 
     try {
-      var response = await client.get(getTronLatestBlockUrl);
+      var response = await client.get(Uri.parse(getTronLatestBlockUrl));
       var json = jsonDecode(response.body);
       if (json != null) {
         log.e('getTronLatestBlock $json}');
@@ -199,7 +199,7 @@ class ApiService {
     log.i('getTransactionHistoryEvents url $url -- body $body');
 
     try {
-      var response = await client.post(url, body: body);
+      var response = await client.post(Uri.parse(url), body: body);
 
       var json = jsonDecode(response.body);
       if (json != null) {
@@ -291,7 +291,7 @@ class ApiService {
     log.i('getLightningRemitHistoryEvents url $url -- body $body');
 
     try {
-      var response = await client.post(url, body: body);
+      var response = await client.post(Uri.parse(url), body: body);
 
       var json = jsonDecode(response.body);
       if (json != null) {
@@ -341,7 +341,7 @@ class ApiService {
     log.i('getBanner url $bannerApiUrl');
 
     try {
-      var response = await client.get(bannerApiUrl);
+      var response = await client.get(Uri.parse(bannerApiUrl));
       var json = jsonDecode(response.body);
       if (json != null) {
         log.e('getBanner $json}');
@@ -369,7 +369,7 @@ class ApiService {
     log.e('withdrawTxStatus url $url');
 
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       if (json != null) {
         log.e('withdrawTxStatus $json}');
@@ -393,7 +393,7 @@ class ApiService {
         configService.getKanbanBaseUrl() + assetsBalanceApiRoute + exgAddress;
     log.i('get assets balance url $url');
     try {
-      final res = await client.get(url);
+      final res = await client.get(Uri.parse(url));
       if (res.statusCode == 200 || res.statusCode == 201) {
         var json = jsonDecode(res.body) as List;
         log.w('getAssetsBalance json $json');
@@ -421,7 +421,7 @@ class ApiService {
     log.e('getSingleCoinExchangeBalance url $url');
     ExchangeBalanceModel exchangeBalance;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       if (json != null) {
         exchangeBalance = ExchangeBalanceModel.fromJson(json);
@@ -442,7 +442,7 @@ class ApiService {
     String url = configService.getKanbanBaseUrl() + getTokenListUpdatesApiRoute;
     log.i('getTokenListUpdates url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       var data = json['data'];
       var parsedTokenList = data as List;
@@ -463,7 +463,7 @@ class ApiService {
     String url = configService.getKanbanBaseUrl() + getTokenListApiRoute;
     log.i('getTokenList url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       var data = json['data'];
       var parsedTokenList = data['tokenList'] as List;
@@ -484,7 +484,7 @@ class ApiService {
     String url = configService.getKanbanBaseUrl() + GetAppVersionRoute;
     log.i('getApiAppVersion url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
 
       log.w('getApiAppVersion  ${response.body}');
       return response.body;
@@ -508,7 +508,7 @@ class ApiService {
 
     log.i('getFreeFab url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       log.w('getFreeFab json $json');
       return json;
@@ -524,7 +524,7 @@ class ApiService {
     var url = ethBaseUrl + 'getgasprice';
     var ethGasPrice = 0;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       log.w(' getEthGasPrice $json');
       debugPrint((BigInt.parse(json['gasprice']) / BigInt.parse('1000000000'))
@@ -557,7 +557,7 @@ class ApiService {
     var url = configService.getKanbanBaseUrl() + 'checkstatus/' + transactionId;
     log.e(url);
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       log.w(' getDepositTransactionStatus $json');
       return json;
@@ -584,7 +584,7 @@ class ApiService {
 
     WalletBalanceList balanceList;
     try {
-      var response = await client.post(url, body: body);
+      var response = await client.post(Uri.parse(url), body: body);
       bool success = jsonDecode(response.body)['success'];
       if (success == true) {
         var jsonList = jsonDecode(response.body)['data'] as List;
@@ -616,7 +616,7 @@ class ApiService {
 
     WalletBalanceList balanceList;
     try {
-      var response = await client.post(url, body: body);
+      var response = await client.post(Uri.parse(url), body: body);
       bool success = jsonDecode(response.body)['success'];
       if (success == true) {
         var jsonList = jsonDecode(response.body)['data'] as List;
@@ -665,7 +665,7 @@ class ApiService {
       String url =
           configService.getKanbanBaseUrl() + CoinCurrencyUsdValueApiRoute;
       log.e('getCoinCurrencyUsdPrice $url');
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       log.w('getCoinCurrencyUsdPrice $json');
       return json;
@@ -692,7 +692,7 @@ class ApiService {
           getBalanceApiRoute +
           exgAddress;
       log.e('get gas balance url $url');
-      final res = await client.get(url);
+      final res = await client.get(Uri.parse(url));
       log.w(jsonDecode(res.body));
       if (res.statusCode == 200 || res.statusCode == 201) {
         return jsonDecode(res.body);
@@ -724,7 +724,7 @@ class ApiService {
           getOrdersByAddrApiRoute +
           exgAddress;
       log.w('get my orders url $url');
-      var res = await client.get(url);
+      var res = await client.get(Uri.parse(url));
       log.e('res ${res.body}');
       var jsonList = jsonDecode(res.body) as List;
       log.i('jsonList $jsonList');
@@ -754,7 +754,7 @@ class ApiService {
     //     tickerName;
     log.i('getMyOrdersByTickerName url $url');
     try {
-      final res = await client.get(url);
+      final res = await client.get(Uri.parse(url));
       debugPrint('after res ${res.body}');
       if (res.statusCode == 200 || res.statusCode == 201) {
         return jsonDecode(res.body);
@@ -771,7 +771,7 @@ class ApiService {
     log.w(url);
     var json;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       json = jsonDecode(response.body);
     } catch (e) {
       log.e(e);
@@ -786,7 +786,7 @@ class ApiService {
     log.w(url);
 
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       return json;
     } catch (e) {
@@ -800,7 +800,7 @@ class ApiService {
     log.w(url);
 
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       return json;
     } catch (e) {
@@ -815,7 +815,7 @@ class ApiService {
     log.w(url);
 
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       return json;
     } catch (e) {
@@ -832,7 +832,7 @@ class ApiService {
     var errMsg = '';
     try {
       var data = {'rawtx': txHex};
-      var response = await client.post(url, body: data);
+      var response = await client.post(Uri.parse(url), body: data);
 
       json = jsonDecode(response.body);
     } catch (e) {}
@@ -858,7 +858,7 @@ class ApiService {
     var errMsg = '';
     try {
       var data = {'rawtx': txHex};
-      var response = await client.post(url, body: data);
+      var response = await client.post(Uri.parse(url), body: data);
 
       json = jsonDecode(response.body);
       log.w('json= $json');
@@ -885,7 +885,7 @@ class ApiService {
     var errMsg = '';
     try {
       var data = {'rawtx': txHex};
-      var response = await client.post(url, body: data);
+      var response = await client.post(Uri.parse(url), body: data);
 
       json = jsonDecode(response.body);
       log.w('json= $json');
@@ -912,7 +912,7 @@ class ApiService {
     var errMsg = '';
     try {
       var data = {'rawtx': txHex};
-      var response = await client.post(url, body: data);
+      var response = await client.post(Uri.parse(url), body: data);
 
       json = jsonDecode(response.body);
       log.w('json= $json');
@@ -937,7 +937,7 @@ class ApiService {
     var url = fabBaseUrl + 'gettransactionjson/' + txid;
     var json;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       json = jsonDecode(response.body);
     } catch (e) {}
     return json;
@@ -951,7 +951,7 @@ class ApiService {
     var url = configService.getKanbanBaseUrl() + getDecimalPairConfigApiRoute;
     log.e('getPairDecimalConfig $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var jsonList = jsonDecode(response.body) as List;
         log.w(' getPairDecimalConfig ${jsonList.length}');
@@ -974,7 +974,7 @@ class ApiService {
     try {
       final res = await client.get(
           // kanbanBaseUrl + "/kanban/getadvconfig"
-          configService.getKanbanBaseUrl() + "kanban/getadvconfig");
+          Uri.parse(configService.getKanbanBaseUrl() + "kanban/getadvconfig"));
       log.w(' get slider images ${jsonDecode(res.body)}');
       if (res.statusCode == 200 || res.statusCode == 201) {
         var json = jsonDecode(res.body) as List;
@@ -994,7 +994,7 @@ class ApiService {
     log.w("Calling api: getAnnouncement " + lang);
     log.i("url: " + url);
     try {
-      final res = await client.get(url);
+      final res = await client.get(Uri.parse(url));
       // log.w('getAnnouncement ${jsonDecode(res.body)}');
       if (res.statusCode == 200 || res.statusCode == 201) {
         var body = jsonDecode(res.body)['body'];
@@ -1014,7 +1014,7 @@ class ApiService {
     try {
       final res = await client.get(
           // "http://192.168.0.12:4000/kanban/getCampaigns"
-          configService.getKanbanBaseUrl() + "kanban/getCampaigns");
+          Uri.parse(configService.getKanbanBaseUrl() + "kanban/getCampaigns"));
       log.w('getEvents ${jsonDecode(res.body)}');
       if (res.statusCode == 200 || res.statusCode == 201) {
         debugPrint("success");
@@ -1035,7 +1035,8 @@ class ApiService {
     try {
       final res = await client.post(
         // "http://192.168.0.12:4000/kanban/getCampaignSingle",
-        configService.getKanbanBaseUrl() + "kanban/getCampaignSingle",
+        Uri.parse(
+            configService.getKanbanBaseUrl() + "kanban/getCampaignSingle"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

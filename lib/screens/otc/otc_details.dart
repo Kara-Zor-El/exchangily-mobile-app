@@ -293,7 +293,7 @@ class OtcDetailsScreen extends StatelessWidget {
                                               globals.grey.withAlpha(105),
                                           isDense: true,
                                           focusedBorder: UnderlineInputBorder(
-                                              borderRadius: const BorderRadius.all(
+                                              borderRadius: BorderRadius.all(
                                                   Radius.elliptical(2, 2)),
                                               borderSide: BorderSide(
                                                   color: globals.primaryColor,
@@ -333,18 +333,33 @@ class OtcDetailsScreen extends StatelessWidget {
                                               onPressed: () {}),
                                         )
                                       : Center(
-                                          child: RaisedButton(
-                                            padding: const EdgeInsets.all(5.0),
-                                            color: globals.grey.withAlpha(105),
-                                            child: Text(
-                                              AppLocalizations.of(context)
-                                                  .cancel,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline4,
-                                            ),
-                                            onPressed: () {},
-                                          ),
+                                          // child: RaisedButton(
+                                          //   padding: const EdgeInsets.all(5.0),
+                                          //   color: globals.grey.withAlpha(105),
+                                          //   child: Text(
+                                          //     AppLocalizations.of(context)
+                                          //         .cancel,
+                                          //     style: Theme.of(context)
+                                          //         .textTheme
+                                          //         .headline4,
+                                          //   ),
+                                          //   onPressed: () {},
+                                          // ),
+                                          // Replace deprecated RaisedButton with ElevatedButton
+                                     child: ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                        backgroundColor: globals.grey.withAlpha(105),
+                                                  padding: const EdgeInsets.all(5.0),
+                                                ),
+                                                child: Text(
+                                                  AppLocalizations.of(context)
+                                                        .cancel,
+                                                  style: Theme.of(context)
+                                                        .textTheme
+                                                        .headline5,
+                                                ),
+                                                onPressed: () {},
+                                                    ),
                                         )),
                               SizedBox(
                                   width: 100, // Providing width to button
@@ -363,18 +378,33 @@ class OtcDetailsScreen extends StatelessWidget {
                                               onPressed: () {}),
                                         )
                                       : Center(
-                                          child: RaisedButton(
-                                            padding: const EdgeInsets.all(5.0),
-                                            color: globals.primaryColor,
-                                            child: Text(
-                                              AppLocalizations.of(context)
-                                                  .confirm,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline4,
-                                            ),
-                                            onPressed: () {},
-                                          ),
+                                          // child: RaisedButton(
+                                          //   padding: const EdgeInsets.all(5.0),
+                                          //   color: globals.primaryColor,
+                                          //   child: Text(
+                                          //     AppLocalizations.of(context)
+                                          //         .confirm,
+                                          //     style: Theme.of(context)
+                                          //         .textTheme
+                                          //         .headline4,
+                                          //   ),
+                                          //   onPressed: () {},
+                                          // ),
+                                              // Replace deprecated RaisedButton with ElevatedButton
+                                                child: ElevatedButton(
+                                                   style: ElevatedButton.styleFrom(
+                                                   backgroundColor: globals.primaryColor,
+                                                           padding: const EdgeInsets.all(5.0),
+                                                         ),
+                                                         child: Text(
+                                                           AppLocalizations.of(context)
+                                                                    .confirm,
+                                                           style: Theme.of(context)
+                                                                    .textTheme
+                                                                    .headline5,
+                                                         ),
+                                                         onPressed: () {},
+                                                                ),
                                         )),
                             ],
                           ),

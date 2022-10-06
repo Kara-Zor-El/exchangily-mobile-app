@@ -40,7 +40,7 @@ class FabUtils {
 
   Future postFreeFab(data) async {
     try {
-      var response = await client.post(postFreeFabUrl, body: data);
+      var response = await client.post(Uri.parse(postFreeFabUrl), body: data);
       var json = jsonDecode(response.body);
       log.w(json);
       return json;
@@ -65,7 +65,7 @@ class FabUtils {
       log.i('getAppVersion name $versionName');
       var data = {'app': 'exchangily', 'version': fullVersion, 'rawtx': txHex};
       try {
-        var response = await client.post(url, body: data);
+        var response = await client.post(Uri.parse(url), body: data);
 
         var json = jsonDecode(response.body);
         if (json != null) {
@@ -86,7 +86,7 @@ class FabUtils {
   Future getFabTransactionStatus(String txid) async {
     var url = fabBaseUrl + fabTransactionJsonApiRoute + txid;
 
-    var response = await client.get(url);
+    var response = await client.get(Uri.parse(url));
     debugPrint(url);
     log.w(response.body);
     return response.body;
@@ -112,7 +112,7 @@ class FabUtils {
     };
     var url = fabBaseUrl + 'callcontract';
     try {
-      var response = await client.post(url, body: data);
+      var response = await client.post(Uri.parse(url), body: data);
       var json = jsonDecode(response.body);
       if (json != null &&
           json['executionResult'] != null &&
@@ -260,7 +260,7 @@ class FabUtils {
     var url = fabBaseUrl + 'getbalance/' + address;
     var fabBalance = 0.0;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       fabBalance = double.parse(response.body) / 1e8;
     } catch (e) {
       log.e(e);
@@ -331,7 +331,7 @@ class FabUtils {
     log.i(
         'Fab_util -- address $address getFabTokenBalanceForABI balance by address url -- $url -- body $body');
     try {
-      var response = await client.post(url, body: body);
+      var response = await client.post(Uri.parse(url), body: body);
       var json = jsonDecode(response.body);
       log.w('getFabTokenBalanceForABIForCustomTokens json $json');
       var unlockBalance = json['executionResult']['output'];
@@ -360,7 +360,7 @@ class FabUtils {
 
   Future getSmartContractABI(String smartContractAddress) async {
     var url = fabBaseUrl + 'getabiforcontract/' + smartContractAddress;
-    var response = await client.get(url);
+    var response = await client.get(Uri.parse(url));
     Map<String, dynamic> resJson = jsonDecode(response.body);
     return resJson;
   }

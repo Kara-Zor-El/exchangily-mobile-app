@@ -672,15 +672,26 @@ class CampaignDashboardScreen extends StatelessWidget {
               ),
             ),
             floatingActionButton: Container(
-                margin: const EdgeInsets.only(right: 10.0),
-                width: MediaQuery.of(context).size.width - 50,
-                child: RaisedButton(
+              margin: const EdgeInsets.only(right: 10.0),
+              width: MediaQuery.of(context).size.width - 50,
+              // child: RaisedButton(
+              //     padding: const EdgeInsets.all(0),
+              //     onPressed: () {
+              //       Navigator.pushNamed(context, '/campaignPayment');
+              //     },
+              //     child: Text(AppLocalizations.of(context).buy,
+              //         style: Theme.of(context).textTheme.headline4)),
+              // Replace deprecated RaisedButton with ElevatedButton
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(0),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/campaignPayment');
-                    },
-                    child: Text(AppLocalizations.of(context).buy,
-                        style: Theme.of(context).textTheme.headline4))),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/campaignPayment');
+                  },
+                  child: Text(AppLocalizations.of(context).buy,
+                      style: Theme.of(context).textTheme.headline4)),
+            ),
             bottomNavigationBar: BottomNavBar(count: 2)),
       ),
     );

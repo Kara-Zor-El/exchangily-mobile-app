@@ -1018,7 +1018,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
     debugPrint(
         'Fab_util -- address $address getFabTokenBalanceForABI balance by address url -- $url -- body $body');
 
-    var response = await client.post(url, body: body);
+    var response = await client.post(Uri.parse(url), body: body);
     var json = jsonDecode(response.body);
     var unlockBalance = json['executionResult']['output'];
     // if (unlockBalance == null || unlockBalance == '') {

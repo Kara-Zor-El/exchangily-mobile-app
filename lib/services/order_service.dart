@@ -97,7 +97,7 @@ https://kanbanprod.fabcoinapi.com/ordersbyaddresspaged/0x3b7b00ee5a7f7d57dff7b54
           '/' +
           status;
       log.w('get my orders url $url');
-      var res = await client.get(url);
+      var res = await client.get(Uri.parse(url));
       var jsonList = jsonDecode(res.body) as List;
       log.e(jsonList);
       OrderList orderList = OrderList.fromJson(jsonList);
@@ -144,7 +144,7 @@ https://kanbanprod.fabcoinapi.com/ordersbyaddresspaged/0x3b7b00ee5a7f7d57dff7b54
       //     '/' +
       //     tickerName;
       log.i('getMyOrdersByTickerName url $url');
-      var res = await client.get(url);
+      var res = await client.get(Uri.parse(url));
 
       if (res != null) {
         var jsonList = jsonDecode(res.body) as List;

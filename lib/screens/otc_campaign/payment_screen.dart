@@ -434,13 +434,35 @@ class CampaignPaymentScreen extends StatelessWidget {
                                       child: Padding(
                                         padding:
                                             const EdgeInsets.only(right: 5.0),
-                                        child: RaisedButton(
-                                          padding: const EdgeInsets.all(0),
-                                          shape: StadiumBorder(
-                                              side: BorderSide(
-                                                  color: globals.primaryColor,
-                                                  width: 2)),
-                                          color: globals.secondaryColor,
+                                        // child: RaisedButton(
+                                        //   padding: const EdgeInsets.all(0),
+                                        //   shape: StadiumBorder(
+                                        //       side: BorderSide(
+                                        //           color: globals.primaryColor,
+                                        //           width: 2)),
+                                        //   color: globals.secondaryColor,
+                                        //   child: Text(
+                                        //     AppLocalizations.of(context).cancel,
+                                        //     style: Theme.of(context)
+                                        //         .textTheme
+                                        //         .headline5,
+                                        //   ),
+                                        //   onPressed: () {
+                                        //     Navigator.of(context).pop();
+                                        //   },
+                                        // ),
+                                        // Replaced deprecated RaisedButton with ElevatedButton
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                globals.secondaryColor,
+                                            foregroundColor:
+                                                globals.primaryColor,
+                                            shape: const StadiumBorder(
+                                                side: BorderSide(
+                                                    color: globals.primaryColor,
+                                                    width: 2)),
+                                          ),
                                           child: Text(
                                             AppLocalizations.of(context).cancel,
                                             style: Theme.of(context)
@@ -458,8 +480,21 @@ class CampaignPaymentScreen extends StatelessWidget {
                                     Expanded(
                                       flex: 4,
                                       child: model.busy
-                                          ? RaisedButton(
-                                              padding: const EdgeInsets.all(0),
+                                          // ? RaisedButton(
+                                          //     padding: const EdgeInsets.all(0),
+                                          //     child: Text(
+                                          //         AppLocalizations.of(context)
+                                          //             .confirm,
+                                          //         style: Theme.of(context)
+                                          //             .textTheme
+                                          //             .headline5),
+                                          //     onPressed: () {})
+                                          // Replaced deprecated RaisedButton with ElevatedButton
+                                          ? ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                padding:
+                                                    const EdgeInsets.all(0),
+                                              ),
                                               child: Text(
                                                   AppLocalizations.of(context)
                                                       .confirm,
@@ -467,8 +502,36 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                       .textTheme
                                                       .headline5),
                                               onPressed: () {})
-                                          : RaisedButton(
-                                              padding: const EdgeInsets.all(0),
+                                          // : RaisedButton(
+                                          //     padding: const EdgeInsets.all(0),
+                                          //     child: Text(
+                                          //         AppLocalizations.of(context)
+                                          //             .confirm,
+                                          //         style: Theme.of(context)
+                                          //             .textTheme
+                                          //             .headline5),
+                                          //     onPressed: () {
+                                          //       //  model.getCampaignOrdeList();
+                                          //       model.checkFields(context);
+                                          //       // model.createCampaignOrder(
+                                          //       //     '0x41d9b291469c7d9046e8154b04b3d6e1e76c910bba9fce6acf73298d79984cfd',
+                                          //       //     15511);
+                                          //       // if (model.exgWalletAddress != null &&
+                                          //       //     model.exgWalletAddress != '') {
+                                          //       //   model.getCampaignOrdeList();
+                                          //       // } else {
+                                          //       //   model.getExgWalletAddr();
+                                          //       //   debugPrint(
+                                          //       //       'Exg wallet address was missing, so getting it now');
+                                          //       // }
+                                          //     },
+                                          //   ),
+                                          // Replaced deprecated RaisedButton with ElevatedButton
+                                          : ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                padding:
+                                                    const EdgeInsets.all(0),
+                                              ),
                                               child: Text(
                                                   AppLocalizations.of(context)
                                                       .confirm,
@@ -476,19 +539,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                       .textTheme
                                                       .headline5),
                                               onPressed: () {
-                                                //  model.getCampaignOrdeList();
                                                 model.checkFields(context);
-                                                // model.createCampaignOrder(
-                                                //     '0x41d9b291469c7d9046e8154b04b3d6e1e76c910bba9fce6acf73298d79984cfd',
-                                                //     15511);
-                                                // if (model.exgWalletAddress != null &&
-                                                //     model.exgWalletAddress != '') {
-                                                //   model.getCampaignOrdeList();
-                                                // } else {
-                                                //   model.getExgWalletAddr();
-                                                //   debugPrint(
-                                                //       'Exg wallet address was missing, so getting it now');
-                                                // }
                                               },
                                             ),
                                     )

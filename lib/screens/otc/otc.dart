@@ -194,7 +194,8 @@ class OtcScreen extends StatelessWidget {
                                       // First column element is merchant rating
                                       Container(
                                         height: 25, // to align with name row
-                                        padding: const EdgeInsets.only(top: 5.0),
+                                        padding:
+                                            const EdgeInsets.only(top: 5.0),
                                         child: Row(
                                           children: const <Widget>[
                                             Icon(Icons.star,
@@ -219,7 +220,10 @@ class OtcScreen extends StatelessWidget {
                                                   TargetPlatform.iOS
                                               ? Center(
                                                   child: CupertinoButton(
-                                                      child: Text(AppLocalizations.of(context).buy,
+                                                      child: Text(
+                                                          AppLocalizations.of(
+                                                                  context)
+                                                              .buy,
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -227,8 +231,13 @@ class OtcScreen extends StatelessWidget {
                                                       onPressed: () {}),
                                                 )
                                               : Center(
-                                                  child: RaisedButton(
-                                                    color: globals.buyPrice,
+                                                  // Replaced deprecated RaisedButton with ElevatedButton
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            backgroundColor:
+                                                                globals
+                                                                    .buyPrice),
                                                     child: Text(
                                                       'Buy',
                                                       style: Theme.of(context)

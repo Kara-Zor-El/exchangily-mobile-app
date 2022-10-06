@@ -247,8 +247,21 @@ class LightningRemitView extends StatelessWidget {
                                   child: Container(
                                     decoration: model.sharedService
                                         .gradientBoxDecoration(),
-                                    child: FlatButton(
-                                      textColor: Colors.white,
+                                    // child: FlatButton(
+                                    //   textColor: Colors.white,
+                                    //   onPressed: () {
+                                    //     model.isBusy
+                                    //         ? debugPrint('busy')
+                                    //         : model.transfer();
+                                    //   },
+                                    //   child: Text(
+                                    //       AppLocalizations.of(context).send,
+                                    //       style: Theme.of(context)
+                                    //           .textTheme
+                                    //           .headline4),
+                                    // ),
+                                    // Replace deprecated FlatButton with TextButton
+                                    child: TextButton(
                                       onPressed: () {
                                         model.isBusy
                                             ? debugPrint('busy')

@@ -183,10 +183,23 @@ class CampaignLoginScreen extends StatelessWidget {
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.only(right: 5),
-                            child: RaisedButton(
-                              padding: const EdgeInsets.all(2.0),
-                              elevation: 5,
-                              focusElevation: 5,
+                            // child: RaisedButton(
+                            //   padding: const EdgeInsets.all(2.0),
+                            //   elevation: 5,
+                            //   focusElevation: 5,
+                            //   child: Text(AppLocalizations.of(context).register,
+                            //       style: Theme.of(context).textTheme.headline4),
+                            //   onPressed: () {
+                            //     Navigator.of(context)
+                            //         .pushNamed('/campaignRegisterAccount');
+                            //   },
+                            // ),
+                            // Replace deprecated RaisedButton with ElevatedButton
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(2.0),
+                                elevation: 5,
+                              ),
                               child: Text(AppLocalizations.of(context).register,
                                   style: Theme.of(context).textTheme.headline4),
                               onPressed: () {
@@ -197,13 +210,41 @@ class CampaignLoginScreen extends StatelessWidget {
                           ),
                         ),
                         Expanded(
-                          child: RaisedButton(
-                            padding: const EdgeInsets.all(2.0),
-                            elevation: 5,
-                            shape: StadiumBorder(
-                                side: BorderSide(
-                                    color: globals.primaryColor, width: 2)),
-                            color: globals.secondaryColor,
+                          // child: RaisedButton(
+                          //   padding: const EdgeInsets.all(2.0),
+                          //   elevation: 5,
+                          //   shape: StadiumBorder(
+                          //       side: BorderSide(
+                          //           color: globals.primaryColor, width: 2)),
+                          //   color: globals.secondaryColor,
+                          //   child: model.busy == true
+                          //       ? Shimmer.fromColors(
+                          //           baseColor: globals.primaryColor,
+                          //           highlightColor: globals.grey,
+                          //           child: Text(
+                          //             (AppLocalizations.of(context).login),
+                          //             style:
+                          //                 Theme.of(context).textTheme.headline4,
+                          //           ))
+                          //       : Text(
+                          //           (AppLocalizations.of(context).login),
+                          //           style:
+                          //               Theme.of(context).textTheme.headline4,
+                          //         ),
+                          //   onPressed: () {
+                          //     model.checkCredentials();
+                          //   },
+                          // ),
+                          // Replace deprecated RaisedButton with ElevatedButton
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(2.0),
+                              elevation: 5,
+                              shape: const StadiumBorder(
+                                  side: BorderSide(
+                                      color: globals.primaryColor, width: 2)),
+                              backgroundColor: globals.secondaryColor,
+                            ),
                             child: model.busy == true
                                 ? Shimmer.fromColors(
                                     baseColor: globals.primaryColor,

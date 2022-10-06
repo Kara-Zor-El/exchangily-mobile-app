@@ -73,12 +73,25 @@ class _LoadHTMLFileToWEbViewState extends State<LoadHTMLFileToWEbView> {
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
                       String key = model.intervalMap.keys.elementAt(index);
-                      return FlatButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 0),
-                        textColor:
-                            model.intervalMap[key] == model.tradingChartInterval
-                                ? primaryColor
-                                : white,
+                      // return FlatButton(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 0),
+                      //   textColor:
+                      //       model.intervalMap[key] == model.tradingChartInterval
+                      //           ? primaryColor
+                      //           : white,
+                      //   child: Text(key, style: model.fontTheme),
+                      //   onPressed: () =>
+                      //       model.updateChartInterval(model.intervalMap[key]),
+                      // );
+                      // Replaced deprecated FlatButton with TextButton
+                      return TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                          backgroundColor: model.intervalMap[key] ==
+                                  model.tradingChartInterval
+                              ? primaryColor
+                              : white,
+                        ),
                         child: Text(key, style: model.fontTheme),
                         onPressed: () =>
                             model.updateChartInterval(model.intervalMap[key]),

@@ -1796,8 +1796,8 @@ class WalletService {
           .round();
 
       transFeeDouble = ((Decimal.parse(extraTransactionFee.toString()) +
-              Decimal.parse(transFee.toString()) / Decimal.parse('1e8')))
-          .toDouble();
+              Decimal.parse((transFee / 1e8).toString()))
+          .toDouble());
       if (getTransFeeOnly) {
         return {'txHex': '', 'errMsg': '', 'transFee': transFeeDouble};
       }

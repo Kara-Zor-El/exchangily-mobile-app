@@ -45,7 +45,18 @@ class ImportWalletView extends StatelessWidget {
               ),
               Container(
                 padding: const EdgeInsets.all(15),
-                child: RaisedButton(
+                // child: RaisedButton(
+                //   child: Text(
+                //     AppLocalizations.of(context).confirm,
+                //     style: Theme.of(context).textTheme.button,
+                //   ),
+                //   onPressed: () {
+                //     model.verifyMnemonic(
+                //         model.controller, context, model.count, model.route);
+                //   },
+                // ),
+                // Replaced deprecated RaisedButton with ElevatedButton
+                child: ElevatedButton(
                   child: Text(
                     AppLocalizations.of(context).confirm,
                     style: Theme.of(context).textTheme.button,

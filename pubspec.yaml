@@ -7,6 +7,9 @@ environment:
 
 dependency_overrides:
   intl: any
+  protobuf: 1.1.1
+  # protobuf: 2.0.0
+
 
 dependencies:
   flutter:
@@ -89,8 +92,9 @@ dependencies:
   qr: ^2.1.0
 
   # Barcode Scan
-  barcode_scan: 3.0.1
+  # barcode_scan: 3.0.1
   #barcode_scan: ^2.0.2
+  barcode_scan2: 4.2.1
 
   # Material icons
   material_design_icons_flutter: ^4.0.5345

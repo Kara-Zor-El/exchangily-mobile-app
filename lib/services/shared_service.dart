@@ -583,9 +583,16 @@ class SharedService {
                           ),
                           UIHelper.horizontalSpaceSmall,
                           isWebsite
-                              ? FlatButton(
-                                  color: primaryColor,
-                                  padding: const EdgeInsets.all(5),
+                              // relaced deprecated FlatButton with TextButton
+                              ? TextButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            globals.primaryColor),
+                                    padding: MaterialStateProperty.all<
+                                            EdgeInsetsGeometry>(
+                                        const EdgeInsets.all(5)),
+                                  ),
                                   child: Center(
                                     child: Text(
                                       AppLocalizations.of(context).website,
@@ -601,9 +608,17 @@ class SharedService {
                               : Container(),
                           UIHelper.horizontalSpaceSmall,
                           isUpdate
-                              ? FlatButton(
-                                  color: green,
-                                  padding: const EdgeInsets.all(5),
+                              // relaced deprecated FlatButton with TextButton
+                              ? TextButton(
+                                  style: ButtonStyle(
+                                    // backgroundColor green
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            globals.green),
+                                    padding: MaterialStateProperty.all<
+                                            EdgeInsetsGeometry>(
+                                        const EdgeInsets.all(5)),
+                                  ),
                                   child: Center(
                                     child: Text(
                                       AppLocalizations.of(context).updateNow,

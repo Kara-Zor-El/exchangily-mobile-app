@@ -62,7 +62,7 @@ class LocalAuthService {
       await _auth
           .authenticate(
         localizedReason: 'Authenticate to access the wallet',
-        useErrorDialogs: true,
+        // useErrorDialogs: true,
         //  stickyAuth: true,
       )
           .then((res) {

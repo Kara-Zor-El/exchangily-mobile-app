@@ -129,7 +129,32 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
               )),
           Container(
             padding: const EdgeInsets.all(10.0),
-            child: RaisedButton(
+            // child: RaisedButton(
+            //     child: Text(AppLocalizations.of(context).saveAndShareQrCode,
+            //         style: Theme.of(context)
+            //             .textTheme
+            //             .headline4
+            //             .copyWith(fontWeight: FontWeight.w400)),
+            //     onPressed: () {
+            //       String receiveFileName = 'qr-code.png';
+            //       getApplicationDocumentsDirectory().then((dir) {
+            //         String filePath = "${dir.path}/$receiveFileName";
+            //         File file = File(filePath);
+            //
+            //         Future.delayed(const Duration(milliseconds: 30), () {
+            //           _capturePng().then((byteData) {
+            //             file.writeAsBytes(byteData).then((onFile) {
+            //               Share.shareFiles([onFile.path],
+            //                   text: convertedToFabAddress == ''
+            //                       ? widget.walletInfo.address
+            //                       : convertedToFabAddress);
+            //             });
+            //           });
+            //         });
+            //       });
+            //     }),
+            // Replaced deprecated RaisedButton with ElevatedButton
+            child: ElevatedButton(
                 child: Text(AppLocalizations.of(context).saveAndShareQrCode,
                     style: Theme.of(context)
                         .textTheme

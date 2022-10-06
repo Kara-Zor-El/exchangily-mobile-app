@@ -39,7 +39,7 @@ class ExchangeBalanceService with ReactiveServiceMixin {
     int referralCount = 0;
     log.i('getLockerCount url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body);
 
@@ -69,7 +69,7 @@ class ExchangeBalanceService with ReactiveServiceMixin {
     String url = lockerApiUrl + exgAddress + '/$pageSize/$pageNumber';
     log.i('getLockerInfo url $url');
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       log.w('response ${response.body}');
       var json = jsonDecode(response.body);
 

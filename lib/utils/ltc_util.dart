@@ -55,7 +55,7 @@ class LtcUtils {
     var url = ltcBaseUrl + 'gettransactionjson/' + txid;
 
     try {
-      response = await httpClient.get(url);
+      response = await httpClient.get(Uri.parse(url));
     } catch (e) {}
 
     return response;
@@ -67,7 +67,7 @@ class LtcUtils {
     debugPrint('ltc_util- getLtcBalanceByAddress url $url');
     var btcBalance = 0.0;
     try {
-      var response = await httpClient.get(url);
+      var response = await httpClient.get(Uri.parse(url));
       debugPrint(response.toString());
       btcBalance = double.parse(response.body) / 1e8;
     } catch (e) {}

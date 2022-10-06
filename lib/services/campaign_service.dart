@@ -86,7 +86,7 @@ class CampaignService {
   Future resetPassword(String email) async {
     Map<String, dynamic> body = {"appId": appId, "email": email};
     try {
-      var response = await client.post(resetPasswordUrl, body: body);
+      var response = await client.post(Uri.parse(resetPasswordUrl), body: body);
       var json = jsonDecode(response.body);
       log.w('resetPasswordUrl $json');
       return json;
@@ -111,7 +111,7 @@ class CampaignService {
       "walletExgAddress": exgWalletAddress
     }); // Add another key/pair value
     try {
-      var response = await client.post(registerUrl, body: body);
+      var response = await client.post(Uri.parse(registerUrl), body: body);
       var json = jsonDecode(response.body);
       log.w('registerAccount $json');
       return json;
@@ -132,7 +132,7 @@ class CampaignService {
 
     try {
       log.i('login url $loginUrl');
-      var response = await client.post(loginUrl, body: body);
+      var response = await client.post(Uri.parse(loginUrl), body: body);
       var json = jsonDecode(response.body);
       log.w('login $json');
       return json;
@@ -162,8 +162,8 @@ class CampaignService {
     };
     Map<String, String> headers = {'x-access-token': loginToken};
     try {
-      var response =
-          await client.post(createOrderUrl, body: body, headers: headers);
+      var response = await client.post(Uri.parse(createOrderUrl),
+          body: body, headers: headers);
       var json = jsonDecode(response.body)['_body'];
       log.w('createCampaignOrder try response $json');
       return json;
@@ -187,8 +187,8 @@ class CampaignService {
     };
     Map<String, String> headers = {'x-access-token': loginToken};
     try {
-      var response =
-          await client.post(updateOrderUrl, body: body, headers: headers);
+      var response = await client.post(Uri.parse(updateOrderUrl),
+          body: body, headers: headers);
       var json = jsonDecode(response.body)['_body'];
       log.w('updateCampaignOrder try response $json');
       return json;
@@ -202,7 +202,8 @@ class CampaignService {
 
   Future<List<OrderInfo>> getOrdersById(String memberId) async {
     try {
-      var response = await client.get(listOrdersByMemberIdUrl + memberId);
+      var response =
+          await client.get(Uri.parse(listOrdersByMemberIdUrl + memberId));
       var jsonList = jsonDecode(response.body) as List;
       log.w('In getOrderByMemberId $jsonList');
       OrderInfoList orderInfoList = OrderInfoList.fromJson(jsonList);
@@ -220,8 +221,8 @@ class CampaignService {
   Future<List<TransactionHistory>> getOrderByWalletAddress(
       String exgWalletAddress) async {
     try {
-      var response =
-          await client.get(listOrdersByWalletAddressUrl + exgWalletAddress);
+      var response = await client
+          .get(Uri.parse(listOrdersByWalletAddressUrl + exgWalletAddress));
 
       var jsonList = jsonDecode(response.body)
           as List; // making this a list what i was missing earlier
@@ -254,7 +255,7 @@ class CampaignService {
 
   Future getCampaignName() async {
     try {
-      var response = await client.get(campaignNameUrl);
+      var response = await client.get(Uri.parse(campaignNameUrl));
       var json = jsonDecode(response.body);
       log.w('getCampaignName $json');
       return json;
@@ -272,8 +273,8 @@ class CampaignService {
 
     Map<String, String> headers = {'x-access-token': userData.token};
     try {
-      var response =
-          await client.get(memberReferralsUrl + memberId, headers: headers);
+      var response = await client.get(Uri.parse(memberReferralsUrl + memberId),
+          headers: headers);
       var json = jsonDecode(response.body) as List;
       log.w('getMemberReferrals $json');
       return json;
@@ -289,7 +290,7 @@ class CampaignService {
   Future getRewardById(CampaignUserData userData) async {
     Map<String, String> headers = {'x-access-token': userData.token};
     try {
-      var response = await client.get(rewardsUrl, headers: headers);
+      var response = await client.get(Uri.parse(rewardsUrl), headers: headers);
       var json = jsonDecode(response.body);
       log.w('getRewardById $json');
 
@@ -306,7 +307,8 @@ class CampaignService {
   Future<MemberProfile> getMemberProfile(String token) async {
     Map<String, String> headers = {'x-access-token': token};
     try {
-      var response = await client.get(memberProfileUrl, headers: headers);
+      var response =
+          await client.get(Uri.parse(memberProfileUrl), headers: headers);
       var json = jsonDecode(response.body)['_body'];
 
       MemberProfile memberProfile = MemberProfile.fromJson(json);
@@ -325,7 +327,7 @@ class CampaignService {
   Future<List<CampaignReward>> getMemberRewardByToken(String token) async {
     Map<String, String> headers = {'x-access-token': token};
     try {
-      var response = await client.get(rewardsUrl, headers: headers);
+      var response = await client.get(Uri.parse(rewardsUrl), headers: headers);
       log.w('getMemberRewardByToken ${jsonDecode(response.body)['_body']}');
       var json = jsonDecode(response.body)['_body']['personal'];
       CampaignRewardList campaignRewardList = CampaignRewardList.fromJson(json);
@@ -344,7 +346,7 @@ class CampaignService {
   Future getTotalTeamsRewardByToken(String token) async {
     Map<String, String> headers = {'x-access-token': token};
     try {
-      var response = await client.get(rewardsUrl, headers: headers);
+      var response = await client.get(Uri.parse(rewardsUrl), headers: headers);
       log.w('getTotalTeamsRewardByToken ${jsonDecode(response.body)['_body']}');
       var teamsRewardList = jsonDecode(response.body)['_body'];
       return teamsRewardList;
@@ -360,7 +362,7 @@ class CampaignService {
   Future<List<TeamReward>> getTeamsRewardDetailsByToken(String token) async {
     Map<String, String> headers = {'x-access-token': token};
     try {
-      var response = await client.get(rewardsUrl, headers: headers);
+      var response = await client.get(Uri.parse(rewardsUrl), headers: headers);
 
       var json = jsonDecode(response.body)['_body']['team'];
       log.i('getTeamsRewardDetailsByToken $json');
