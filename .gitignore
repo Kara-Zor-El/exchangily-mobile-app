@@ -85,3 +85,4 @@ ios/Podfile.lock
 ios/build
 .fvm/flutter_sdk
 
+android/.gradlew

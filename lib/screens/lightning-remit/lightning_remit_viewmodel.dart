@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:barcode_scan2/barcode_scan2.dart';
+// import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:exchangilymobileapp/constants/colors.dart';
 import 'package:exchangilymobileapp/constants/custom_styles.dart';
 import 'package:exchangilymobileapp/localizations.dart';
@@ -267,35 +268,63 @@ class LightningRemitViewmodel extends FutureViewModel {
                                     Barcode Scan
 --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-  void scanBarcode() async {
+  // deprecated
+  // void scanBarcode() async {
+  //   try {
+  //     setBusy(true);
+  //     String barcode = '';
+  //     storageService.isCameraOpen = true;
+  //     barcode = await BarcodeScanner.scan().then((value) => value.rawContent);
+  //     addressController.text = barcode;
+  //     setBusy(false);
+  //   } on PlatformException catch (e) {
+  //     if (e.code == "PERMISSION_NOT_GRANTED") {
+  //       setBusy(true);
+  //       sharedService.alertDialog(
+  //           '', AppLocalizations.of(context).userAccessDenied,
+  //           isWarning: false);
+  //       // receiverWalletAddressTextController.text =
+  //       //     AppLocalizations.of(context).userAccessDenied;
+  //     } else {
+  //       // setBusy(true);
+  //       sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+  //           isWarning: false);
+  //     }
+  //   } on FormatException {
+  //     sharedService.alertDialog('', AppLocalizations.of(context).scanCancelled,
+  //         isWarning: false);
+  //   } catch (e) {
+  //     sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+  //         isWarning: false);
+  //   }
+  //
+  //   setBusy(false);
+  // }
+
+  Future<void> scanBarcode() async {
+    String barcodeScanRes;
     try {
       setBusy(true);
-      String barcode = '';
-      storageService.isCameraOpen = true;
-      barcode = await BarcodeScanner.scan().then((value) => value.rawContent);
-      addressController.text = barcode;
-      setBusy(false);
-    } on PlatformException catch (e) {
-      if (e.code == "PERMISSION_NOT_GRANTED") {
-        setBusy(true);
-        sharedService.alertDialog(
-            '', AppLocalizations.of(context).userAccessDenied,
-            isWarning: false);
-        // receiverWalletAddressTextController.text =
-        //     AppLocalizations.of(context).userAccessDenied;
-      } else {
-        // setBusy(true);
-        sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
-            isWarning: false);
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancel", true, ScanMode.QR);
+      log.w('barcodeScanRes $barcodeScanRes');
+      if (barcodeScanRes != '-1') {
+        addressController.text = barcodeScanRes;
       }
+      setBusy(false);
+    } on PlatformException {
+      barcodeScanRes = 'Failed to get platform version.';
+      sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+          isWarning: false);
     } on FormatException {
+      barcodeScanRes = 'Failed to get platform version.';
       sharedService.alertDialog('', AppLocalizations.of(context).scanCancelled,
           isWarning: false);
     } catch (e) {
+      barcodeScanRes = 'Failed to get platform version.';
       sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
           isWarning: false);
     }
-
     setBusy(false);
   }
 

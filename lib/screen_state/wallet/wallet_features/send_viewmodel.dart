@@ -15,7 +15,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:barcode_scan2/barcode_scan2.dart';
+// import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:exchangilymobileapp/constants/api_routes.dart';
 import 'package:exchangilymobileapp/constants/colors.dart';
 import 'package:exchangilymobileapp/logger.dart';
@@ -929,6 +930,58 @@ class SendViewModel extends BaseViewModel {
                       Barcode Scan
 --------------------------------------------------------*/
 
+  // Deprecated
+  // Future scan() async {
+  //   log.i("Barcode: going to scan");
+  //   setBusy(true);
+  //
+  //   try {
+  //     log.i("Barcode: try");
+  //     String barcode = '';
+  //     storageService.isCameraOpen = true;
+  //     var result = await BarcodeScanner.scan();
+  //     barcode = result.rawContent;
+  //     log.i("Barcode Res: $result ");
+  //
+  //     receiverWalletAddressTextController.text = barcode;
+  //     setBusy(false);
+  //   } on PlatformException catch (e) {
+  //     log.i("Barcode PlatformException : ");
+  //     log.i(e.toString());
+  //     if (e.code == "PERMISSION_NOT_GRANTED") {
+  //       setBusy(false);
+  //       sharedService.alertDialog(
+  //           '', AppLocalizations.of(context).userAccessDenied,
+  //           isWarning: false);
+  //       // receiverWalletAddressTextController.text =
+  //       //     AppLocalizations.of(context).userAccessDenied;
+  //     } else {
+  //       setBusy(false);
+  //       sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+  //           isWarning: false);
+  //       // receiverWalletAddressTextController.text =
+  //       //     '${AppLocalizations.of(context).unknownError}: $e';
+  //     }
+  //   } on FormatException {
+  //     log.i("Barcode FormatException : ");
+  //     // log.i(e.toString());
+  //     setBusy(false);
+  //     // sharedService.alertDialog(AppLocalizations.of(context).scanCancelled,
+  //     //     AppLocalizations.of(context).userReturnedByPressingBackButton,
+  //     //     isWarning: false);
+  //   } catch (e) {
+  //     log.i("Barcode error : ");
+  //     log.i(e.toString());
+  //     setBusy(false);
+  //     sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+  //         isWarning: false);
+  //     // receiverWalletAddressTextController.text =
+  //     //     '${AppLocalizations.of(context).unknownError}: $e';
+  //   }
+  //   setBusy(false);
+  // }
+
+  // Using flutter_barcode_scanner
   Future scan() async {
     log.i("Barcode: going to scan");
     setBusy(true);
@@ -937,8 +990,9 @@ class SendViewModel extends BaseViewModel {
       log.i("Barcode: try");
       String barcode = '';
       storageService.isCameraOpen = true;
-      var result = await BarcodeScanner.scan();
-      barcode = result.rawContent;
+      var result = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', AppLocalizations.of(context).cancel, true, ScanMode.QR);
+      barcode = result;
       log.i("Barcode Res: $result ");
 
       receiverWalletAddressTextController.text = barcode;
