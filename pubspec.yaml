@@ -92,8 +92,7 @@ dependencies:
   # Barcode Scan
   # barcode_scan: 3.0.1
   # barcode_scan: ^2.0.2
-  # barcode_scan: 2.0.0
-  flutter_barcode_scanner: 2.0.0
+  majascan: 0.5.0
 
   # Material icons
   material_design_icons_flutter: ^5.0.6996

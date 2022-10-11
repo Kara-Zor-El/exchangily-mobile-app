@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:async';
 
-// import 'package:barcode_scan/barcode_scan.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:majascan/majascan.dart';
 import 'package:exchangilymobileapp/constants/colors.dart';
 import 'package:exchangilymobileapp/constants/custom_styles.dart';
 import 'package:exchangilymobileapp/localizations.dart';
@@ -301,30 +301,42 @@ class LightningRemitViewmodel extends FutureViewModel {
   //   setBusy(false);
   // }
 
-  Future<void> scanBarcode() async {
-    String barcodeScanRes;
+  // using MajaScan
+  void scanBarcode() async {
     try {
       setBusy(true);
-      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-          "#ff6666", "Cancel", true, ScanMode.QR);
-      log.w('barcodeScanRes $barcodeScanRes');
-      if (barcodeScanRes != '-1') {
-        addressController.text = barcodeScanRes;
-      }
+      String barcode = '';
+      storageService.isCameraOpen = true;
+      barcode = await MajaScan.startScan(
+        title: 'Scan QR Code',
+        barColor: primaryColor,
+        qRCornerColor: primaryColor,
+        qRScannerColor: primaryColor,
+        flashlightEnable: true,
+      );
+      addressController.text = barcode;
       setBusy(false);
-    } on PlatformException {
-      barcodeScanRes = 'Failed to get platform version.';
-      sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
-          isWarning: false);
+    } on PlatformException catch (e) {
+      if (e.code == "PERMISSION_NOT_GRANTED") {
+        setBusy(true);
+        sharedService.alertDialog(
+            '', AppLocalizations.of(context).userAccessDenied,
+            isWarning: false);
+        // receiverWalletAddressTextController.text =
+        //     AppLocalizations.of(context).userAccessDenied;
+      } else {
+        // setBusy(true);
+        sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+            isWarning: false);
+      }
     } on FormatException {
-      barcodeScanRes = 'Failed to get platform version.';
       sharedService.alertDialog('', AppLocalizations.of(context).scanCancelled,
           isWarning: false);
     } catch (e) {
-      barcodeScanRes = 'Failed to get platform version.';
       sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
           isWarning: false);
     }
+
     setBusy(false);
   }
 

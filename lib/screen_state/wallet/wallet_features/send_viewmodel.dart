@@ -15,8 +15,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-// import 'package:barcode_scan/barcode_scan.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:majascan/majascan.dart';
 import 'package:exchangilymobileapp/constants/api_routes.dart';
 import 'package:exchangilymobileapp/constants/colors.dart';
 import 'package:exchangilymobileapp/logger.dart';
@@ -981,7 +980,7 @@ class SendViewModel extends BaseViewModel {
   //   setBusy(false);
   // }
 
-  // Using flutter_barcode_scanner
+  // Using MajaScan
   Future scan() async {
     log.i("Barcode: going to scan");
     setBusy(true);
@@ -990,8 +989,16 @@ class SendViewModel extends BaseViewModel {
       log.i("Barcode: try");
       String barcode = '';
       storageService.isCameraOpen = true;
-      var result = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', AppLocalizations.of(context).cancel, true, ScanMode.QR);
+      var result = await MajaScan.startScan(
+        title: "Scan Barcode",
+        flashlightEnable: true,
+        barColor: primaryColor,
+        qRCornerColor: primaryColor,
+        qRScannerColor: primaryColor,
+        titleColor: primaryColor,
+        scanAreaScale: 0.8,
+      );
+
       barcode = result;
       log.i("Barcode Res: $result ");
 
@@ -1005,14 +1012,14 @@ class SendViewModel extends BaseViewModel {
         sharedService.alertDialog(
             '', AppLocalizations.of(context).userAccessDenied,
             isWarning: false);
-        // receiverWalletAddressTextController.text =
-        //     AppLocalizations.of(context).userAccessDenied;
+        receiverWalletAddressTextController.text =
+            AppLocalizations.of(context).userAccessDenied;
       } else {
         setBusy(false);
         sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
             isWarning: false);
-        // receiverWalletAddressTextController.text =
-        //     '${AppLocalizations.of(context).unknownError}: $e';
+        receiverWalletAddressTextController.text =
+            '${AppLocalizations.of(context).unknownError}: $e';
       }
     } on FormatException {
       log.i("Barcode FormatException : ");
