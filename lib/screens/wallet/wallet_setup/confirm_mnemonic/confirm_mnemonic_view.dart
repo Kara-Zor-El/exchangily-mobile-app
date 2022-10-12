@@ -47,7 +47,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                 AppLocalizations.of(context).confirm +
                     ' ' +
                     AppLocalizations.of(context).mnemonic,
-                style: Theme.of(context).textTheme.headline3,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
               backgroundColor: secondaryColor),
           body: Container(
@@ -65,15 +65,18 @@ class ConfirmMnemonicView extends StatelessWidget {
                             BorderSide(color: model.isTap ? green : grey)),
                         // backgroundColor: MaterialStateProperty.all(primaryColor),
                         elevation: MaterialStateProperty.all(5),
-                        shape: MaterialStateProperty.all(StadiumBorder(
+                        shape: MaterialStateProperty.all(const StadiumBorder(
                             side: BorderSide(color: primaryColor, width: 2))),
                       ),
                       child: Text(
                           'Verify Mnemonic by tap on words in the correct order',
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontWeight: model.isTap
-                                  ? FontWeight.bold
-                                  : FontWeight.normal)),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              .copyWith(
+                                  fontWeight: model.isTap
+                                      ? FontWeight.bold
+                                      : FontWeight.normal)),
                       onPressed: () {
                         //    model.shuffleStringList();
                         model.selectConfirmMethod('tap');
@@ -86,14 +89,17 @@ class ConfirmMnemonicView extends StatelessWidget {
                             BorderSide(color: model.isTap ? grey : green)),
                         // backgroundColor: MaterialStateProperty.all(primaryColor),
                         elevation: MaterialStateProperty.all(5),
-                        shape: MaterialStateProperty.all(StadiumBorder(
+                        shape: MaterialStateProperty.all(const StadiumBorder(
                             side: BorderSide(color: secondaryColor, width: 2))),
                       ),
                       child: Text('Verify Mnemonic by typing mnemonic words',
-                          style: Theme.of(context).textTheme.headline5.copyWith(
-                              fontWeight: !model.isTap
-                                  ? FontWeight.bold
-                                  : FontWeight.normal)),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              .copyWith(
+                                  fontWeight: !model.isTap
+                                      ? FontWeight.bold
+                                      : FontWeight.normal)),
                       onPressed: () => model.selectConfirmMethod('write'),
                     ),
                   ],
@@ -116,8 +122,8 @@ class ConfirmMnemonicView extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 2.0),
+                                  const Padding(
+                                    padding: EdgeInsets.only(right: 2.0),
                                     child: Icon(
                                       Icons.restore_sharp,
                                       color: yellow,
@@ -127,7 +133,7 @@ class ConfirmMnemonicView extends StatelessWidget {
                                   Text('Reset Selection',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline3
+                                          .displaySmall
                                           .copyWith(color: yellow)),
                                 ],
                               )),
@@ -183,11 +189,11 @@ class ConfirmMnemonicView extends StatelessWidget {
                                       filled: true,
                                       hintText: singleWord,
                                       hintMaxLines: 1,
-                                      hintStyle: TextStyle(
+                                      hintStyle: const TextStyle(
                                           color: white,
                                           fontWeight: FontWeight.w400),
                                       focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
+                                          borderSide: const BorderSide(
                                               color: white, width: 2),
                                           borderRadius:
                                               BorderRadius.circular(30.0)),
@@ -208,14 +214,14 @@ class ConfirmMnemonicView extends StatelessWidget {
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(primaryColor),
                       elevation: MaterialStateProperty.all(5),
-                      shape: MaterialStateProperty.all(StadiumBorder(
+                      shape: MaterialStateProperty.all(const StadiumBorder(
                           side: BorderSide(color: primaryColor, width: 2))),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
                         AppLocalizations.of(context).finishWalletBackup,
-                        style: Theme.of(context).textTheme.button,
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),
                     ),
                     onPressed: () {

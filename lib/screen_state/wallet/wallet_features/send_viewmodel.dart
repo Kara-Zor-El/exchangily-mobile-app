@@ -721,11 +721,11 @@ class SendViewModel extends BaseViewModel {
           Center(
             child: Text(
                 '${AppLocalizations.of(context).low} $coin ${AppLocalizations.of(context).balance}',
-                style: Theme.of(context).textTheme.headline5),
+                style: Theme.of(context).textTheme.headlineSmall),
           ),
           subtitle: Center(
             child: Text('${AppLocalizations.of(context).gasFee} 0',
-                style: Theme.of(context).textTheme.headline6),
+                style: Theme.of(context).textTheme.titleLarge),
           ),
           position: NotificationPosition.top,
           background: sellPrice);

@@ -24,7 +24,7 @@ class CampaignOrderDetailsScreen extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Text(AppLocalizations.of(context).orderDetails,
-              style: Theme.of(context).textTheme.headline4),
+              style: Theme.of(context).textTheme.headlineMedium),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -39,18 +39,18 @@ class CampaignOrderDetailsScreen extends StatelessWidget {
                       flex: 2,
                       child: Text(AppLocalizations.of(context).date,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyText1),
+                          style: Theme.of(context).textTheme.bodyLarge),
                     ),
                     Expanded(
                         flex: 3,
                         child: Text(AppLocalizations.of(context).quantity,
                             textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyText1)),
+                            style: Theme.of(context).textTheme.bodyLarge)),
                     Expanded(
                       flex: 2,
                       child: Text(AppLocalizations.of(context).status,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyText1),
+                          style: Theme.of(context).textTheme.bodyLarge),
                     )
                   ],
                 ),
@@ -76,7 +76,7 @@ class CampaignOrderDetailsScreen extends StatelessWidget {
                                         orderInfoList[index].dateCreated,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1),
+                                            .bodyLarge),
                                   ),
                                   UIHelper.horizontalSpaceSmall,
                                   Expanded(
@@ -88,7 +88,7 @@ class CampaignOrderDetailsScreen extends StatelessWidget {
                                         textAlign: TextAlign.start,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1),
+                                            .bodyLarge),
                                   ),
                                   Expanded(
                                     flex: 1,
@@ -96,7 +96,7 @@ class CampaignOrderDetailsScreen extends StatelessWidget {
                                         textAlign: TextAlign.start,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1),
+                                            .bodyLarge),
                                   ),
                                 ],
                               ),

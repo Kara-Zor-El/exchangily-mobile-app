@@ -528,7 +528,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                       AppLocalizations.of(context).withdraw,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText2
+                                          .bodyMedium
                                           .copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),
@@ -1513,7 +1513,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
   }
 
 // Copy txid and display flushbar
-  copyAndShowNotificatio(String message) {
+  copyAndShowNotification(String message) {
     sharedService.copyAddress(context, message);
   }
 }

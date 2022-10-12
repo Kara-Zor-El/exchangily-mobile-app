@@ -72,7 +72,7 @@ class _MarketDataTableState extends State<MarketDataTable> {
                 // width: MediaQuery.of(context).size.width * 3 / 15,
                 child: Text(
                   AppLocalizations.of(context).ticker,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               onSort: (columnIndex, sortAscending) {
@@ -100,7 +100,7 @@ class _MarketDataTableState extends State<MarketDataTable> {
                 // width: MediaQuery.of(context).size.width * 2 / 11,
                 child: Text(
                   AppLocalizations.of(context).price,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               onSort: (columnIndex, sortAscending) {
@@ -126,7 +126,7 @@ class _MarketDataTableState extends State<MarketDataTable> {
                 //   width: MediaQuery.of(context).size.width * 2 / 11,
                 child: Text(
                   '24H ${AppLocalizations.of(context).volume}',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               onSort: (columnIndex, sortAscending) {
@@ -150,7 +150,7 @@ class _MarketDataTableState extends State<MarketDataTable> {
             //     width: MediaQuery.of(context).size.width * 2 / 11,
             //     child: Text(
             //       AppLocalizations.of(context).low,
-            //       style: Theme.of(context).textTheme.headline6,
+            //       style: Theme.of(context).textTheme.titleLarge,
             //     ),
             //   ),
             //   onSort: (columnIndex, sortAscending) {
@@ -174,7 +174,7 @@ class _MarketDataTableState extends State<MarketDataTable> {
                 //  width: MediaQuery.of(context).size.width * 2 / 15,
                 child: Text(
                   '24H ${AppLocalizations.of(context).change}',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               onSort: (columnIndex, sortAscending) {
@@ -204,10 +204,12 @@ class _MarketDataTableState extends State<MarketDataTable> {
                           // color: Colors.green,
                           child: Text(
                             itemRow.symbol.split('/')[0],
-                            style:
-                                Theme.of(context).textTheme.headline5.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                .copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -220,7 +222,7 @@ class _MarketDataTableState extends State<MarketDataTable> {
                           child: Text(itemRow.price.toStringAsFixed(6),
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline5
+                                  .headlineSmall
                                   .copyWith(
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -235,7 +237,7 @@ class _MarketDataTableState extends State<MarketDataTable> {
                           child: Text(itemRow.volume.toStringAsFixed(2),
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline5
+                                  .headlineSmall
                                   .copyWith(
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -248,7 +250,7 @@ class _MarketDataTableState extends State<MarketDataTable> {
                       // DataCell(
                       //   Text(
                       //     itemRow.high.toString(),
-                      //     style: Theme.of(context).textTheme.headline6.copyWith(
+                      //     style: Theme.of(context).textTheme.titleLarge.copyWith(
                       //         fontWeight: FontWeight.w400, fontSize: 16),
                       //   ),
                       //   onTap: () {
@@ -258,7 +260,7 @@ class _MarketDataTableState extends State<MarketDataTable> {
                       // DataCell(
                       //   Text(
                       //     itemRow.low.toString(),
-                      //     style: Theme.of(context).textTheme.headline6.copyWith(
+                      //     style: Theme.of(context).textTheme.titleLarge.copyWith(
                       //         fontWeight: FontWeight.w400, fontSize: 16),
                       //   ),
                       //   onTap: () {
@@ -270,7 +272,10 @@ class _MarketDataTableState extends State<MarketDataTable> {
                           itemRow.change >= 0
                               ? "+" + itemRow.change.toStringAsFixed(2) + '%'
                               : itemRow.change.toStringAsFixed(2) + '%',
-                          style: Theme.of(context).textTheme.headline5.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              .copyWith(
                                 color: Color(itemRow.change >= 0
                                     ? 0XFF0da88b
                                     : 0XFFe2103c),

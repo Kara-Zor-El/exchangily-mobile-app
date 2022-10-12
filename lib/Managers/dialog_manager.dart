@@ -57,7 +57,7 @@ class _DialogManagerState extends State<DialogManager> {
     showSimpleNotification(
       Center(
           child: Text(request.title,
-              style: Theme.of(context).textTheme.headline6)),
+              style: Theme.of(context).textTheme.titleLarge)),
     );
   }
 
@@ -70,10 +70,10 @@ class _DialogManagerState extends State<DialogManager> {
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
             backgroundColor: walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyText1,
+            descStyle: Theme.of(context).textTheme.bodyLarge,
             titleStyle: Theme.of(context)
                 .textTheme
-                .headline3
+                .displaySmall
                 .copyWith(fontWeight: FontWeight.bold)),
         context: context,
         title: request.title,
@@ -103,7 +103,7 @@ class _DialogManagerState extends State<DialogManager> {
               },
               child: Text(
                 request.secondaryButton,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
           DialogButton(
@@ -115,7 +115,7 @@ class _DialogManagerState extends State<DialogManager> {
             },
             child: Text(
               request.buttonTitle,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           )
         ]).show();
@@ -127,10 +127,10 @@ class _DialogManagerState extends State<DialogManager> {
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
             backgroundColor: walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyText1,
+            descStyle: Theme.of(context).textTheme.bodyLarge,
             titleStyle: Theme.of(context)
                 .textTheme
-                .headline3
+                .displaySmall
                 .copyWith(fontWeight: FontWeight.bold)),
         context: context,
         title: request.title,
@@ -161,7 +161,7 @@ class _DialogManagerState extends State<DialogManager> {
             },
             child: Text(
               request.buttonTitle,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           )
         ]).show();
@@ -173,10 +173,10 @@ class _DialogManagerState extends State<DialogManager> {
             animationType: AnimationType.grow,
             isOverlayTapDismiss: false,
             backgroundColor: walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyText1,
+            descStyle: Theme.of(context).textTheme.bodyLarge,
             titleStyle: Theme.of(context)
                 .textTheme
-                .headline3
+                .displaySmall
                 .copyWith(fontWeight: FontWeight.bold)),
         context: context,
         title: request.title,
@@ -201,7 +201,7 @@ class _DialogManagerState extends State<DialogManager> {
               decoration: InputDecoration(
                 labelStyle: Theme.of(context)
                     .textTheme
-                    .bodyText1
+                    .bodyLarge
                     .copyWith(color: white),
                 icon: const Icon(
                   Icons.security,
@@ -225,7 +225,7 @@ class _DialogManagerState extends State<DialogManager> {
               AppLocalizations.of(context).cancel,
               style: Theme.of(context)
                   .textTheme
-                  .headline4
+                  .headlineMedium
                   .copyWith(color: Colors.black),
             ),
           ),
@@ -290,7 +290,7 @@ class _DialogManagerState extends State<DialogManager> {
             },
             child: Text(
               request.buttonTitle,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           )
         ]).show();

@@ -45,7 +45,7 @@ class SettingsView extends StatelessWidget {
           appBar: AppBar(
             centerTitle: true,
             title: Text(AppLocalizations.of(context).settings,
-                style: Theme.of(context).textTheme.headline3),
+                style: Theme.of(context).textTheme.displaySmall),
             backgroundColor: globals.secondaryColor,
             leading: Container(),
           ),
@@ -191,7 +191,7 @@ class SettingsContainer extends StatelessWidget {
                 child: Center(
                     child: Text(
                   model.mnemonic,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 )),
               ),
             ),
@@ -207,7 +207,7 @@ class SettingsContainer extends StatelessWidget {
                             child: Text(
                                 AppLocalizations.of(context)
                                     .changeWalletLanguage,
-                                style: Theme.of(context).textTheme.subtitle2)),
+                                style: Theme.of(context).textTheme.titleSmall)),
                         model.isBusy
                             ? Container()
                             : Row(
@@ -218,7 +218,7 @@ class SettingsContainer extends StatelessWidget {
                                         Text('English',
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline5),
+                                                .headlineSmall),
                                         Checkbox(
                                           materialTapTargetSize:
                                               MaterialTapTargetSize.shrinkWrap,
@@ -245,7 +245,7 @@ class SettingsContainer extends StatelessWidget {
                                         Text('Chinese',
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline5),
+                                                .headlineSmall),
                                         Checkbox(
                                           materialTapTargetSize:
                                               MaterialTapTargetSize.shrinkWrap,
@@ -277,7 +277,7 @@ class SettingsContainer extends StatelessWidget {
                             hint: Text(
                               AppLocalizations.of(context).changeWalletLanguage,
                               textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.headline5,
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                             value: model.selectedLanguage,
                             onChanged: (newValue) {
@@ -299,7 +299,7 @@ class SettingsContainer extends StatelessWidget {
                                         textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline6),
+                                            .titleLarge),
                                   ],
                                 ),
                                 value: model.languages.keys.first,
@@ -320,7 +320,7 @@ class SettingsContainer extends StatelessWidget {
                                         textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline6),
+                                            .titleLarge),
                                   ],
                                 ),
                                 value: model.languages.keys.last,
@@ -346,7 +346,7 @@ class SettingsContainer extends StatelessWidget {
             //         Expanded(
             //           child: Text(
             //               AppLocalizations.of(context).showDialogWarnings,
-            //               style: Theme.of(context).textTheme.headline5,
+            //               style: Theme.of(context).textTheme.headlineSmall,
             //               textAlign: TextAlign.left),
             //         ),
             //         SizedBox(
@@ -376,8 +376,8 @@ class SettingsContainer extends StatelessWidget {
                     //  crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0, right: 8.0),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 5.0, right: 8.0),
                         child:
                             Icon(Icons.insert_comment, color: white, size: 18),
                       ),
@@ -385,7 +385,7 @@ class SettingsContainer extends StatelessWidget {
                         child: Text(
                             AppLocalizations.of(context)
                                 .settingsShowcaseInstructions,
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headlineSmall,
                             textAlign: TextAlign.left),
                       ),
                       SizedBox(
@@ -414,8 +414,8 @@ class SettingsContainer extends StatelessWidget {
                     //  crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0, right: 8.0),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 5.0, right: 8.0),
                         child:
                             Icon(Icons.security_sharp, color: white, size: 18),
                       ),
@@ -423,7 +423,7 @@ class SettingsContainer extends StatelessWidget {
                         child: Text(
                             AppLocalizations.of(context)
                                 .enableBiometricAuthentication,
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headlineSmall,
                             textAlign: TextAlign.left),
                       ),
                       SizedBox(
@@ -457,15 +457,15 @@ class SettingsContainer extends StatelessWidget {
                         //  crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 5.0, right: 8.0),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 5.0, right: 8.0),
                             child: Icon(Icons.lock_outline_rounded,
                                 color: white, size: 18),
                           ),
                           Expanded(
                             child: Text(AppLocalizations.of(context).lockAppNow,
-                                style: Theme.of(context).textTheme.headline5,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                                 textAlign: TextAlign.left),
                           ),
                           SizedBox(
@@ -501,14 +501,14 @@ class SettingsContainer extends StatelessWidget {
                     //  crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0, right: 8.0),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 5.0, right: 8.0),
                         child: Icon(Icons.storage, color: white, size: 18),
                       ),
                       // Add column here and add text box that shows which node is current
                       Expanded(
                         child: Text(AppLocalizations.of(context).useAsiaNode,
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headlineSmall,
                             textAlign: TextAlign.left),
                       ),
                       SizedBox(
@@ -542,7 +542,7 @@ class SettingsContainer extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       'v ${model.versionName}.${model.buildNumber}',
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                     if (!isProduction)
                       const Text(' Debug',
@@ -558,7 +558,7 @@ class SettingsContainer extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText2
+                        .bodyMedium
                         .copyWith(color: Colors.red)),
               ),
             ),
@@ -584,7 +584,7 @@ class SettingsContainer extends StatelessWidget {
               ? AppLocalizations.of(context).displayMnemonic
               : AppLocalizations.of(context).hideMnemonic,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline5,
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
       ]),
     );
@@ -594,8 +594,8 @@ class SettingsContainer extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 3.0),
+        const Padding(
+          padding: EdgeInsets.only(right: 3.0),
           child: Icon(
             Icons.delete,
             color: globals.sellPrice,
@@ -607,7 +607,7 @@ class SettingsContainer extends StatelessWidget {
             : Text(
                 AppLocalizations.of(context).deleteWallet,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
       ],
     );

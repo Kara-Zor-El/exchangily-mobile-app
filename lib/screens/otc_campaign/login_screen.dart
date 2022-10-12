@@ -27,7 +27,7 @@ class CampaignLoginScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context).login,
-                style: Theme.of(context).textTheme.headline3),
+                style: Theme.of(context).textTheme.displaySmall),
             centerTitle: true,
           ),
           body: Column(
@@ -50,7 +50,8 @@ class CampaignLoginScreen extends StatelessWidget {
                               padding: const EdgeInsets.only(top: 7.0),
                               child: Text(
                                 AppLocalizations.of(context).email,
-                                style: Theme.of(context).textTheme.headline5,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                                 //  textAlign: TextAlign.center,
                               ),
                             )),
@@ -81,7 +82,8 @@ class CampaignLoginScreen extends StatelessWidget {
                               padding: const EdgeInsets.only(top: 7.0),
                               child: Text(
                                 AppLocalizations.of(context).password,
-                                style: Theme.of(context).textTheme.headline5,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                             )),
                         model.isPasswordTextVisible == true
@@ -148,17 +150,17 @@ class CampaignLoginScreen extends StatelessWidget {
                         visible: model.hasErrorMessage,
                         child: Text(model.errorMessage,
                             style: model.isLogging && model.busy
-                                ? Theme.of(context).textTheme.bodyText2
+                                ? Theme.of(context).textTheme.bodyMedium
                                 : Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium
                                     .copyWith(color: Colors.yellow))),
                     Visibility(
                         visible: errorMessage != null &&
                             errorMessage != '' &&
                             !model.hasErrorMessage,
                         child: Text(errorMessage ?? '',
-                            style: Theme.of(context).textTheme.bodyText2)),
+                            style: Theme.of(context).textTheme.bodyMedium)),
                     UIHelper.verticalSpaceSmall,
                     // Button row
                     Row(
@@ -173,7 +175,7 @@ class CampaignLoginScreen extends StatelessWidget {
                         //       child: Text('Delete Db',
                         //           style: Theme.of(context)
                         //               .textTheme
-                        //               .headline4),
+                        //               .headlineMedium),
                         //       onPressed: () {
                         //         model.deleteDb();
                         //       },
@@ -188,7 +190,7 @@ class CampaignLoginScreen extends StatelessWidget {
                             //   elevation: 5,
                             //   focusElevation: 5,
                             //   child: Text(AppLocalizations.of(context).register,
-                            //       style: Theme.of(context).textTheme.headline4),
+                            //       style: Theme.of(context).textTheme.headlineMedium),
                             //   onPressed: () {
                             //     Navigator.of(context)
                             //         .pushNamed('/campaignRegisterAccount');
@@ -201,7 +203,9 @@ class CampaignLoginScreen extends StatelessWidget {
                                 elevation: 5,
                               ),
                               child: Text(AppLocalizations.of(context).register,
-                                  style: Theme.of(context).textTheme.headline4),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium),
                               onPressed: () {
                                 Navigator.of(context)
                                     .pushNamed('/campaignRegisterAccount');
@@ -224,12 +228,12 @@ class CampaignLoginScreen extends StatelessWidget {
                           //           child: Text(
                           //             (AppLocalizations.of(context).login),
                           //             style:
-                          //                 Theme.of(context).textTheme.headline4,
+                          //                 Theme.of(context).textTheme.headlineMedium,
                           //           ))
                           //       : Text(
                           //           (AppLocalizations.of(context).login),
                           //           style:
-                          //               Theme.of(context).textTheme.headline4,
+                          //               Theme.of(context).textTheme.headlineMedium,
                           //         ),
                           //   onPressed: () {
                           //     model.checkCredentials();
@@ -251,13 +255,15 @@ class CampaignLoginScreen extends StatelessWidget {
                                     highlightColor: globals.grey,
                                     child: Text(
                                       (AppLocalizations.of(context).login),
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium,
                                     ))
                                 : Text(
                                     (AppLocalizations.of(context).login),
-                                    style:
-                                        Theme.of(context).textTheme.headline4,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium,
                                   ),
                             onPressed: () {
                               model.checkCredentials();

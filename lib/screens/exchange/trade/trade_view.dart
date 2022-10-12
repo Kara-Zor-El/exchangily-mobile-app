@@ -66,7 +66,7 @@ class TradeView extends StatelessWidget {
                     ),
                     title: Text(
                       model.updateTickerName(pairPriceByRoute.symbol),
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     centerTitle: true,
                     automaticallyImplyLeading: false),
@@ -194,7 +194,7 @@ class TradeView extends StatelessWidget {
                                                     .orderBook,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -205,7 +205,7 @@ class TradeView extends StatelessWidget {
                                                     .marketTrades,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -216,7 +216,7 @@ class TradeView extends StatelessWidget {
                                                     .myOrders,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -227,7 +227,7 @@ class TradeView extends StatelessWidget {
                                                     .assets,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -374,7 +374,7 @@ class TradeView extends StatelessWidget {
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.all(0),
                                 backgroundColor: sellPrice,
-                                shape: StadiumBorder(
+                                shape: const StadiumBorder(
                                     side:
                                         BorderSide(color: sellPrice, width: 1)),
                               ),

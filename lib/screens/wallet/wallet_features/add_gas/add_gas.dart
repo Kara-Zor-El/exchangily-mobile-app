@@ -80,7 +80,7 @@ class AddGas extends StatelessWidget {
                                 color: Color(0XFF871fff), width: 1.0)),
                         hintText:
                             AppLocalizations.of(context).enterAmount + '(FAB)',
-                        hintStyle: Theme.of(context).textTheme.headline6,
+                        hintStyle: Theme.of(context).textTheme.titleLarge,
                       ),
                       controller: model.amountController,
                       style: TextStyle(
@@ -147,7 +147,7 @@ class AddGas extends StatelessWidget {
                       Text(AppLocalizations.of(context).advance,
                           style: Theme.of(context)
                               .textTheme
-                              .headline5
+                              .headlineSmall
                               .copyWith(fontWeight: FontWeight.w300)),
                       Switch(
                         value: model.isAdvance,
@@ -171,7 +171,7 @@ class AddGas extends StatelessWidget {
                                     AppLocalizations.of(context).gasPrice,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         .copyWith(fontWeight: FontWeight.w300)),
                               ),
                               Expanded(
@@ -197,12 +197,12 @@ class AddGas extends StatelessWidget {
                                           hintText: '0.00000',
                                           hintStyle: Theme.of(context)
                                               .textTheme
-                                              .headline5
+                                              .headlineSmall
                                               .copyWith(
                                                   fontWeight: FontWeight.w300)),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5
+                                          .headlineSmall
                                           .copyWith(
                                               fontWeight: FontWeight.w300)))
                             ],
@@ -217,7 +217,7 @@ class AddGas extends StatelessWidget {
                                     AppLocalizations.of(context).gasLimit,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         .copyWith(fontWeight: FontWeight.w300),
                                   )),
                               Expanded(
@@ -243,12 +243,12 @@ class AddGas extends StatelessWidget {
                                           hintText: '0.00000',
                                           hintStyle: Theme.of(context)
                                               .textTheme
-                                              .headline5
+                                              .headlineSmall
                                               .copyWith(
                                                   fontWeight: FontWeight.w300)),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5
+                                          .headlineSmall
                                           .copyWith(
                                               fontWeight: FontWeight.w300)))
                             ],
@@ -292,7 +292,7 @@ class AddGas extends StatelessWidget {
                             },
                             child: Text(
                               AppLocalizations.of(context).confirm,
-                              style: Theme.of(context).textTheme.button,
+                              style: Theme.of(context).textTheme.labelLarge,
                             ),
                           ),
                         ),

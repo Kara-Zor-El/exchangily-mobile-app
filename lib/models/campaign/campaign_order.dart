@@ -1,16 +1,16 @@
 class CampaignOrder {
-  String _orderId;
+  // String _orderId;
   String _memberId;
-  String _orderNumber;
+  // String _orderNumber;
   String _walletAdd; // Wallet EXG address
-  String _status;
+  // String _status;
   String _txId;
   double _quantity;
   String _paymentType;
-  String _note;
-  String _officialNote;
-  bool _active;
-  String _createdTime;
+  // String _note;
+  // String _officialNote;
+  // bool _active;
+  // String _createdTime;
   double _price;
   double _payableAmount;
 

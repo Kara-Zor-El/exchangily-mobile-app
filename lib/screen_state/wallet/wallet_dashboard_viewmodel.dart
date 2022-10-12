@@ -705,8 +705,11 @@ class WalletDashboardViewModel extends BaseViewModel {
                     child: Center(
                         child: Text(
                       AppLocalizations.of(context).appUpdateNotice,
-                      style: Theme.of(context).textTheme.headline4.copyWith(
-                          color: primaryColor, fontWeight: FontWeight.w500),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium
+                          .copyWith(
+                              color: primaryColor, fontWeight: FontWeight.w500),
                     )),
                   ),
                   content: Container(
@@ -732,7 +735,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                 ),
                 titleTextStyle: Theme.of(context)
                     .textTheme
-                    .headline4
+                    .headlineMedium
                     .copyWith(fontWeight: FontWeight.bold),
                 contentTextStyle: const TextStyle(color: grey),
                 content: Container(
@@ -753,7 +756,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                             });
                           },
                           child: Text(AppLocalizations.of(context).updateNow,
-                              style: Theme.of(context).textTheme.headline5),
+                              style: Theme.of(context).textTheme.headlineSmall),
                         ),
                       ]),
                 ));
@@ -893,7 +896,6 @@ class WalletDashboardViewModel extends BaseViewModel {
           log.w("tempAnnounceData(from cache): ");
           // List tempAnnounceData2 = json.decode(json.encode(tempAnnounceData));
           // log.i(tempAnnounceData2);
-
         }
 
         // prefs.setString('announceData', tempAnnounceData.toString());
@@ -918,7 +920,7 @@ class WalletDashboardViewModel extends BaseViewModel {
         if (tempAnnounceData.isNotEmpty) {
           tempAnnounceData.asMap().entries.map((announ) {
             int idx = announ.key;
-            var val = announ.value;
+            // var val = announ.value;
             // tempAnnounceData[idx]['isRead']=false;
             // var tempString = val.toString();
             // tempString = tempString.substring(0, tempString.length - 1) + 'isRead:false';
@@ -1106,7 +1108,8 @@ class WalletDashboardViewModel extends BaseViewModel {
                           titlePadding: const EdgeInsets.symmetric(vertical: 0),
                           actionsPadding: const EdgeInsets.all(0),
                           elevation: 5,
-                          titleTextStyle: Theme.of(context).textTheme.headline4,
+                          titleTextStyle:
+                              Theme.of(context).textTheme.headlineMedium,
                           contentTextStyle: const TextStyle(color: grey),
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 10),
@@ -1126,7 +1129,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                                 res['_body']['question'].toString(),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1
+                                    .bodyLarge
                                     .copyWith(
                                         color: red,
                                         fontWeight: FontWeight.bold),
@@ -1459,9 +1462,6 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   buildNewWalletObject(
       TokenModel newToken, WalletBalance newTokenWalletBalance) async {
-    String newCoinAddress = '';
-
-    //newCoinAddress = assignNewTokenAddress(newToken);
     double marketPrice = newTokenWalletBalance.usdValue.usd ?? 0.0;
     double availableBal = newTokenWalletBalance.balance ?? 0.0;
     double lockedBal = newTokenWalletBalance.lockBalance ?? 0.0;
@@ -1495,8 +1495,9 @@ class WalletDashboardViewModel extends BaseViewModel {
         walletBalancesBody: finalWbb,
       );
       // store in single core database
-      if (finalWbb.isNotEmpty)
+      if (finalWbb.isNotEmpty) {
         await coreWalletDatabaseService.insert(walletCoreModel);
+      }
     } else if (walletBalancesBodyFromDB != null) {
       finalWbb = walletBalancesBodyFromDB['walletBalancesBody'];
     }
@@ -1508,16 +1509,18 @@ class WalletDashboardViewModel extends BaseViewModel {
     }
     walletBalancesApiRes =
         await apiService.getWalletBalance(jsonDecode(finalWbb));
-    if (walletBalancesApiRes != null)
+    if (walletBalancesApiRes != null) {
       log.w('walletBalances LENGTH ${walletBalancesApiRes.length ?? 0}');
+    }
     if (isProduction && coinsToHideList.isNotEmpty) {
       for (var coinToHideTicker in coinsToHideList) {
         walletBalancesApiRes
             .removeWhere((element) => element.coin == coinToHideTicker);
       }
     }
-    if (walletBalancesApiRes != null)
+    if (walletBalancesApiRes != null) {
       log.i('walletBalances LENGTH ${walletBalancesApiRes.length ?? 0}');
+    }
     wallets = walletBalancesApiRes;
     walletsCopy = wallets;
 

@@ -12,13 +12,13 @@ class MarketOverviewBlock extends StatelessWidget {
     return Container(
         child: Column(
       children: <Widget>[
-        Text(pair, style: Theme.of(context).textTheme.headline5),
+        Text(pair, style: Theme.of(context).textTheme.headlineSmall),
         UIHelper.horizontalSpaceSmall,
-        Text(price.toStringAsFixed(2),
-            style: Theme.of(context)
-                .textTheme
-                .headline4
-                .copyWith(color: globals.primaryColor,fontWeight: FontWeight.bold),),
+        Text(
+          price.toStringAsFixed(2),
+          style: Theme.of(context).textTheme.headlineMedium.copyWith(
+              color: globals.primaryColor, fontWeight: FontWeight.bold),
+        ),
         Text(
             (((change != null) && (change >= 0)) ? "+" : "") +
                 change.toStringAsFixed(2) +

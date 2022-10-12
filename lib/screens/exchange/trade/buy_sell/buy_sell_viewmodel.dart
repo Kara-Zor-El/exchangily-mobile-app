@@ -457,8 +457,8 @@ class BuySellViewModel extends StreamViewModel with ReactiveServiceMixin {
 /* ---------------------------------------------------
             To Big Int
 --------------------------------------------------- */
-  toBitInt(num) {
-    var numString = num.toString();
+  toBitInt(num value) {
+    var numString = value.toString();
     var numStringArray = numString.split('.');
     var zeroLength = 18;
     var val = '';
@@ -601,9 +601,9 @@ class BuySellViewModel extends StreamViewModel with ReactiveServiceMixin {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(AppLocalizations.of(context).orderCreatedSuccessfully,
-                    style: Theme.of(context).textTheme.headline5),
+                    style: Theme.of(context).textTheme.headlineSmall),
                 Text('txid:' + resKanban['transactionHash'],
-                    style: Theme.of(context).textTheme.headline6),
+                    style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             background: primaryColor,
@@ -684,7 +684,7 @@ class BuySellViewModel extends StreamViewModel with ReactiveServiceMixin {
           child: Text(AppLocalizations.of(context).insufficientGasBalance,
               style: Theme.of(context)
                   .textTheme
-                  .headline4
+                  .headlineMedium
                   .copyWith(fontWeight: FontWeight.w800)),
         ),
         background: sellPrice,

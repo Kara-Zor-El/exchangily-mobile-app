@@ -46,7 +46,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
         appBar: AppBar(
           centerTitle: true,
           title: Text(AppLocalizations.of(context).secureYourWallet,
-              style: Theme.of(context).textTheme.headline4),
+              style: Theme.of(context).textTheme.headlineMedium),
           backgroundColor: secondaryColor,
         ),
         body: Container(
@@ -62,7 +62,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                   children: <Widget>[
                     Text(
                       AppLocalizations.of(context).setPasswordConditions,
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left,
                     ),
                     UIHelper.verticalSpaceSmall,
@@ -90,7 +90,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                         child: Text(model.errorMessage,
                             style: Theme.of(context)
                                 .textTheme
-                                .headline5
+                                .headlineSmall
                                 .copyWith(color: red))),
                     UIHelper.verticalSpaceLarge,
                     UIHelper.verticalSpaceLarge,
@@ -105,7 +105,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                         .importingWallet
                                     : AppLocalizations.of(context)
                                         .creatingWallet,
-                                style: Theme.of(context).textTheme.button,
+                                style: Theme.of(context).textTheme.labelLarge,
                               ),
                             )
                           : _buildCreateNewWalletButton(model, context),
@@ -116,7 +116,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                       textAlign: TextAlign.left,
                       style: Theme.of(context)
                           .textTheme
-                          .headline5
+                          .headlineSmall
                           .copyWith(fontWeight: FontWeight.bold),
                     )
                   ],
@@ -170,8 +170,8 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
             ),
             labelText: AppLocalizations.of(context).enterPassword,
             prefixIcon: const Icon(Icons.lock_outline, color: Colors.white),
-            labelStyle: Theme.of(context).textTheme.headline5,
-            helperStyle: Theme.of(context).textTheme.headline5));
+            labelStyle: Theme.of(context).textTheme.headlineSmall,
+            helperStyle: Theme.of(context).textTheme.headlineSmall));
   }
 
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -218,8 +218,8 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
             ),
             labelText: AppLocalizations.of(context).confirmPassword,
             prefixIcon: const Icon(Icons.lock, color: Colors.white),
-            labelStyle: Theme.of(context).textTheme.headline5,
-            helperStyle: Theme.of(context).textTheme.headline5));
+            labelStyle: Theme.of(context).textTheme.headlineSmall,
+            helperStyle: Theme.of(context).textTheme.headlineSmall));
   }
 
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -249,7 +249,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
               : AppLocalizations.of(context).createWallet,
           style: Theme.of(context)
               .textTheme
-              .headline4
+              .headlineMedium
               .copyWith(fontWeight: FontWeight.w400),
         ),
       ),

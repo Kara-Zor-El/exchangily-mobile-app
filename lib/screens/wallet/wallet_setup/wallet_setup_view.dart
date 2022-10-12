@@ -59,7 +59,7 @@ class WalletSetupView extends StatelessWidget {
                         AppLocalizations.of(context).welcomeText,
                         style: Theme.of(context)
                             .textTheme
-                            .headline5
+                            .headlineSmall
                             .copyWith(fontWeight: FontWeight.normal),
                       )),
                 ],
@@ -75,13 +75,13 @@ class WalletSetupView extends StatelessWidget {
               model.isDeleting
                   ? Text(
                       AppLocalizations.of(context).deletingWallet,
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     )
                   : Container(),
               !model.isBusy && model.errorMessage.isNotEmpty
                   ? Text(
                       model.errorMessage,
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     )
                   : Container(),
               model.isHideIcon
@@ -99,14 +99,14 @@ class WalletSetupView extends StatelessWidget {
                           children: [
                             Text(
                               '${AppLocalizations.of(context).checkingExistingWallet}...',
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             model.isVerifying
                                 ? Text(
                                     AppLocalizations.of(context)
                                         .verifyingWallet,
                                     style:
-                                        Theme.of(context).textTheme.bodyText1,
+                                        Theme.of(context).textTheme.bodyLarge,
                                   )
                                 : Container()
                           ],
@@ -120,7 +120,7 @@ class WalletSetupView extends StatelessWidget {
                           child: Center(
                             child: Text(
                               '${AppLocalizations.of(context).restoringWallet}...',
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ),
                         )
@@ -161,7 +161,7 @@ class WalletSetupView extends StatelessWidget {
                                                   .unlock,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline4),
+                                                  .headlineMedium),
                                         ],
                                       ),
                                       onPressed: () {
@@ -198,7 +198,7 @@ class WalletSetupView extends StatelessWidget {
                                                     .createWallet,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .headline5
+                                                    .headlineSmall
                                                     .copyWith(
                                                         color: primaryColor)),
                                             onPressed: () {
@@ -228,7 +228,7 @@ class WalletSetupView extends StatelessWidget {
                                                 .importWallet,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline5
+                                                .headlineSmall
                                                 .copyWith(color: white),
                                           ),
                                           onPressed: () {

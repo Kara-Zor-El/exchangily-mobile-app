@@ -260,7 +260,7 @@ class _SmartContractState extends State<SmartContract> {
                   },
                   child: Text(
                     AppLocalizations.of(context).confirm,
-                    style: Theme.of(context).textTheme.button,
+                    style: Theme.of(context).textTheme.labelLarge,
                   ),
                 )
               ],

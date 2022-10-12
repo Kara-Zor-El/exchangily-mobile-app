@@ -62,7 +62,7 @@ class CampaignInstructionScreen extends StatelessWidget {
                                   Uri.parse(exchangilyAnnouncementUrl));
                             },
                           text: AppLocalizations.of(context).visitWebsite,
-                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                          style: Theme.of(context).textTheme.bodyLarge.copyWith(
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline,
                               ),
@@ -98,7 +98,7 @@ class CampaignInstructionScreen extends StatelessWidget {
                   //                       .checkingAccountDetails,
                   //                   style: Theme.of(context)
                   //                       .textTheme
-                  //                       .bodyText1
+                  //                       .bodyLarge
                   //                       .copyWith(
                   //                           color: globals.primaryColor))),
                   //         ),
@@ -159,7 +159,8 @@ class CampaignInstructionScreen extends StatelessWidget {
                                               Text(
                                                 AppLocalizations.of(context)
                                                     .announcements,
-                                                style: TextStyle(color: white),
+                                                style: const TextStyle(
+                                                    color: white),
                                               ),
                                               const Padding(
                                                 padding: EdgeInsets.only(
@@ -182,7 +183,7 @@ class CampaignInstructionScreen extends StatelessWidget {
                                         UIHelper.horizontalSpaceSmall,
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                              primary: primaryColor),
+                                              backgroundColor: primaryColor),
                                           child: Row(
                                             children: [
                                               Text(AppLocalizations.of(context)
@@ -350,7 +351,7 @@ class CampaignInstructionScreen extends StatelessWidget {
                                                           style: Theme.of(
                                                                   context)
                                                               .textTheme
-                                                              .headline3
+                                                              .displaySmall
                                                               .copyWith(
                                                                   fontWeight:
                                                                       FontWeight

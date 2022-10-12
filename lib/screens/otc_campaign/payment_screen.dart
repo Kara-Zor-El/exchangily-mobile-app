@@ -25,7 +25,7 @@ class CampaignPaymentScreen extends StatelessWidget {
         appBar: AppBar(
             centerTitle: true,
             title: Text(AppLocalizations.of(context).payment,
-                style: Theme.of(context).textTheme.headline3)),
+                style: Theme.of(context).textTheme.displaySmall)),
         // Scaffold body container
         body: SingleChildScrollView(
           child: Column(
@@ -67,10 +67,10 @@ class CampaignPaymentScreen extends StatelessWidget {
                                           // && model.amountDouble <= bal
                                           ? Theme.of(context)
                                               .textTheme
-                                              .headline5
+                                              .headlineSmall
                                           : Theme.of(context)
                                               .textTheme
-                                              .headline5
+                                              .headlineSmall
                                               .copyWith(color: globals.red),
                                       onChanged: (value) {
                                         model.checkAmount(value);
@@ -78,11 +78,14 @@ class CampaignPaymentScreen extends StatelessWidget {
                                       controller:
                                           model.sendAmountTextController,
                                       decoration: InputDecoration(
-                                          focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.zero,
-                                              borderSide: BorderSide(
-                                                  width: 1,
-                                                  color: globals.primaryColor)),
+                                          focusedBorder:
+                                              const OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.zero,
+                                                  borderSide: BorderSide(
+                                                      width: 1,
+                                                      color: globals
+                                                          .primaryColor)),
                                           enabledBorder:
                                               const OutlineInputBorder(
                                                   borderRadius:
@@ -100,7 +103,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                 //     globals.primaryColor,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .headline6,
+                                                    .titleLarge,
                                                 isDense: true,
                                                 value: model.selectedCurrency,
                                                 items: model.currencies
@@ -142,7 +145,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                               .amount,
                                           hintStyle: Theme.of(context)
                                               .textTheme
-                                              .headline6
+                                              .titleLarge
                                               .copyWith(color: globals.white54),
                                           border: const OutlineInputBorder(
                                               gapPadding: 1,
@@ -172,7 +175,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                             .paymentType,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline5,
+                                            .headlineSmall,
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -194,7 +197,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                               Text('USD',
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6),
+                                                      .titleLarge),
                                               Radio(
                                                   activeColor:
                                                       globals.primaryColor,
@@ -213,7 +216,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                               Text('USDT',
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6),
+                                                      .titleLarge),
                                               Radio(
                                                   focusColor: globals.white54,
                                                   activeColor:
@@ -274,7 +277,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                 .bankWireDetails,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline5,
+                                                .headlineSmall,
                                           ),
                                         ],
                                       ),
@@ -355,7 +358,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                             .receiveAddress,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline5,
+                                            .headlineSmall,
                                       ),
                                       UIHelper.verticalSpaceSmall,
                                       isProduction
@@ -363,7 +366,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                           : Text(model.testUsdtWalletAddress,
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .subtitle2),
+                                                  .titleSmall),
                                       UIHelper.verticalSpaceSmall,
                                       //Selected Wallet Balance row
                                       model.groupValue != '' &&
@@ -393,7 +396,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText1,
+                                                                .bodyLarge,
                                                           ),
                                                         )),
                                                     Expanded(
@@ -404,7 +407,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                             style: Theme.of(
                                                                     context)
                                                                 .textTheme
-                                                                .bodyText1,
+                                                                .bodyLarge,
                                                           ),
                                                         )),
                                                   ]),
@@ -420,8 +423,9 @@ class CampaignPaymentScreen extends StatelessWidget {
                             Visibility(
                                 visible: model.hasErrorMessage,
                                 child: Text(model.errorMessage,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2)),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium)),
                             UIHelper.verticalSpaceSmall,
                             // Button row container
                             Container(
@@ -445,7 +449,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                         //     AppLocalizations.of(context).cancel,
                                         //     style: Theme.of(context)
                                         //         .textTheme
-                                        //         .headline5,
+                                        //         .headlineSmall,
                                         //   ),
                                         //   onPressed: () {
                                         //     Navigator.of(context).pop();
@@ -467,7 +471,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                             AppLocalizations.of(context).cancel,
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .headline5,
+                                                .headlineSmall,
                                           ),
                                           onPressed: () {
                                             Navigator.of(context).pop();
@@ -487,7 +491,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                           //             .confirm,
                                           //         style: Theme.of(context)
                                           //             .textTheme
-                                          //             .headline5),
+                                          //             .headlineSmall),
                                           //     onPressed: () {})
                                           // Replaced deprecated RaisedButton with ElevatedButton
                                           ? ElevatedButton(
@@ -500,7 +504,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                       .confirm,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline5),
+                                                      .headlineSmall),
                                               onPressed: () {})
                                           // : RaisedButton(
                                           //     padding: const EdgeInsets.all(0),
@@ -509,7 +513,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                           //             .confirm,
                                           //         style: Theme.of(context)
                                           //             .textTheme
-                                          //             .headline5),
+                                          //             .headlineSmall),
                                           //     onPressed: () {
                                           //       //  model.getCampaignOrdeList();
                                           //       model.checkFields(context);
@@ -537,7 +541,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                       .confirm,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline5),
+                                                      .headlineSmall),
                                               onPressed: () {
                                                 model.checkFields(context);
                                               },
@@ -554,10 +558,9 @@ class CampaignPaymentScreen extends StatelessWidget {
 
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: globals.walletCardColor,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(5.0))),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -565,7 +568,8 @@ class CampaignPaymentScreen extends StatelessWidget {
                       Center(
                           child: Text(
                               AppLocalizations.of(context).orderInformation,
-                              style: Theme.of(context).textTheme.headline4)),
+                              style:
+                                  Theme.of(context).textTheme.headlineMedium)),
                       UIHelper.verticalSpaceSmall,
                       Container(
                         //  padding: EdgeInsets.all(5.0),
@@ -577,7 +581,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                               flex: 2,
                               child: Text(AppLocalizations.of(context).date,
                                   textAlign: TextAlign.start,
-                                  style: Theme.of(context).textTheme.bodyText1),
+                                  style: Theme.of(context).textTheme.bodyLarge),
                             ),
                             Expanded(
                                 flex: 2,
@@ -585,12 +589,12 @@ class CampaignPaymentScreen extends StatelessWidget {
                                     AppLocalizations.of(context).quantity,
                                     textAlign: TextAlign.start,
                                     style:
-                                        Theme.of(context).textTheme.bodyText1)),
+                                        Theme.of(context).textTheme.bodyLarge)),
                             Expanded(
                               flex: 1,
                               child: Text(AppLocalizations.of(context).status,
                                   textAlign: TextAlign.start,
-                                  style: Theme.of(context).textTheme.bodyText1),
+                                  style: Theme.of(context).textTheme.bodyLarge),
                             )
                           ],
                         ),
@@ -602,7 +606,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                               highlightColor: globals.white,
                               child: Text(
                                 AppLocalizations.of(context).loading,
-                                style: Theme.of(context).textTheme.bodyText2,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ))
                           : model.orderInfoList != null
                               ? SizedBox(
@@ -634,7 +638,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                         .dateCreated,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText1),
+                                                        .bodyLarge),
                                               ),
                                               UIHelper.horizontalSpaceSmall,
                                               Expanded(
@@ -646,7 +650,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                     textAlign: TextAlign.start,
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyText1),
+                                                        .bodyLarge),
                                               ),
                                               UIHelper.horizontalSpaceSmall,
                                               Expanded(
@@ -660,7 +664,7 @@ class CampaignPaymentScreen extends StatelessWidget {
                                                             TextAlign.start,
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .bodyText1),
+                                                            .bodyLarge),
                                                     const Icon(
                                                         Icons.info_outline,
                                                         size: 8,

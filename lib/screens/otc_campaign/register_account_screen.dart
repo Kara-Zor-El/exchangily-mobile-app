@@ -21,7 +21,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             AppLocalizations.of(context).register,
-            style: Theme.of(context).textTheme.headline3,
+            style: Theme.of(context).textTheme.displaySmall,
           ),
           centerTitle: true,
         ),
@@ -61,7 +61,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                                     labelText: AppLocalizations.of(context)
                                         .enterYourEmail,
                                     labelStyle:
-                                        Theme.of(context).textTheme.headline6),
+                                        Theme.of(context).textTheme.titleLarge),
                                 keyboardType: TextInputType.emailAddress,
                               ))
                         ],
@@ -93,7 +93,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                                             .enterPassword,
                                         labelStyle: Theme.of(context)
                                             .textTheme
-                                            .headline6),
+                                            .titleLarge),
                                     obscureText: false,
                                     keyboardType: TextInputType.visiblePassword,
                                   ))
@@ -119,7 +119,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                                             .enterPassword,
                                         labelStyle: Theme.of(context)
                                             .textTheme
-                                            .headline6),
+                                            .titleLarge),
                                     obscureText: true,
                                     keyboardType: TextInputType.visiblePassword,
                                   ))
@@ -143,7 +143,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                                             .confirmPassword,
                                         labelStyle: Theme.of(context)
                                             .textTheme
-                                            .headline6),
+                                            .titleLarge),
                                     obscureText: false,
                                     keyboardType: TextInputType.visiblePassword,
                                   ))
@@ -160,7 +160,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                                             .confirmPassword,
                                         labelStyle: Theme.of(context)
                                             .textTheme
-                                            .headline6),
+                                            .titleLarge),
                                     obscureText: true,
                                     keyboardType: TextInputType.visiblePassword,
                                   ))
@@ -192,7 +192,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                                     labelText: AppLocalizations.of(context)
                                         .pasteExgAddress,
                                     labelStyle:
-                                        Theme.of(context).textTheme.headline6),
+                                        Theme.of(context).textTheme.titleLarge),
                               ))
                         ],
                       ),
@@ -220,7 +220,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                                     labelText: AppLocalizations.of(context)
                                         .referralCode,
                                     labelStyle:
-                                        Theme.of(context).textTheme.headline6),
+                                        Theme.of(context).textTheme.titleLarge),
                               ))
                         ],
                       ),
@@ -238,7 +238,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                             ),
                             Text(' ${model.errorMessage}',
                                 textAlign: TextAlign.center,
-                                style: Theme.of(context).textTheme.bodyText2),
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ],
                         ),
                       ),
@@ -261,7 +261,7 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                               //           '?',
                               //       textAlign: TextAlign.center,
                               //       style:
-                              //           Theme.of(context).textTheme.headline4),
+                              //           Theme.of(context).textTheme.headlineMedium),
                               //   onPressed: () {
                               //     Navigator.of(context)
                               //         .pushNamed('/campaignLogin');
@@ -278,8 +278,9 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                                             .alreadyHaveAnAccount +
                                         '?',
                                     textAlign: TextAlign.center,
-                                    style:
-                                        Theme.of(context).textTheme.headline4),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium),
                                 onPressed: () {
                                   Navigator.of(context)
                                       .pushNamed('/campaignLogin');
@@ -304,12 +305,12 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                             //             (AppLocalizations.of(context).signUp),
                             //             style: Theme.of(context)
                             //                 .textTheme
-                            //                 .headline4,
+                            //                 .headlineMedium,
                             //           ))
                             //       : Text(
                             //           (AppLocalizations.of(context).signUp),
                             //           style:
-                            //               Theme.of(context).textTheme.headline4,
+                            //               Theme.of(context).textTheme.headlineMedium,
                             //         ),
                             //   onPressed: () {
                             //     model.checkInputValues();
@@ -333,12 +334,13 @@ class CampaignRegisterAccountScreen extends StatelessWidget {
                                         (AppLocalizations.of(context).signUp),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline4,
+                                            .headlineMedium,
                                       ))
                                   : Text(
                                       (AppLocalizations.of(context).signUp),
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium,
                                     ),
                               onPressed: () {
                                 model.checkInputValues();

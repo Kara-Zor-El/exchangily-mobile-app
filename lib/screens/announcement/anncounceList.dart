@@ -137,7 +137,7 @@ class AnnouncementList extends StatelessWidget {
                                                   ["title"],
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline3
+                                                  .displaySmall
                                                   .copyWith(
                                                       fontWeight:
                                                           FontWeight.bold)),
@@ -147,7 +147,7 @@ class AnnouncementList extends StatelessWidget {
                                                       ["dateCreated"]),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headline5),
+                                                  .headlineSmall),
                                         ],
                                       ),
                                     ),

@@ -91,7 +91,7 @@ class AddGasViewModel extends FutureViewModel {
         sumUtxos = sumUtxos + t.toDouble();
       });
     }
-    double amt = 0.0;
+    // double amt = 0.0;
     //for (var i = 0; i < sumUtxos; i + 0.05) {
     // totalAmount =
     //     // i +

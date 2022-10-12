@@ -101,7 +101,7 @@ class MyOrdersView extends StatelessWidget {
                                           .showAllPairOrders,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6),
+                                          .titleLarge),
                                   Transform.scale(
                                     scale: 0.75,
                                     child: Switch.adaptive(
@@ -140,25 +140,25 @@ class MyOrdersView extends StatelessWidget {
                                               .allOrders,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6),
+                                              .titleLarge),
                                       Text(
                                           AppLocalizations.of(context)
                                               .openOrders,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6),
+                                              .titleLarge),
                                       Text(
                                           AppLocalizations.of(context)
                                               .closedOrders,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6),
+                                              .titleLarge),
                                       Text(
                                           AppLocalizations.of(context)
                                               .cancelledOrders,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6),
+                                              .titleLarge),
                                     ],
                                     indicatorColor: Colors.white,
                                   ),
@@ -200,33 +200,33 @@ class MyOrdersView extends StatelessWidget {
       child: Row(children: <Widget>[
         // Expanded(
         //   flex: 1,
-        //   child: Text('#', style: Theme.of(context).textTheme.subtitle2),
+        //   child: Text('#', style: Theme.of(context).textTheme.titleSmall),
         // ),
         Expanded(
           flex: 1,
           child: Text(AppLocalizations.of(context).type,
-              style: Theme.of(context).textTheme.subtitle2),
+              style: Theme.of(context).textTheme.titleSmall),
         ),
         Expanded(
             flex: 2,
             child: Text(AppLocalizations.of(context).pair,
-                style: Theme.of(context).textTheme.subtitle2)),
+                style: Theme.of(context).textTheme.titleSmall)),
         Expanded(
             flex: 2,
             child: Text(AppLocalizations.of(context).price,
-                style: Theme.of(context).textTheme.subtitle2)),
+                style: Theme.of(context).textTheme.titleSmall)),
         Expanded(
             flex: 2,
             child: Text(AppLocalizations.of(context).quantity,
-                style: Theme.of(context).textTheme.subtitle2)),
+                style: Theme.of(context).textTheme.titleSmall)),
         Expanded(
             flex: 2,
             child: Text(AppLocalizations.of(context).filledAmount,
-                style: Theme.of(context).textTheme.subtitle2)),
+                style: Theme.of(context).textTheme.titleSmall)),
         Expanded(
           flex: 1,
           child: Text(AppLocalizations.of(context).cancel,
-              style: Theme.of(context).textTheme.subtitle2),
+              style: Theme.of(context).textTheme.titleSmall),
         ),
       ]),
     );
@@ -279,33 +279,33 @@ class MyOrderDetailsView extends ViewModelWidget<MyOrdersViewModel> {
                 // Expanded(
                 //     flex: 1,
                 //     child: Text('${index + 1}',
-                //         style: Theme.of(context).textTheme.headline6)),
+                //         style: Theme.of(context).textTheme.titleLarge)),
                 Expanded(
                     flex: 1,
                     child: Text(
                         order.bidOrAsk
                             ? AppLocalizations.of(context).buy
                             : AppLocalizations.of(context).sell,
-                        style: Theme.of(context).textTheme.headline6.copyWith(
+                        style: Theme.of(context).textTheme.titleLarge.copyWith(
                               color: Color(
                                   (order.bidOrAsk) ? 0xFF0da88b : 0xFFe2103c),
                             ))),
                 Expanded(
                     flex: 2,
                     child: Text(order.pairName.toString(),
-                        style: Theme.of(context).textTheme.headline6)),
+                        style: Theme.of(context).textTheme.titleLarge)),
                 Expanded(
                     flex: 2,
                     child: Text(
                         order.price
                             .toStringAsFixed(model.decimalConfig.priceDecimal),
-                        style: Theme.of(context).textTheme.headline6)),
+                        style: Theme.of(context).textTheme.titleLarge)),
                 Expanded(
                     flex: 2,
                     child: Text(
                         order.totalOrderQuantity
                             .toStringAsFixed(model.decimalConfig.qtyDecimal),
-                        style: Theme.of(context).textTheme.headline6)),
+                        style: Theme.of(context).textTheme.titleLarge)),
                 Expanded(
                     flex: 2,
                     child: Column(
@@ -313,12 +313,12 @@ class MyOrderDetailsView extends ViewModelWidget<MyOrdersViewModel> {
                         Text(
                             order.filledQuantity.toStringAsFixed(
                                 model.decimalConfig.qtyDecimal),
-                            style: Theme.of(context).textTheme.headline6),
+                            style: Theme.of(context).textTheme.titleLarge),
                         Text(
                             order.filledPercentage.isNaN
                                 ? '0.0%'
                                 : '${order.filledPercentage.toStringAsFixed(2)}%',
-                            style: Theme.of(context).textTheme.subtitle2)
+                            style: Theme.of(context).textTheme.titleSmall)
                       ],
                     )),
                 Expanded(

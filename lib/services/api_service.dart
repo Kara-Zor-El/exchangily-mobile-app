@@ -939,7 +939,9 @@ class ApiService {
     try {
       var response = await client.get(Uri.parse(url));
       json = jsonDecode(response.body);
-    } catch (e) {}
+    } catch (e) {
+      log.e(e);
+    }
     return json;
   }
 

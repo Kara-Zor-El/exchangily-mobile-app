@@ -67,7 +67,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
                     child: Text(
                         AppLocalizations.of(context).pleaseChooseTheLanguage,
                         textAlign: TextAlign.start,
-                        style: Theme.of(context).textTheme.headline5),
+                        style: Theme.of(context).textTheme.headlineSmall),
                   )
                 ],
               ),
@@ -80,7 +80,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
                     child: Center(
                       child: Text(
                         AppLocalizations.of(context).loading + '...',
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                   )
@@ -94,7 +94,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
                           // RaisedButton(
                           //   child: Text(
                           //     'English',
-                          //     style: Theme.of(context).textTheme.headline4,
+                          //     style: Theme.of(context).textTheme.headlineMedium,
                           //   ),
                           //   onPressed: () {
                           //     model.setLangauge('en');
@@ -106,7 +106,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
                           ElevatedButton(
                             child: Text(
                               'English',
-                              style: Theme.of(context).textTheme.headline4,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                             onPressed: () {
                               model.setLangauge('en');
@@ -121,7 +121,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
                           //           color: globals.primaryColor, width: 2)),
                           //   color: globals.secondaryColor,
                           //   child: Text('中文',
-                          //       style: Theme.of(context).textTheme.headline4),
+                          //       style: Theme.of(context).textTheme.headlineMedium),
                           //   onPressed: () {
                           //     model.setLangauge('zh');
                           //     AppLocalizations.load(const Locale('zh', 'ZH'));
@@ -136,7 +136,8 @@ class ChooseWalletLanguageView extends StatelessWidget {
                                         color: globals.primaryColor,
                                         width: 2))),
                             child: Text('中文',
-                                style: Theme.of(context).textTheme.headline4),
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium),
                             onPressed: () {
                               model.setLangauge('zh');
                               AppLocalizations.load(const Locale('zh', 'ZH'));

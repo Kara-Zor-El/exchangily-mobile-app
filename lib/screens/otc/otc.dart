@@ -61,12 +61,12 @@ class OtcScreen extends StatelessWidget {
                                     'Merchant:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
                                   ),
-                                  Divider(
+                                  const Divider(
                                     color: globals.primaryColor,
                                     thickness: 2,
                                   ),
@@ -74,7 +74,7 @@ class OtcScreen extends StatelessWidget {
                                     'Quantity:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
@@ -83,7 +83,7 @@ class OtcScreen extends StatelessWidget {
                                     'Price:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
@@ -92,7 +92,7 @@ class OtcScreen extends StatelessWidget {
                                     'Limits:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
@@ -101,7 +101,7 @@ class OtcScreen extends StatelessWidget {
                                     'Payment:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
@@ -122,31 +122,33 @@ class OtcScreen extends StatelessWidget {
                                       'Paul Liu',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline5
+                                          .headlineSmall
                                           .copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                  Divider(
+                                  const Divider(
                                     color: globals.primaryColor,
                                     thickness: 2,
                                   ),
                                   Text(
                                     '711241.124',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
                                   ),
                                   Text(
                                     '14.2145',
-                                    style:
-                                        Theme.of(context).textTheme.headline5,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall,
                                   ),
                                   // Limit amount
                                   Text(
                                     '21000--3212154',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline5
+                                        .headlineSmall
                                         .copyWith(color: globals.grey),
                                   ),
                                   // Payment icons
@@ -224,10 +226,10 @@ class OtcScreen extends StatelessWidget {
                                                           AppLocalizations.of(
                                                                   context)
                                                               .buy,
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .headline5),
+                                                          style: Theme.of(
+                                                                  context)
+                                                              .textTheme
+                                                              .headlineSmall),
                                                       onPressed: () {}),
                                                 )
                                               : Center(
@@ -242,7 +244,7 @@ class OtcScreen extends StatelessWidget {
                                                       'Buy',
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .headline4,
+                                                          .headlineMedium,
                                                     ),
                                                     onPressed: () {},
                                                   ),

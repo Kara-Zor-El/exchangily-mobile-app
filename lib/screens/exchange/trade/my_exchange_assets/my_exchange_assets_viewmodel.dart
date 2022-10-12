@@ -35,7 +35,7 @@ class MyExchangeAssetsViewModel extends ReactiveViewModel {
   List<ExchangeBalanceModel> exchangeBalances = [];
   var storageService = locator<LocalStorageService>();
   final coinService = locator<CoinService>();
-  final _dialogService = locator<DialogService>();
+  // final _dialogService = locator<DialogService>();
   final _exchangeBalanceService = locator<ExchangeBalanceService>();
 
   String logoUrl = walletCoinsLogoUrl;

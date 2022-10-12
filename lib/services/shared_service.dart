@@ -357,7 +357,7 @@ class SharedService {
   //           backgroundColor: globals.walletCardColor.withOpacity(0.85),
   //           titleTextStyle: Theme.of(context)
   //               .textTheme
-  //               .headline5
+  //               .headlineSmall
   //               .copyWith(fontWeight: FontWeight.bold),
   //           contentTextStyle: TextStyle(color: globals.grey),
   //           content: Text(
@@ -404,7 +404,7 @@ class SharedService {
                 backgroundColor: globals.walletCardColor.withOpacity(0.85),
                 titleTextStyle: Theme.of(context)
                     .textTheme
-                    .headline5
+                    .headlineSmall
                     .copyWith(fontWeight: FontWeight.bold),
                 contentTextStyle: const TextStyle(color: globals.grey),
                 content: Text(
@@ -467,7 +467,7 @@ class SharedService {
                     padding: const EdgeInsets.all(10),
                     child: Text(title),
                   ),
-            titleTextStyle: Theme.of(context).textTheme.headline5,
+            titleTextStyle: Theme.of(context).textTheme.headlineSmall,
             contentTextStyle: const TextStyle(color: globals.grey),
             contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             content: Visibility(
@@ -487,7 +487,7 @@ class SharedService {
                           // add here cupertino widget to check in these small widgets first then the entire app
                           message,
                           textAlign: TextAlign.left,
-                          style: Theme.of(context).textTheme.headline5),
+                          style: Theme.of(context).textTheme.headlineSmall),
                     ),
                     // Do not show checkbox and text does not require to show on all dialogs
                     Visibility(
@@ -510,7 +510,7 @@ class SharedService {
                               }),
                           Text(
                             AppLocalizations.of(context).doNotShowTheseWarnings,
-                            style: Theme.of(context).textTheme.headline6,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ],
                       ),
@@ -526,7 +526,7 @@ class SharedService {
                   ?
                   //  RaisedButton(
                   //     child:
-                  //         Text(AppLocalizations.of(context).taphereToCopyTxId,style:Theme.of(context).textTheme.headline5),
+                  //         Text(AppLocalizations.of(context).taphereToCopyTxId,style:Theme.of(context).textTheme.headlineSmall),
                   //     onPressed: () {
                   //       Clipboard.setData(new ClipboardData(text: message));
                   //     })
@@ -535,7 +535,7 @@ class SharedService {
                         text: TextSpan(
                             text:
                                 AppLocalizations.of(context).taphereToCopyTxId,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 12,
                                 decoration: TextDecoration.underline,
                                 color: globals.primaryColor),
@@ -664,8 +664,8 @@ class SharedService {
   //     Color leftBarColor, BuildContext context) {
   //   Flushbar(
   //     backgroundColor: globals.primaryColor,
-  //     titleText: Text(title, style: Theme.of(context).textTheme.headline5),
-  //     messageText: Text(message, style: Theme.of(context).textTheme.headline6),
+  //     titleText: Text(title, style: Theme.of(context).textTheme.headlineSmall),
+  //     messageText: Text(message, style: Theme.of(context).textTheme.titleLarge),
   //     // icon: Icon(
   //     //   iconData,
   //     //   size: 24,

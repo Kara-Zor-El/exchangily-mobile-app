@@ -666,7 +666,7 @@ class MoveToWalletScreen extends StatelessWidget {
                                             color: primaryColor),
                                         recognizer: TapGestureRecognizer()
                                           ..onTap = () {
-                                            model.copyAndShowNotificatio(
+                                            model.copyAndShowNotification(
                                                 model.message);
                                           }),
                                   ),

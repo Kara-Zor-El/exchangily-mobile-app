@@ -182,8 +182,9 @@ class SettingsViewmodel extends BaseViewModel {
     setBusy(true);
     if (selectedLanguage == '' || selectedLanguage == null) {
       String key;
-      if (userSettings.language == null || userSettings.language.isEmpty)
+      if (userSettings.language == null || userSettings.language.isEmpty) {
         key = 'en';
+      }
       // await getSetLocalStorageDataByKey('lang');
       // log.w('key in init $key');
 
@@ -216,7 +217,6 @@ class SettingsViewmodel extends BaseViewModel {
     await coinService
         .getCoinTypeByTickerName('USDT')
         .then((value) => baseCoin = value);
-    var x = baseCoin.toRadixString(16);
     var t = HEX.encode([baseCoin]);
     log.e('basecoin $baseCoin --  Hex == $t');
   }
