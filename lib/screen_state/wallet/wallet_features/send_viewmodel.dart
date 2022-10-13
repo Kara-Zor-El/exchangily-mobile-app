@@ -989,21 +989,20 @@ class SendViewModel extends BaseViewModel {
       log.i("Barcode: try");
       String barcode = '';
       storageService.isCameraOpen = true;
-      var result = await MajaScan.startScan(
+      barcode = await MajaScan.startScan(
         title: "Scan Barcode",
         flashlightEnable: true,
         barColor: primaryColor,
         qRCornerColor: primaryColor,
         qRScannerColor: primaryColor,
-        titleColor: primaryColor,
+        titleColor: Colors.white,
         scanAreaScale: 0.8,
       );
-
-      barcode = result;
-      log.i("Barcode Res: $result ");
+      log.i("Barcode Res: $barcode ");
 
       receiverWalletAddressTextController.text = barcode;
       setBusy(false);
+      storageService.isCameraOpen = false;
     } on PlatformException catch (e) {
       log.i("Barcode PlatformException : ");
       log.i(e.toString());

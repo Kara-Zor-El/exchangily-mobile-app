@@ -311,14 +311,16 @@ class LightningRemitViewmodel extends FutureViewModel {
       String barcode = '';
       storageService.isCameraOpen = true;
       barcode = await MajaScan.startScan(
-        title: 'Scan QR Code',
+        title: 'Scan Barcode',
         barColor: primaryColor,
         qRCornerColor: primaryColor,
         qRScannerColor: primaryColor,
+        titleColor: Colors.white,
         flashlightEnable: true,
       );
       addressController.text = barcode;
       setBusy(false);
+      storageService.isCameraOpen = false;
     } on PlatformException catch (e) {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(true);

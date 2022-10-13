@@ -188,8 +188,6 @@ class LightningRemitView extends StatelessWidget {
                                         ),
                                         onPressed: () {
                                           model.scanBarcode();
-                                          FocusScope.of(context)
-                                              .requestFocus(FocusNode());
                                         }),
                                     suffixIcon: IconButton(
                                         padding: EdgeInsets.zero,
