@@ -74,7 +74,7 @@ class MyApp extends StatelessWidget {
     return StreamProvider(
       create: (BuildContext context) =>
           ConnectivityService().connectionStatusController.stream,
-      initialData: ConnectivityStatus.Cellular,
+      initialData: ConnectivityStatus.Offline,
       child: LifeCycleManager(
         child: OverlaySupport(
           child: MaterialApp(
