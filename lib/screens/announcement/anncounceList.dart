@@ -31,12 +31,23 @@ class AnnouncementList extends StatelessWidget {
         },
         builder: (context, model, child) => Scaffold(
             appBar: AppBar(
-              title: Text(
-                getlangGlobal() == "en" ? 'Announcements' : "公告列表",
-                style: const TextStyle(fontSize: 14),
-              ),
-              centerTitle: true,
-            ),
+                title: Text(
+                  getlangGlobal() == "en" ? 'Announcements' : "公告列表",
+                  style: const TextStyle(fontSize: 14),
+                ),
+                centerTitle: true,
+                // add read all button on the right
+                actions: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.mark_email_read),
+                    onPressed: () async {
+                      for (var i = 0; i < model.announceList.length; i++) {
+                        model.updateReadStatus(i);
+                      }
+                      model.notifyListeners();
+                    },
+                  )
+                ]),
             body: model.busy
                 ? const LoadingGif()
                 : Container(

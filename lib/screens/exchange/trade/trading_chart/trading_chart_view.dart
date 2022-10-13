@@ -69,32 +69,23 @@ class _LoadHTMLFileToWEbViewState extends State<LoadHTMLFileToWEbView> {
               child: Center(
                 child: ListView.builder(
                     itemCount: model.intervalMap.length,
-                    itemExtent: 65,
+                    itemExtent: 80,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
                       String key = model.intervalMap.keys.elementAt(index);
-                      // return FlatButton(
-                      //   padding: const EdgeInsets.symmetric(horizontal: 0),
-                      //   textColor:
-                      //       model.intervalMap[key] == model.tradingChartInterval
-                      //           ? primaryColor
-                      //           : white,
-                      //   child: Text(key, style: model.fontTheme),
-                      //   onPressed: () =>
-                      //       model.updateChartInterval(model.intervalMap[key]),
-                      // );
                       // Replaced deprecated FlatButton with TextButton
                       return TextButton(
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 0),
-                          backgroundColor: model.intervalMap[key] ==
-                                  model.tradingChartInterval
-                              ? primaryColor
-                              : white,
-                        ),
-                        child: Text(key, style: model.fontTheme),
+                        child: Text(key,
+                            style: TextStyle(
+                                color: model.intervalMap[key] ==
+                                        model.tradingChartInterval
+                                    ? primaryColor
+                                    : white)),
                         onPressed: () =>
                             model.updateChartInterval(model.intervalMap[key]),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                        ),
                       );
                     }),
               )),

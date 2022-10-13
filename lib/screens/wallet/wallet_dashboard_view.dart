@@ -520,7 +520,7 @@ Widget amountAndGas(WalletDashboardViewModel model, BuildContext context) {
         ),
       ),
       Container(
-        margin: const EdgeInsets.only(left: 8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           child: Container(
@@ -641,7 +641,6 @@ Widget coinList(WalletDashboardViewModel model, BuildContext context) {
             //  physics: ClampingScrollPhysics(),
             children: [
               // All coins tab
-
               model.isBusy || model.busy(model.isHideSmallAssetsButton)
                   ? const ShimmerLayout(
                       layoutType: 'walletDashboard',
