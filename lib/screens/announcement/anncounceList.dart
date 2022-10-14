@@ -33,7 +33,7 @@ class AnnouncementList extends StatelessWidget {
             appBar: AppBar(
                 title: Text(
                   getlangGlobal() == "en" ? 'Announcements' : "公告列表",
-                  style: const TextStyle(fontSize: 14),
+                  style: const TextStyle(fontSize: 16),
                 ),
                 centerTitle: true,
                 // add read all button on the right
@@ -44,7 +44,7 @@ class AnnouncementList extends StatelessWidget {
                       for (var i = 0; i < model.announceList.length; i++) {
                         model.updateReadStatus(i);
                       }
-                      model.notifyListeners();
+                      // model.notifyListeners();
                     },
                   )
                 ]),

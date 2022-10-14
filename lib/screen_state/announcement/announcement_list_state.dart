@@ -44,7 +44,7 @@ class AnnouncementListScreenState extends BaseState {
     for (var element in announceList) {
       element["isRead"] == false ? readedNum++ : readedNum = readedNum;
       jsonData.add(jsonEncode(element));
-      debugPrint('jsonData $jsonData');
+      // debugPrint('jsonData $jsonData');
     }
     setunReadAnnouncement(readedNum);
     //debugPrint("check status: " + prefs.containsKey('announceData').toString());

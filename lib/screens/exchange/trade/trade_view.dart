@@ -345,6 +345,10 @@ class TradeView extends StatelessWidget {
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 0, 2.0, 0),
                                     backgroundColor: buyPrice,
+                                    // radius of button
+                                    shape: const StadiumBorder(
+                                        side: BorderSide(
+                                            color: buyPrice, width: 1)),
                                   ),
                                   onPressed: () {
                                     if (model.currentPairPrice != null &&
