@@ -37,9 +37,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-      android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity"
-    />
+        <activity android:name="com.djgeo.majascan.g_scanner.QrCodeScannerActivity"/>
+    <!--     <activity -->
+    <!--   android:name="com.apptreesoftware.barcodescan.BarcodeScannerActivity" -->
+    <!-- /> -->
         <meta-data android:name="flutterEmbedding" android:value="2" />
     </application>
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />

@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
     return StreamProvider(
       create: (BuildContext context) =>
           ConnectivityService().connectionStatusController.stream,
-      initialData: ConnectivityStatus.Cellular,
+      initialData: ConnectivityStatus.Offline,
       child: LifeCycleManager(
         child: OverlaySupport(
           child: MaterialApp(
@@ -132,7 +132,6 @@ class MyApp extends StatelessWidget {
               unselectedWidgetColor: Colors.white,
               disabledColor: globals.grey.withAlpha(100),
               primaryColor: globals.primaryColor,
-              backgroundColor: globals.secondaryColor,
               cardColor: globals.walletCardColor,
               canvasColor: globals.secondaryColor,
               buttonTheme: const ButtonThemeData(
@@ -144,6 +143,7 @@ class MyApp extends StatelessWidget {
               fontFamily: 'Roboto',
               textTheme: const TextTheme(
                   button: TextStyle(fontSize: 14, color: globals.white),
+                  // displayLarge
                   headline1: TextStyle(
                       fontSize: 22,
                       color: globals.white,

@@ -83,7 +83,7 @@ class _MainNavState extends State<MainNav> {
                 label: AppLocalizations.of(context).event),
 
             BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.cog, size: iconSize),
+                icon: Icon(FontAwesomeIcons.gear, size: iconSize),
                 label: AppLocalizations.of(context).settings),
           ],
           onTap: navigateToPage,

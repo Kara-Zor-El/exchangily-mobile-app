@@ -44,12 +44,13 @@ class HtmlPage extends StatelessWidget {
             ),
             "var": Style(fontFamily: 'serif'),
           },
-          onLinkTap: (url) {
-            debugPrint("Opening $url...");
-          },
-          onImageTap: (src) {
-            debugPrint(src.toString());
-          },
+          // turned off for now
+          // onLinkTap: (url) {
+          //   debugPrint("Opening $url...");
+          // },
+          // onImageTap: (src) {
+          //   debugPrint(src.toString());
+          // },
           onImageError: (exception, stackTrace) {
             debugPrint(exception);
           },

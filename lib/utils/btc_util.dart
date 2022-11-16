@@ -50,7 +50,7 @@ class BtcUtils {
     log.w(url);
     var json;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       json = jsonDecode(response.body);
     } catch (e) {}
     return json;
@@ -64,7 +64,7 @@ class BtcUtils {
     if (txHex != '') {
       var data = {'rawtx': txHex};
       try {
-        var response = await client.post(url, body: data);
+        var response = await client.post(Uri.parse(url), body: data);
 
         var json = jsonDecode(response.body);
         if (json != null) {
@@ -86,7 +86,7 @@ class BtcUtils {
     Response response;
     var url = btcBaseUrl + 'gettransactionjson/' + txid;
     try {
-      response = await client.get(url);
+      response = await client.get(Uri.parse(url));
     } catch (e) {}
 
     return response;
@@ -96,7 +96,7 @@ class BtcUtils {
     var url = btcBaseUrl + 'getbalance/' + address;
     var btcBalance = 0.0;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       btcBalance = double.parse(response.body) / 1e8;
     } catch (e) {}
     return {'balance': btcBalance, 'lockbalance': 0.0};

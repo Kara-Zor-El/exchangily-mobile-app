@@ -16,6 +16,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:exchangilymobileapp/constants/colors.dart';
+import 'package:cross_file/cross_file.dart';
 import 'package:exchangilymobileapp/localizations.dart';
 import 'package:exchangilymobileapp/logger.dart';
 import 'package:exchangilymobileapp/models/wallet/wallet_model.dart';
@@ -64,7 +65,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
       key: scaffoldKey,
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).receive,
-            style: Theme.of(context).textTheme.headline3),
+            style: Theme.of(context).textTheme.displaySmall),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -129,11 +130,36 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
               )),
           Container(
             padding: const EdgeInsets.all(10.0),
-            child: RaisedButton(
+            // child: RaisedButton(
+            //     child: Text(AppLocalizations.of(context).saveAndShareQrCode,
+            //         style: Theme.of(context)
+            //             .textTheme
+            //             .headlineMedium
+            //             .copyWith(fontWeight: FontWeight.w400)),
+            //     onPressed: () {
+            //       String receiveFileName = 'qr-code.png';
+            //       getApplicationDocumentsDirectory().then((dir) {
+            //         String filePath = "${dir.path}/$receiveFileName";
+            //         File file = File(filePath);
+            //
+            //         Future.delayed(const Duration(milliseconds: 30), () {
+            //           _capturePng().then((byteData) {
+            //             file.writeAsBytes(byteData).then((onFile) {
+            //               Share.shareFiles([onFile.path],
+            //                   text: convertedToFabAddress == ''
+            //                       ? widget.walletInfo.address
+            //                       : convertedToFabAddress);
+            //             });
+            //           });
+            //         });
+            //       });
+            //     }),
+            // Replaced deprecated RaisedButton with ElevatedButton
+            child: ElevatedButton(
                 child: Text(AppLocalizations.of(context).saveAndShareQrCode,
                     style: Theme.of(context)
                         .textTheme
-                        .headline4
+                        .headlineMedium
                         .copyWith(fontWeight: FontWeight.w400)),
                 onPressed: () {
                   String receiveFileName = 'qr-code.png';
@@ -144,7 +170,13 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                     Future.delayed(const Duration(milliseconds: 30), () {
                       _capturePng().then((byteData) {
                         file.writeAsBytes(byteData).then((onFile) {
-                          Share.shareFiles([onFile.path],
+                          // use shareXFiles instead of shareFiles
+                          // turn onFiles.path list into list of XFile list
+                          List<XFile> xFileList = [];
+                          for (String path in [onFile.path]) {
+                            xFileList.add(XFile(path));
+                          }
+                          Share.shareXFiles(xFileList,
                               text: convertedToFabAddress == ''
                                   ? widget.walletInfo.address
                                   : convertedToFabAddress);
@@ -182,7 +214,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                   : convertedToFabAddress,
               style: Theme.of(context)
                   .textTheme
-                  .headline5
+                  .headlineSmall
                   .copyWith(fontWeight: FontWeight.w800)),
           SizedBox(
             width: 200,
@@ -212,7 +244,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                     AppLocalizations.of(context).copyAddress,
                     style: Theme.of(context)
                         .textTheme
-                        .headline5
+                        .headlineSmall
                         .copyWith(fontWeight: FontWeight.w400),
                   ),
                 ],

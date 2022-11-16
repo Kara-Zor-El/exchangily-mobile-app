@@ -25,7 +25,7 @@ class MyReferralView extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Text(AppLocalizations.of(context).memberDetails,
-              style: Theme.of(context).textTheme.headline4),
+              style: Theme.of(context).textTheme.headlineMedium),
         ),
         body: Container(
             //  margin: EdgeInsets.all(8.0),
@@ -54,13 +54,15 @@ class MyReferralView extends StatelessWidget {
                                 flex: 3,
                                 child: Text(
                                   i.toString(),
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
                                 )),
                             Expanded(
                                 flex: 7,
                                 child: Text(referralDetails[index].toString(),
-                                    style:
-                                        Theme.of(context).textTheme.headline5)),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineSmall)),
                           ],
                         ),
                       ),

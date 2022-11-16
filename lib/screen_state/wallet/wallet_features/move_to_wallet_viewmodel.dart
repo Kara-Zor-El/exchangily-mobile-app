@@ -539,7 +539,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                       AppLocalizations.of(context).withdraw,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText2
+                                          .bodyMedium
                                           .copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),
@@ -1039,7 +1039,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
     debugPrint(
         'Fab_util -- address $address getFabTokenBalanceForABI balance by address url -- $url -- body $body');
 
-    var response = await client.post(url, body: body);
+    var response = await client.post(Uri.parse(url), body: body);
     var json = jsonDecode(response.body);
     var unlockBalance = json['executionResult']['output'];
     // if (unlockBalance == null || unlockBalance == '') {
@@ -1565,7 +1565,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
   }
 
 // Copy txid and display flushbar
-  copyAndShowNotificatio(String message) {
+  copyAndShowNotification(String message) {
     sharedService.copyAddress(context, message);
   }
 }

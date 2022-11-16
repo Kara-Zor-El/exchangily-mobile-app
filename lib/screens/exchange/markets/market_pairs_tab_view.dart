@@ -232,11 +232,12 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
         Container(
           height: _tabBar.preferredSize.height - 10,
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: PreferredSize(
-              child: _tabBar,
-              preferredSize: Size(MediaQuery.of(context).size.width,
-                  _tabBar.preferredSize.height - 10)),
           color: const Color(0xff202138),
+          child: PreferredSize(
+            preferredSize: Size(MediaQuery.of(context).size.width,
+                _tabBar.preferredSize.height - 10),
+            child: _tabBar,
+          ),
         ),
         // new SizedBox(
         //   height: 20,

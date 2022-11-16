@@ -122,7 +122,7 @@ class TradeService extends StoppableService with ReactiveServiceMixin {
     log.e('getTxStatus url $url');
     var res;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       if (response.body != null) {
         res = jsonDecode(response.body);
         // json['message'] != null

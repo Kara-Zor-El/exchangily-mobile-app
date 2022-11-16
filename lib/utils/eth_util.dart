@@ -37,7 +37,7 @@ class EthUtils {
     String txHash;
     try {
       var response =
-          await client.post(url, headers: {"responseType": "text"}, body: data);
+          await client.post(Uri.parse(url), headers: {"responseType": "text"}, body: data);
       txHash = response.body;
 
       if (txHash.contains('txerError')) {
@@ -55,7 +55,7 @@ class EthUtils {
     var url = ethBaseUrl + getNonceApiRoute + address + '/latest';
     var nonce = 0;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       nonce = int.parse(response.body);
     } catch (e) {
       debugPrint('getEthNonce CATCH $e');
@@ -72,7 +72,7 @@ class EthUtils {
   Future getEthTransactionStatus(String txid) async {
     var url = ethBaseUrl + 'getconfirmationcount/' + txid;
 
-    var response = await client.get(url);
+    var response = await client.get(Uri.parse(url));
     debugPrint(response.body);
     return response.body;
   }
@@ -100,7 +100,7 @@ class EthUtils {
     var url = ethBaseUrl + 'getbalance/' + address;
     var ethBalance = 0.0;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       Map<String, dynamic> balance = jsonDecode(response.body);
       ethBalance = bigNum2Double(balance['balance']);
     } catch (e) {
@@ -131,7 +131,7 @@ class EthUtils {
     var balanceIe8 = 0.0;
     var balance1e6 = 0.0;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var balance = jsonDecode(response.body);
       balanceIe8 = double.parse(balance['balance']) / 1e8;
       balance1e6 = double.parse(balance['balance']) / 1e6;

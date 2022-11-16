@@ -388,10 +388,10 @@ class CampaignPaymentScreenState extends BaseState {
             animationType: AnimationType.grow,
             isOverlayTapDismiss: true,
             backgroundColor: globals.walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyText1,
+            descStyle: Theme.of(context).textTheme.bodyLarge,
             titleStyle: Theme.of(context)
                 .textTheme
-                .headline4
+                .headlineMedium
                 .copyWith(decoration: TextDecoration.underline)),
         context: context,
         title: AppLocalizations.of(context).updateYourOrderStatus,
@@ -406,12 +406,12 @@ class CampaignPaymentScreenState extends BaseState {
               children: <Widget>[
                 Text(
                   AppLocalizations.of(context).quantity,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 UIHelper.horizontalSpaceSmall,
                 Text(
                   quantity,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),
@@ -424,9 +424,9 @@ class CampaignPaymentScreenState extends BaseState {
               obscureText: false,
               decoration: InputDecoration(
                 hintText: AppLocalizations.of(context).paymentDescription,
-                hintStyle: Theme.of(context).textTheme.bodyText1,
-                labelStyle: Theme.of(context).textTheme.headline6,
-                icon: Icon(
+                hintStyle: Theme.of(context).textTheme.bodyLarge,
+                labelStyle: Theme.of(context).textTheme.titleLarge,
+                icon: const Icon(
                   Icons.event_note,
                   color: globals.primaryColor,
                 ),
@@ -472,7 +472,7 @@ class CampaignPaymentScreenState extends BaseState {
                   ? Text(AppLocalizations.of(context).loading)
                   : Text(
                       AppLocalizations.of(context).confirmPayment,
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
             ),
           ),
@@ -498,7 +498,7 @@ class CampaignPaymentScreenState extends BaseState {
             },
             child: Text(
               AppLocalizations.of(context).cancelOrder,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
         ]).show();

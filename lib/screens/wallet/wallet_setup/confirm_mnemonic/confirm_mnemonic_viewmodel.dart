@@ -202,7 +202,7 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
               Text(AppLocalizations.of(context).invalidMnemonic,
                   style: Theme.of(context)
                       .textTheme
-                      .headline4
+                      .headlineMedium
                       .copyWith(color: red, fontWeight: FontWeight.bold)),
               position: NotificationPosition.bottom,
               subtitle: Text(AppLocalizations.of(context)
@@ -213,7 +213,7 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
             Text(AppLocalizations.of(context).invalidMnemonic,
                 style: Theme.of(context)
                     .textTheme
-                    .headline4
+                    .headlineMedium
                     .copyWith(color: red, fontWeight: FontWeight.bold)),
             position: NotificationPosition.bottom,
             subtitle: Text(AppLocalizations.of(context)
@@ -242,8 +242,10 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
       } else {
         showSimpleNotification(
             Text(AppLocalizations.of(context).invalidMnemonic,
-                style:
-                    Theme.of(context).textTheme.headline4.copyWith(color: red)),
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineMedium
+                    .copyWith(color: red)),
             position: NotificationPosition.bottom,
             subtitle: Text(AppLocalizations.of(context)
                 .pleaseFillAllTheTextFieldsCorrectly));
@@ -251,8 +253,10 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
     } else {
       showSimpleNotification(
           Text(AppLocalizations.of(context).invalidMnemonic,
-              style:
-                  Theme.of(context).textTheme.headline4.copyWith(color: red)),
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineMedium
+                  .copyWith(color: red)),
           position: NotificationPosition.bottom,
           subtitle: Text(AppLocalizations.of(context)
               .pleaseFillAllTheTextFieldsCorrectly));

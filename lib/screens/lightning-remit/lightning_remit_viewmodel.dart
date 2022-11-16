@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:async';
 
-import 'package:barcode_scan/barcode_scan.dart';
+import 'package:majascan/majascan.dart';
+import 'package:cross_file/cross_file.dart';
 import 'package:exchangilymobileapp/constants/colors.dart';
 import 'package:exchangilymobileapp/constants/custom_styles.dart';
 import 'package:exchangilymobileapp/localizations.dart';
@@ -228,11 +230,13 @@ class LightningRemitViewmodel extends FutureViewModel {
                         children: [
                           Text(exchangeBalances[index].ticker,
                               textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.headline4),
+                              style:
+                                  Theme.of(context).textTheme.headlineMedium),
                           UIHelper.horizontalSpaceSmall,
                           Text(
                               exchangeBalances[index].unlockedAmount.toString(),
-                              style: Theme.of(context).textTheme.headline4),
+                              style:
+                                  Theme.of(context).textTheme.headlineMedium),
                           const Divider(
                             color: Colors.white,
                             height: 1,
@@ -267,14 +271,56 @@ class LightningRemitViewmodel extends FutureViewModel {
                                     Barcode Scan
 --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
+  // deprecated
+  // void scanBarcode() async {
+  //   try {
+  //     setBusy(true);
+  //     String barcode = '';
+  //     storageService.isCameraOpen = true;
+  //     barcode = await BarcodeScanner.scan().then((value) => value.rawContent);
+  //     addressController.text = barcode;
+  //     setBusy(false);
+  //   } on PlatformException catch (e) {
+  //     if (e.code == "PERMISSION_NOT_GRANTED") {
+  //       setBusy(true);
+  //       sharedService.alertDialog(
+  //           '', AppLocalizations.of(context).userAccessDenied,
+  //           isWarning: false);
+  //       // receiverWalletAddressTextController.text =
+  //       //     AppLocalizations.of(context).userAccessDenied;
+  //     } else {
+  //       // setBusy(true);
+  //       sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+  //           isWarning: false);
+  //     }
+  //   } on FormatException {
+  //     sharedService.alertDialog('', AppLocalizations.of(context).scanCancelled,
+  //         isWarning: false);
+  //   } catch (e) {
+  //     sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+  //         isWarning: false);
+  //   }
+  //
+  //   setBusy(false);
+  // }
+
+  // using MajaScan
   void scanBarcode() async {
     try {
       setBusy(true);
       String barcode = '';
       storageService.isCameraOpen = true;
-      barcode = await BarcodeScanner.scan().then((value) => value.rawContent);
+      barcode = await MajaScan.startScan(
+        title: 'Scan Barcode',
+        barColor: primaryColor,
+        qRCornerColor: primaryColor,
+        qRScannerColor: primaryColor,
+        titleColor: Colors.white,
+        flashlightEnable: true,
+      );
       addressController.text = barcode;
       setBusy(false);
+      storageService.isCameraOpen = false;
     } on PlatformException catch (e) {
       if (e.code == "PERMISSION_NOT_GRANTED") {
         setBusy(true);
@@ -372,7 +418,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                               // add here cupertino widget to check in these small widgets first then the entire app
                               kbAddress,
                               textAlign: TextAlign.left,
-                              style: Theme.of(context).textTheme.headline6),
+                              style: Theme.of(context).textTheme.titleLarge),
                         ),
                         CupertinoButton(
                             child: const Icon(
@@ -427,7 +473,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                               AppLocalizations.of(context).share,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline5
+                                  .headlineSmall
                                   .copyWith(color: primaryColor),
                             )),
                             onPressed: () {
@@ -443,7 +489,13 @@ class LightningRemitViewmodel extends FutureViewModel {
                                       .capturePng(globalKey: globalKey)
                                       .then((byteData) {
                                     file.writeAsBytes(byteData).then((onFile) {
-                                      Share.shareFiles([onFile.path],
+                                      List<XFile> xFileList = [];
+                                      for (var i = 0;
+                                          i < onFile.path.length;
+                                          i++) {
+                                        xFileList.add(XFile(onFile.path[i]));
+                                      }
+                                      Share.shareXFiles(xFileList,
                                           text: kbAddress);
                                     });
                                   });
@@ -456,7 +508,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                               const BorderRadius.all(Radius.circular(4)),
                           child: Text(
                             AppLocalizations.of(context).close,
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                           onPressed: () {
                             Navigator.of(context).pop(false);
@@ -485,7 +537,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                   ),
                   titleTextStyle: Theme.of(context)
                       .textTheme
-                      .headline4
+                      .headlineMedium
                       .copyWith(fontWeight: FontWeight.bold),
                   contentTextStyle: const TextStyle(color: grey),
                   content: Column(
@@ -499,7 +551,8 @@ class LightningRemitViewmodel extends FutureViewModel {
                               child: Text(
                                   // add here cupertino widget to check in these small widgets first then the entire app
                                   kbAddress,
-                                  style: Theme.of(context).textTheme.headline6),
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
                             ),
                           ),
                           IconButton(
@@ -549,7 +602,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                                         primaryColor)),
                                 child: Text(AppLocalizations.of(context).share,
                                     style:
-                                        Theme.of(context).textTheme.headline6),
+                                        Theme.of(context).textTheme.titleLarge),
                                 onPressed: () {
                                   String receiveFileName =
                                       'Lightning-remit-kanban-receive-address.png';
@@ -567,7 +620,14 @@ class LightningRemitViewmodel extends FutureViewModel {
                                         file
                                             .writeAsBytes(byteData)
                                             .then((onFile) {
-                                          Share.shareFiles([onFile.path],
+                                          List<XFile> xFileList = [];
+                                          for (var i = 0;
+                                              i < onFile.path.length;
+                                              i++) {
+                                            xFileList
+                                                .add(XFile(onFile.path[i]));
+                                          }
+                                          Share.shareXFiles(xFileList,
                                               text: kbAddress);
                                         });
                                       });
@@ -582,7 +642,7 @@ class LightningRemitViewmodel extends FutureViewModel {
                               style: outlinedButtonStyles1,
                               child: Text(
                                 AppLocalizations.of(context).close,
-                                style: Theme.of(context).textTheme.headline6,
+                                style: Theme.of(context).textTheme.titleLarge,
                               ),
                               onPressed: () {
                                 Navigator.of(context).pop(false);
@@ -711,7 +771,7 @@ class LightningRemitViewmodel extends FutureViewModel {
     showSimpleNotification(
         Center(
             child: Text(AppLocalizations.of(context).copiedSuccessfully,
-                style: Theme.of(context).textTheme.headline5)),
+                style: Theme.of(context).textTheme.headlineSmall)),
         position: NotificationPosition.bottom,
         background: primaryColor);
   }

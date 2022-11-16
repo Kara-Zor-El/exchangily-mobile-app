@@ -67,7 +67,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
                     child: Text(
                         AppLocalizations.of(context).pleaseChooseTheLanguage,
                         textAlign: TextAlign.start,
-                        style: Theme.of(context).textTheme.headline5),
+                        style: Theme.of(context).textTheme.headlineSmall),
                   )
                 ],
               ),
@@ -80,7 +80,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
                     child: Center(
                       child: Text(
                         AppLocalizations.of(context).loading + '...',
-                        style: Theme.of(context).textTheme.bodyText2,
+                        style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),
                   )
@@ -91,10 +91,22 @@ class ChooseWalletLanguageView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           // English Lang Button
-                          RaisedButton(
+                          // RaisedButton(
+                          //   child: Text(
+                          //     'English',
+                          //     style: Theme.of(context).textTheme.headlineMedium,
+                          //   ),
+                          //   onPressed: () {
+                          //     model.setLangauge('en');
+                          //     AppLocalizations.load(const Locale('en', 'US'));
+                          //     Navigator.of(context).pushNamed('/walletSetup');
+                          //   },
+                          // ),
+                          // Replaced Raised Button with Elevated Button
+                          ElevatedButton(
                             child: Text(
                               'English',
-                              style: Theme.of(context).textTheme.headline4,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                             onPressed: () {
                               model.setLangauge('en');
@@ -103,13 +115,29 @@ class ChooseWalletLanguageView extends StatelessWidget {
                             },
                           ),
                           // Chinese Lang Button
-                          RaisedButton(
-                            shape: StadiumBorder(
-                                side: BorderSide(
-                                    color: globals.primaryColor, width: 2)),
-                            color: globals.secondaryColor,
+                          // RaisedButton(
+                          //   shape: StadiumBorder(
+                          //       side: BorderSide(
+                          //           color: globals.primaryColor, width: 2)),
+                          //   color: globals.secondaryColor,
+                          //   child: Text('中文',
+                          //       style: Theme.of(context).textTheme.headlineMedium),
+                          //   onPressed: () {
+                          //     model.setLangauge('zh');
+                          //     AppLocalizations.load(const Locale('zh', 'ZH'));
+                          //     Navigator.of(context).pushNamed('/walletSetup');
+                          //   },
+                          // )
+                          // Replaced Raised Button with Elevated Button
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(
+                                    side: BorderSide(
+                                        color: globals.primaryColor,
+                                        width: 2))),
                             child: Text('中文',
-                                style: Theme.of(context).textTheme.headline4),
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium),
                             onPressed: () {
                               model.setLangauge('zh');
                               AppLocalizations.load(const Locale('zh', 'ZH'));

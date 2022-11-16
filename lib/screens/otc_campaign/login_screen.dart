@@ -27,7 +27,7 @@ class CampaignLoginScreen extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(AppLocalizations.of(context).login,
-                style: Theme.of(context).textTheme.headline3),
+                style: Theme.of(context).textTheme.displaySmall),
             centerTitle: true,
           ),
           body: Column(
@@ -50,7 +50,8 @@ class CampaignLoginScreen extends StatelessWidget {
                               padding: const EdgeInsets.only(top: 7.0),
                               child: Text(
                                 AppLocalizations.of(context).email,
-                                style: Theme.of(context).textTheme.headline5,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                                 //  textAlign: TextAlign.center,
                               ),
                             )),
@@ -81,7 +82,8 @@ class CampaignLoginScreen extends StatelessWidget {
                               padding: const EdgeInsets.only(top: 7.0),
                               child: Text(
                                 AppLocalizations.of(context).password,
-                                style: Theme.of(context).textTheme.headline5,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                             )),
                         model.isPasswordTextVisible == true
@@ -148,17 +150,17 @@ class CampaignLoginScreen extends StatelessWidget {
                         visible: model.hasErrorMessage,
                         child: Text(model.errorMessage,
                             style: model.isLogging && model.busy
-                                ? Theme.of(context).textTheme.bodyText2
+                                ? Theme.of(context).textTheme.bodyMedium
                                 : Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium
                                     .copyWith(color: Colors.yellow))),
                     Visibility(
                         visible: errorMessage != null &&
                             errorMessage != '' &&
                             !model.hasErrorMessage,
                         child: Text(errorMessage ?? '',
-                            style: Theme.of(context).textTheme.bodyText2)),
+                            style: Theme.of(context).textTheme.bodyMedium)),
                     UIHelper.verticalSpaceSmall,
                     // Button row
                     Row(
@@ -173,7 +175,7 @@ class CampaignLoginScreen extends StatelessWidget {
                         //       child: Text('Delete Db',
                         //           style: Theme.of(context)
                         //               .textTheme
-                        //               .headline4),
+                        //               .headlineMedium),
                         //       onPressed: () {
                         //         model.deleteDb();
                         //       },
@@ -183,12 +185,27 @@ class CampaignLoginScreen extends StatelessWidget {
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.only(right: 5),
-                            child: RaisedButton(
-                              padding: const EdgeInsets.all(2.0),
-                              elevation: 5,
-                              focusElevation: 5,
+                            // child: RaisedButton(
+                            //   padding: const EdgeInsets.all(2.0),
+                            //   elevation: 5,
+                            //   focusElevation: 5,
+                            //   child: Text(AppLocalizations.of(context).register,
+                            //       style: Theme.of(context).textTheme.headlineMedium),
+                            //   onPressed: () {
+                            //     Navigator.of(context)
+                            //         .pushNamed('/campaignRegisterAccount');
+                            //   },
+                            // ),
+                            // Replace deprecated RaisedButton with ElevatedButton
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(2.0),
+                                elevation: 5,
+                              ),
                               child: Text(AppLocalizations.of(context).register,
-                                  style: Theme.of(context).textTheme.headline4),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium),
                               onPressed: () {
                                 Navigator.of(context)
                                     .pushNamed('/campaignRegisterAccount');
@@ -197,26 +214,56 @@ class CampaignLoginScreen extends StatelessWidget {
                           ),
                         ),
                         Expanded(
-                          child: RaisedButton(
-                            padding: const EdgeInsets.all(2.0),
-                            elevation: 5,
-                            shape: StadiumBorder(
-                                side: BorderSide(
-                                    color: globals.primaryColor, width: 2)),
-                            color: globals.secondaryColor,
+                          // child: RaisedButton(
+                          //   padding: const EdgeInsets.all(2.0),
+                          //   elevation: 5,
+                          //   shape: StadiumBorder(
+                          //       side: BorderSide(
+                          //           color: globals.primaryColor, width: 2)),
+                          //   color: globals.secondaryColor,
+                          //   child: model.busy == true
+                          //       ? Shimmer.fromColors(
+                          //           baseColor: globals.primaryColor,
+                          //           highlightColor: globals.grey,
+                          //           child: Text(
+                          //             (AppLocalizations.of(context).login),
+                          //             style:
+                          //                 Theme.of(context).textTheme.headlineMedium,
+                          //           ))
+                          //       : Text(
+                          //           (AppLocalizations.of(context).login),
+                          //           style:
+                          //               Theme.of(context).textTheme.headlineMedium,
+                          //         ),
+                          //   onPressed: () {
+                          //     model.checkCredentials();
+                          //   },
+                          // ),
+                          // Replace deprecated RaisedButton with ElevatedButton
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.all(2.0),
+                              elevation: 5,
+                              shape: const StadiumBorder(
+                                  side: BorderSide(
+                                      color: globals.primaryColor, width: 2)),
+                              backgroundColor: globals.secondaryColor,
+                            ),
                             child: model.busy == true
                                 ? Shimmer.fromColors(
                                     baseColor: globals.primaryColor,
                                     highlightColor: globals.grey,
                                     child: Text(
                                       (AppLocalizations.of(context).login),
-                                      style:
-                                          Theme.of(context).textTheme.headline4,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineMedium,
                                     ))
                                 : Text(
                                     (AppLocalizations.of(context).login),
-                                    style:
-                                        Theme.of(context).textTheme.headline4,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium,
                                   ),
                             onPressed: () {
                               model.checkCredentials();

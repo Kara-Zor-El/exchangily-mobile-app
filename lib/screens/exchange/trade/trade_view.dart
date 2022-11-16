@@ -66,7 +66,7 @@ class TradeView extends StatelessWidget {
                     ),
                     title: Text(
                       model.updateTickerName(pairPriceByRoute.symbol),
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     centerTitle: true,
                     automaticallyImplyLeading: false),
@@ -194,7 +194,7 @@ class TradeView extends StatelessWidget {
                                                     .orderBook,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -205,7 +205,7 @@ class TradeView extends StatelessWidget {
                                                     .marketTrades,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -216,7 +216,7 @@ class TradeView extends StatelessWidget {
                                                     .myOrders,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -227,7 +227,7 @@ class TradeView extends StatelessWidget {
                                                     .assets,
                                                 style: Theme.of(context)
                                                     .textTheme
-                                                    .bodyText1
+                                                    .bodyLarge
                                                     .copyWith(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -337,40 +337,51 @@ class TradeView extends StatelessWidget {
                         Flexible(
                             flex: 1,
                             child: Container(
-                              margin: const EdgeInsets.only(right: 2.0),
-                              child: FlatButton(
-                                padding: const EdgeInsets.all(0),
-                                color: buyPrice,
-                                onPressed: () {
-                                  if (model.currentPairPrice != null &&
-                                      !model.isBusy) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => BuySellView(
-                                              //   orderbook: model.orderbook,
-                                              pairSymbolWithSlash:
-                                                  model.pairSymbolWithSlash,
-                                              bidOrAsk: true,
-                                              tickerName:
-                                                  pairPriceByRoute.symbol)),
-                                    );
-                                  }
-                                },
-                                child: Text(AppLocalizations.of(context).buy,
-                                    style:
-                                        TextStyle(fontSize: 13, color: white)),
-                              ),
-                            )),
+                                margin: const EdgeInsets.only(right: 2.0),
+                                // Replaced deprecated FlatButton with TextButton
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                    // padding of 2.0 on right
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 2.0, 0),
+                                    backgroundColor: buyPrice,
+                                    // radius of button
+                                    shape: const StadiumBorder(
+                                        side: BorderSide(
+                                            color: buyPrice, width: 1)),
+                                  ),
+                                  onPressed: () {
+                                    if (model.currentPairPrice != null &&
+                                        !model.isBusy) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => BuySellView(
+                                                //   orderbook: model.orderbook,
+                                                pairSymbolWithSlash:
+                                                    model.pairSymbolWithSlash,
+                                                bidOrAsk: true,
+                                                tickerName:
+                                                    pairPriceByRoute.symbol)),
+                                      );
+                                    }
+                                  },
+                                  child: Text(AppLocalizations.of(context).buy,
+                                      style: const TextStyle(
+                                          fontSize: 13, color: white)),
+                                ))),
                         // Sell button
                         const SizedBox(width: 5),
                         Flexible(
                             flex: 1,
-                            child: RaisedButton(
-                              padding: const EdgeInsets.all(0),
-                              color: sellPrice,
-                              shape: StadiumBorder(
-                                  side: BorderSide(color: sellPrice, width: 1)),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.all(0),
+                                backgroundColor: sellPrice,
+                                shape: const StadiumBorder(
+                                    side:
+                                        BorderSide(color: sellPrice, width: 1)),
+                              ),
                               onPressed: () {
                                 if (model.currentPairPrice != null &&
                                     !model.isBusy) {
@@ -390,7 +401,7 @@ class TradeView extends StatelessWidget {
                               child: Text(AppLocalizations.of(context).sell,
                                   style: const TextStyle(
                                       fontSize: 13, color: Colors.white)),
-                            ))
+                            )),
                       ],
                     )),
               ),

@@ -118,9 +118,11 @@ class CoreWalletDatabaseService {
     //  if (db == null) await initDb();
     String encryptedMnemonic = '';
     List<Map> res = await db.query(tableName, columns: [columnMnemonic]);
-    if (res.isNotEmpty) if (res[0]['mnemonic'] != null) {
-      log.i('Encrypted Mnemonic --- ${res.first}');
-      encryptedMnemonic = res.first['mnemonic'];
+    if (res.isNotEmpty) {
+      if (res[0]['mnemonic'] != null) {
+        log.i('Encrypted Mnemonic --- ${res.first}');
+        encryptedMnemonic = res.first['mnemonic'];
+      }
     }
 
     return encryptedMnemonic;

@@ -83,8 +83,8 @@ class CampaignLoginScreenState extends BaseState {
             animationType: AnimationType.grow,
             isOverlayTapDismiss: true,
             backgroundColor: globals.walletCardColor,
-            descStyle: Theme.of(context).textTheme.bodyText1,
-            titleStyle: Theme.of(context).textTheme.headline5),
+            descStyle: Theme.of(context).textTheme.bodyLarge,
+            titleStyle: Theme.of(context).textTheme.headlineSmall),
         context: context,
         title: AppLocalizations.of(context).pleaseEnterYourEmailAddress,
         closeFunction: () {
@@ -92,7 +92,7 @@ class CampaignLoginScreenState extends BaseState {
           FocusScope.of(context).requestFocus(FocusNode());
         },
         content: TextField(
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             icon: Icon(
               Icons.alternate_email,
               color: globals.primaryColor,
@@ -145,7 +145,7 @@ class CampaignLoginScreenState extends BaseState {
               // model.busy is not working here and same reason that it does not show the error when desc field is empty
               child: Text(
                 AppLocalizations.of(context).confirm,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
           ),
@@ -160,7 +160,7 @@ class CampaignLoginScreenState extends BaseState {
             },
             child: Text(
               AppLocalizations.of(context).cancel,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           ),
         ]).show();

@@ -89,7 +89,7 @@ class MyOrdersViewModel extends ReactiveViewModel {
 
     _orderCancelledText = AppLocalizations.of(context).orderCancelled;
     orderCancelledTextStyle =
-        Theme.of(context).textTheme.bodyText1.copyWith(color: colors.white);
+        Theme.of(context).textTheme.bodyLarge.copyWith(color: colors.white);
     // _orderService.swapSources();
   }
 
@@ -352,7 +352,7 @@ class MyOrdersViewModel extends ReactiveViewModel {
         Center(
             child: Text(
                 AppLocalizations.of(context).pleaseProvideTheCorrectPassword,
-                style: Theme.of(context).textTheme.bodyText2)),
+                style: Theme.of(context).textTheme.bodyMedium)),
       );
     } else {
       if (res.returnedText == 'Closed') {

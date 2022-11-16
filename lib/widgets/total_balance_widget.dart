@@ -52,7 +52,7 @@ class TotalBalanceCardWidget
                                 Text(title,
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headline4
+                                        .headlineMedium
                                         .copyWith(fontWeight: FontWeight.w400)),
                                 model.isBusy
                                     ? Shimmer.fromColors(
@@ -62,7 +62,7 @@ class TotalBalanceCardWidget
                                           '${model.totalUsdBalance} USD',
                                           style: Theme.of(context)
                                               .textTheme
-                                              .subtitle1,
+                                              .titleMedium,
                                         ),
                                       )
                                     : Text(
@@ -70,7 +70,7 @@ class TotalBalanceCardWidget
                                         textAlign: TextAlign.center,
                                         style: Theme.of(context)
                                             .textTheme
-                                            .subtitle1
+                                            .titleMedium
                                             .copyWith(
                                                 fontWeight: FontWeight.w400)),
                               ],

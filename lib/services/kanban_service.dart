@@ -28,7 +28,7 @@ mixin KanbanService {
   getScarAddress() async {
     var url =
         configService.getKanbanBaseUrl() + 'exchangily/getExchangeAddress';
-    var response = await client.get(url);
+    var response = await client.get(Uri.parse(url));
     var json = jsonDecode(response.body);
     return json;
   }
@@ -40,7 +40,7 @@ mixin KanbanService {
   Future getDepositTransactionStatus(String transactionId) async {
     var url = configService.getKanbanBaseUrl() + 'checkstatus/' + transactionId;
     try {
-      var response = await client.get(url);
+      var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
       log.w(' getDepositTransactionStatus $json');
       return json;

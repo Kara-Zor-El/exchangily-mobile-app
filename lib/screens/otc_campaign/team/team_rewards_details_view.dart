@@ -22,7 +22,7 @@ class TeamRewardDetailsView extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Text(AppLocalizations.of(context).teamDetails,
-              style: Theme.of(context).textTheme.headline4),
+              style: Theme.of(context).textTheme.headlineMedium),
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -37,34 +37,34 @@ class TeamRewardDetailsView extends StatelessWidget {
                           child: Center(
                               child: Text(AppLocalizations.of(context).team,
                                   style:
-                                      Theme.of(context).textTheme.subtitle2))),
+                                      Theme.of(context).textTheme.titleSmall))),
                       Expanded(
                           flex: 1,
                           child: Center(
                               child: Text(AppLocalizations.of(context).members,
                                   style:
-                                      Theme.of(context).textTheme.subtitle2))),
+                                      Theme.of(context).textTheme.titleSmall))),
                       Expanded(
                           flex: 2,
                           child: Center(
                               child: Text(
                                   AppLocalizations.of(context).totalValue,
                                   style:
-                                      Theme.of(context).textTheme.subtitle2))),
+                                      Theme.of(context).textTheme.titleSmall))),
                       Expanded(
                           flex: 2,
                           child: Center(
                               child: Text(
                                   AppLocalizations.of(context).totalQuantity,
                                   style:
-                                      Theme.of(context).textTheme.subtitle2))),
+                                      Theme.of(context).textTheme.titleSmall))),
                       Expanded(
                           flex: 1,
                           child: Center(
                               child: Text(
                                   AppLocalizations.of(context).percentage,
                                   style:
-                                      Theme.of(context).textTheme.subtitle2)))
+                                      Theme.of(context).textTheme.titleSmall)))
                     ],
                   ),
                   UIHelper.verticalSpaceSmall,
@@ -75,7 +75,7 @@ class TeamRewardDetailsView extends StatelessWidget {
                           highlightColor: globals.grey,
                           child: Text(
                             (AppLocalizations.of(context).loading),
-                            style: Theme.of(context).textTheme.headline5,
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ))
                       : team != null
                           ? SizedBox(
@@ -106,7 +106,7 @@ class TeamRewardDetailsView extends StatelessWidget {
                                                   i.toString(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline5,
+                                                      .headlineSmall,
                                                 ))),
                                             Expanded(
                                                 flex: 1,
@@ -117,7 +117,7 @@ class TeamRewardDetailsView extends StatelessWidget {
                                                             .toString(),
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .headline5))),
+                                                            .headlineSmall))),
                                             Expanded(
                                                 flex: 2,
                                                 child: Center(
@@ -127,7 +127,7 @@ class TeamRewardDetailsView extends StatelessWidget {
                                                             .toStringAsFixed(2),
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .headline5))),
+                                                            .headlineSmall))),
                                             Expanded(
                                                 flex: 2,
                                                 child: Center(
@@ -141,7 +141,7 @@ class TeamRewardDetailsView extends StatelessWidget {
                                                           .toStringAsFixed(3),
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .headline5),
+                                                          .headlineSmall),
                                                 ))),
                                             Expanded(
                                                 flex: 1,
@@ -154,7 +154,7 @@ class TeamRewardDetailsView extends StatelessWidget {
                                                       '${team[index]['percentage'].toStringAsFixed(3)}%',
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .headline5),
+                                                          .headlineSmall),
                                                 )))
                                           ],
                                         ),

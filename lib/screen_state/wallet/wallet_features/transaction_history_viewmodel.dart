@@ -213,7 +213,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     showSimpleNotification(
         Center(
             child: Text(AppLocalizations.of(context).copiedSuccessfully,
-                style: Theme.of(context).textTheme.headline5)),
+                style: Theme.of(context).textTheme.headlineSmall)),
         position: NotificationPosition.bottom,
         background: primaryColor);
   }
@@ -246,8 +246,12 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                       child: Center(
                           child: Text(
                         '${AppLocalizations.of(context).transactionDetails}....',
-                        style: Theme.of(context).textTheme.headline4.copyWith(
-                            color: primaryColor, fontWeight: FontWeight.w500),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            .copyWith(
+                                color: primaryColor,
+                                fontWeight: FontWeight.w500),
                       )),
                     ),
                     content: Container(
@@ -258,7 +262,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           transactionHistory.tag != send
                               ? Text(
                                   '${AppLocalizations.of(context).kanban} Txid',
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context).textTheme.bodyLarge,
                                 )
                               : Container(),
                           transactionHistory.tag != send
@@ -293,7 +297,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                                     .toString(),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyText1
+                                                .bodyLarge
                                                 .copyWith(color: Colors.blue),
                                           ),
                                         ),
@@ -316,7 +320,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           Text(
                             //AppLocalizations.of(context).quantity,
                             '${transactionHistory.chainName} ${AppLocalizations.of(context).chain} Txid',
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
@@ -346,7 +350,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                               .toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyText1
+                                          .bodyLarge
                                           .copyWith(color: Colors.blue),
                                     ),
                                   ),
@@ -379,7 +383,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                 AppLocalizations.of(context).close,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText2
+                                    .bodyMedium
                                     .copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: primaryColor),
@@ -408,7 +412,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                   ),
                   titleTextStyle: Theme.of(context)
                       .textTheme
-                      .headline4
+                      .headlineMedium
                       .copyWith(fontWeight: FontWeight.bold),
                   contentTextStyle: const TextStyle(color: grey),
                   content: Column(
@@ -418,7 +422,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           ? Text(
                               //AppLocalizations.of(context).,
                               '${AppLocalizations.of(context).kanban} Txid',
-                              style: Theme.of(context).textTheme.bodyText1,
+                              style: Theme.of(context).textTheme.bodyLarge,
                             )
                           : Container(),
                       transactionHistory.tag != send
@@ -450,7 +454,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                                 .toString(),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyText1
+                                            .bodyLarge
                                             .copyWith(color: Colors.blue),
                                       ),
                                     ),
@@ -471,7 +475,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                       Text(
                         //AppLocalizations.of(context).quantity,
                         '${transactionHistory.chainName} ${AppLocalizations.of(context).chain} Txid',
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       Row(
                         mainAxisSize: MainAxisSize.max,
@@ -501,7 +505,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                               .toString(),
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyText1
+                                      .bodyLarge
                                       .copyWith(color: Colors.blue),
                                 ),
                               ),

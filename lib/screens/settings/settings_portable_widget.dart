@@ -66,19 +66,19 @@ class SettingsPortableContainer extends StatelessWidget {
               //                 child: Text(
               //                   AppLocalizations.of(context)
               //                       .changeWalletLanguage,
-              //                   style: Theme.of(context).textTheme.headline5,
+              //                   style: Theme.of(context).textTheme.headlineSmall,
               //                 ),
               //               ),
               //               Center(
               //                 child: Text(
               //                   "English",
-              //                   style: Theme.of(context).textTheme.headline5,
+              //                   style: Theme.of(context).textTheme.headlineSmall,
               //                 ),
               //               ),
               //               Center(
               //                 child: Text(
               //                   "简体中文",
-              //                   style: Theme.of(context).textTheme.headline5,
+              //                   style: Theme.of(context).textTheme.headlineSmall,
               //                 ),
               //               ),
               //             ])
@@ -98,7 +98,7 @@ class SettingsPortableContainer extends StatelessWidget {
               //                     AppLocalizations.of(context)
               //                         .changeWalletLanguage,
               //                     textAlign: TextAlign.center,
-              //                     style: Theme.of(context).textTheme.headline5,
+              //                     style: Theme.of(context).textTheme.headlineSmall,
               //                   )
               //                 ],
               //               ),
@@ -122,7 +122,7 @@ class SettingsPortableContainer extends StatelessWidget {
               //                           textAlign: TextAlign.center,
               //                           style: Theme.of(context)
               //                               .textTheme
-              //                               .headline6),
+              //                               .titleLarge),
               //                     ],
               //                   ),
               //                   value: model.languages[0],
@@ -142,7 +142,7 @@ class SettingsPortableContainer extends StatelessWidget {
               //                           textAlign: TextAlign.center,
               //                           style: Theme.of(context)
               //                               .textTheme
-              //                               .headline6),
+              //                               .titleLarge),
               //                     ],
               //                   ),
               //                   value: model.languages[1],
@@ -155,14 +155,14 @@ class SettingsPortableContainer extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
                     child: Icon(Icons.warning, color: yellow, size: 16),
                   ),
                   Expanded(
                     flex: 3,
                     child: Text(AppLocalizations.of(context).showDialogWarnings,
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headlineSmall,
                         textAlign: TextAlign.left),
                   ),
                   Expanded(
@@ -189,8 +189,8 @@ class SettingsPortableContainer extends StatelessWidget {
                 //  crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
+                  const Padding(
+                    padding: EdgeInsets.all(6.0),
                     child: Icon(Icons.insert_comment, color: white, size: 16),
                   ),
                   Expanded(
@@ -198,7 +198,7 @@ class SettingsPortableContainer extends StatelessWidget {
                     child: Text(
                         AppLocalizations.of(context)
                             .settingsShowcaseInstructions,
-                        style: Theme.of(context).textTheme.headline5,
+                        style: Theme.of(context).textTheme.headlineSmall,
                         textAlign: TextAlign.left),
                   ),
                   Expanded(

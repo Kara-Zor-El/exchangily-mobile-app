@@ -304,6 +304,7 @@ Widget topWidget(WalletDashboardViewModel model, BuildContext context) {
             // titleWidget = AppLocalizations.of(context).totalExchangeBalance;
             return TotalBalanceWidget2(model: model, index: index);
           }
+          return Container();
 
           // return TotalBalanceCardWidget(
           //   logo: logoWidget,
@@ -469,11 +470,11 @@ Widget amountAndGas(WalletDashboardViewModel model, BuildContext context) {
                         style: model.isShowFavCoins || model.isHideSearch
                             ? Theme.of(context)
                                 .textTheme
-                                .headline5
+                                .headlineSmall
                                 .copyWith(wordSpacing: 1.25, color: grey)
                             : Theme.of(context)
                                 .textTheme
-                                .headline5
+                                .headlineSmall
                                 .copyWith(wordSpacing: 1.25),
                       ),
                     ),
@@ -510,7 +511,7 @@ Widget amountAndGas(WalletDashboardViewModel model, BuildContext context) {
                                 ),
                                 label: Text(
                                   AppLocalizations.of(context).getFree + ' FAB',
-                                  style: Theme.of(context).textTheme.headline6,
+                                  style: Theme.of(context).textTheme.titleLarge,
                                 )),
                           )),
                 ],
@@ -520,7 +521,7 @@ Widget amountAndGas(WalletDashboardViewModel model, BuildContext context) {
         ),
       ),
       Container(
-        margin: const EdgeInsets.only(left: 8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: GestureDetector(
           onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
           child: Container(
@@ -538,7 +539,7 @@ Widget amountAndGas(WalletDashboardViewModel model, BuildContext context) {
                   ),
                   // helperText: 'Search',
                   // helperStyle:
-                  //     Theme.of(context).textTheme.bodyText1,
+                  //     Theme.of(context).textTheme.bodyLarge,
                   suffixIcon: Icon(Icons.search, color: white)),
               controller: model.searchCoinTextController,
               onChanged: (String value) {
@@ -641,7 +642,6 @@ Widget coinList(WalletDashboardViewModel model, BuildContext context) {
             //  physics: ClampingScrollPhysics(),
             children: [
               // All coins tab
-
               model.isBusy || model.busy(model.isHideSmallAssetsButton)
                   ? const ShimmerLayout(
                       layoutType: 'walletDashboard',
@@ -1001,7 +1001,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                     children: <Widget>[
                       Text(
                         tickerName.toUpperCase(),
-                        style: Theme.of(context).textTheme.headline3,
+                        style: Theme.of(context).textTheme.displaySmall,
                       ),
                       // Available Row
                       Row(
@@ -1010,7 +1010,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                           Padding(
                             padding: const EdgeInsets.only(right: 5.0),
                             child: Text(AppLocalizations.of(context).available,
-                                style: Theme.of(context).textTheme.headline6),
+                                style: Theme.of(context).textTheme.titleLarge),
                           ),
                           model.isBusy
                               ? SizedBox(
@@ -1020,7 +1020,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                                   child: Text(
                                     wallets[index].balance.toStringAsFixed(2),
                                     style:
-                                        Theme.of(context).textTheme.headline6,
+                                        Theme.of(context).textTheme.titleLarge,
                                   ),
                                 ))
                               : Expanded(
@@ -1035,7 +1035,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                                               .toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6),
+                                          .titleLarge),
                                 ),
                         ],
                       ),
@@ -1048,7 +1048,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                             child: Text(AppLocalizations.of(context).locked,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline6
+                                    .titleLarge
                                     .copyWith(color: red)),
                           ),
                           model.isBusy
@@ -1059,7 +1059,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                                   child: Text('${wallets[index].lockBalance}',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6
+                                          .titleLarge
                                           .copyWith(color: red)),
                                 ))
                               : Expanded(
@@ -1075,7 +1075,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                                               .toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6
+                                          .titleLarge
                                           .copyWith(color: red)),
                                 )
                         ],
@@ -1089,7 +1089,8 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                               child: Text(
                                   AppLocalizations.of(context).inExchange,
                                   textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.headline6),
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
                             ),
                           ),
                           model.isBusy
@@ -1119,7 +1120,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                                               .toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6
+                                          .titleLarge
                                           .copyWith(color: white)),
                                 ),
                         ],
@@ -1142,7 +1143,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                         children: [
                           isBalanceNegative
                               ? Container(
-                                  padding: EdgeInsets.only(left: 5),
+                                  padding: const EdgeInsets.only(left: 5),
                                 )
                               : model.wallets[index].balance == 0.0
                                   ? UIHelper.horizontalSpaceMedium
@@ -1188,7 +1189,7 @@ Widget _coinDetailsCard(String tickerName, index, List<WalletBalance> wallets,
                                       AppLocalizations.of(context).withdraw,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .subtitle2
+                                          .titleSmall
                                           .copyWith(fontSize: 8),
                                     ),
                                     const Icon(
@@ -1301,8 +1302,6 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                       String logoTicker = '';
 
                       var specialTokenData = {};
-                      bool isBalanceNegative =
-                          model.wallets[index].balance.isNegative;
                       specialTokenData = model.walletUtil
                           .updateSpecialTokensTickerName(tickerName);
                       tickerName = specialTokenData['tickerName'];
@@ -1363,7 +1362,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                                           tickerName.toUpperCase(),
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline3,
+                                              .displaySmall,
                                         ),
                                         // Available Row
                                         Row(
@@ -1378,7 +1377,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                                                       .available,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6),
+                                                      .titleLarge),
                                             ),
                                             Expanded(
                                               child: Text(
@@ -1395,7 +1394,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                                                           .toString(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6),
+                                                      .titleLarge),
                                             ),
                                           ],
                                         ),
@@ -1412,7 +1411,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                                                       .locked,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6
+                                                      .titleLarge
                                                       .copyWith(color: red)),
                                             ),
                                             Expanded(
@@ -1432,7 +1431,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                                                           .toString(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6
+                                                      .titleLarge
                                                       .copyWith(color: red)),
                                             )
                                           ],
@@ -1449,7 +1448,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                                                   textAlign: TextAlign.center,
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6),
+                                                      .titleLarge),
                                             ),
                                             Expanded(
                                               child: Text(
@@ -1462,7 +1461,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                                                       .toString(),
                                                   style: Theme.of(context)
                                                       .textTheme
-                                                      .headline6
+                                                      .titleLarge
                                                       .copyWith(
                                                           color: primaryColor)),
                                             ),
@@ -1511,7 +1510,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                                                             .deposit,
                                                         style: Theme.of(context)
                                                             .textTheme
-                                                            .subtitle2
+                                                            .titleSmall
                                                             .copyWith(
                                                                 fontSize: 8),
                                                       ),
@@ -1539,7 +1538,7 @@ class FavTab extends ViewModelBuilderWidget<WalletDashboardViewModel> {
                                                           .withdraw,
                                                       style: Theme.of(context)
                                                           .textTheme
-                                                          .subtitle2
+                                                          .titleSmall
                                                           .copyWith(
                                                               fontSize: 8),
                                                     ),
@@ -1626,7 +1625,7 @@ class TotalBalanceWidget extends StatelessWidget {
                           Text(AppLocalizations.of(context).totalWalletBalance,
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline4
+                                  .headlineMedium
                                   .copyWith(fontWeight: FontWeight.w400)),
                           model.isBusy
                               ? Shimmer.fromColors(
@@ -1635,14 +1634,14 @@ class TotalBalanceWidget extends StatelessWidget {
                                   child: Text(
                                     '${model.totalUsdBalance} USD',
                                     style:
-                                        Theme.of(context).textTheme.subtitle1,
+                                        Theme.of(context).textTheme.titleMedium,
                                   ),
                                 )
                               : Text('${model.totalUsdBalance} USD',
                                   textAlign: TextAlign.center,
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle1
+                                      .titleMedium
                                       .copyWith(fontWeight: FontWeight.w400)),
                         ],
                       ),
@@ -1724,7 +1723,7 @@ class TotalBalanceWidget2 extends StatelessWidget {
                                           .totalExchangeBalance,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline6
+                                          .titleLarge
                                           .copyWith(
                                               fontWeight: FontWeight.bold,
                                               color: white)),
@@ -1734,8 +1733,9 @@ class TotalBalanceWidget2 extends StatelessWidget {
                                     highlightColor: white,
                                     child: Text(
                                       model.totalExchangeBalance + ' USD',
-                                      style:
-                                          Theme.of(context).textTheme.subtitle1,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleMedium,
                                     )),
                               ],
                             )
@@ -1750,14 +1750,14 @@ class TotalBalanceWidget2 extends StatelessWidget {
                                           .totalExchangeBalance,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headline4
+                                          .headlineMedium
                                           .copyWith(
                                               fontWeight: FontWeight.w400)),
                                 ),
                                 Text(model.totalExchangeBalance + ' USD',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .subtitle1
+                                        .titleMedium
                                         .copyWith(fontWeight: FontWeight.w400)),
                               ],
                             ),
@@ -1814,10 +1814,6 @@ class AddGasRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var begin = const Offset(0.0, 1.0);
-    var end = Offset.zero;
-    var tween = Tween(begin: begin, end: end);
-
     // if (model.isShowCaseView && model.gasAmount < 0.5 && !model.isBusy) {
     //   model.showcaseEvent(context);
     // }
@@ -1884,7 +1880,7 @@ class DepositWidget extends StatelessWidget {
             Text(
               AppLocalizations.of(context).deposit,
               style:
-                  Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 8),
+                  Theme.of(context).textTheme.titleSmall.copyWith(fontSize: 8),
             ),
             Icon(Icons.arrow_downward, color: green, size: 16),
           ],

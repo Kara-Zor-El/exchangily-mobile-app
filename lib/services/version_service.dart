@@ -40,7 +40,7 @@ class VersionService {
     debugPrint('My os: $os');
     try {
       debugPrint("appVersionUrl: " + appVersionUrl);
-      var response = await client.get(appVersionUrl);
+      var response = await client.get(Uri.parse(appVersionUrl));
       var json = response.body;
       if (json != null) {
         log.w('get version info $json}');

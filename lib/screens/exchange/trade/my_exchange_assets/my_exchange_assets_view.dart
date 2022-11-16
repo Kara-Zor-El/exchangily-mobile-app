@@ -135,20 +135,21 @@ class MyExchangeAssetsView extends StatelessWidget {
                                 Expanded(
                                   flex: 1,
                                   child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 7),
-                                      //  margin: EdgeInsets.only(right: 10.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                      ),
-                                      child:
-                                          // Image.asset(
-                                          // 'assets/images/wallet-page/${tickerName.toLowerCase()}.png') ??
-                                          Image.network(model.logoUrl +
-                                              tickerName.toLowerCase() +
-                                              '.png'),
-                                      width: 35,
-                                      height: 35),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 7),
+                                    //  margin: EdgeInsets.only(right: 10.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                    width: 35,
+                                    height: 35,
+                                    child:
+                                        // Image.asset(
+                                        // 'assets/images/wallet-page/${tickerName.toLowerCase()}.png') ??
+                                        Image.network(model.logoUrl +
+                                            tickerName.toLowerCase() +
+                                            '.png'),
+                                  ),
                                 ),
                                 UIHelper.horizontalSpaceSmall,
                                 UIHelper.horizontalSpaceSmall,
@@ -160,7 +161,7 @@ class MyExchangeAssetsView extends StatelessWidget {
                                           model.exchangeBalances[index].ticker,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6),
+                                              .titleLarge),
                                     )),
                                 UIHelper.horizontalSpaceSmall,
                                 Expanded(
@@ -171,7 +172,7 @@ class MyExchangeAssetsView extends StatelessWidget {
                                             .toString(),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline6)),
+                                            .titleLarge)),
                                 Expanded(
                                     flex: 2,
                                     child: Text(
@@ -180,7 +181,7 @@ class MyExchangeAssetsView extends StatelessWidget {
                                             .toString(),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .headline6))
+                                            .titleLarge))
                               ],
                             );
                           })
