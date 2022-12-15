@@ -1,0 +1,3 @@
+[submodule "bitbox-flutter"]
+	path = bitbox-flutter
+	url = https://github.com/tomasforgacbch/bitbox-flutter
