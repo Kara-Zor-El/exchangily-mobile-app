@@ -37,7 +37,7 @@ dependencies:
 
   # bch address
   bitbox:
-    path: ./bitbox-flutter
+    path: ./submodules/bitbox-flutter
 
   # Generate LTC and DOGE coin address
   bitcoin_flutter: ^2.0.1
