@@ -77,7 +77,7 @@ class ApiService {
     var url = "https://resolve.unstoppabledomains.com/supported_tlds";
     log.i('getDomainSupportedTlds url $url');
     try {
-      var response = await client.get(url, headers: {
+      var response = await client.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       });
@@ -98,7 +98,7 @@ class ApiService {
     var url = "https://resolve.unstoppabledomains.com/domains/$domain";
     log.i('getDomainRecord url $url');
     try {
-      var response = await client.get(url, headers: {
+      var response = await client.get(Uri.parse(url), headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer $token',

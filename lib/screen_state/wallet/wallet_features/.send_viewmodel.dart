@@ -25,7 +25,6 @@ import 'package:exchangilymobileapp/models/wallet/transaction_history.dart';
 import 'package:exchangilymobileapp/models/wallet/wallet_model.dart';
 import 'package:exchangilymobileapp/service_locator.dart';
 import 'package:exchangilymobileapp/services/api_service.dart';
-import 'package:exchangilymobileapp/services/coin_service.dart';
 import 'package:exchangilymobileapp/services/db/token_info_database_service.dart';
 import 'package:exchangilymobileapp/services/dialog_service.dart';
 import 'package:exchangilymobileapp/services/local_storage_service.dart';
@@ -46,7 +45,6 @@ import 'package:flutter/services.dart';
 import 'package:exchangilymobileapp/environments/environment.dart';
 import 'package:exchangilymobileapp/localizations.dart';
 import 'package:exchangilymobileapp/utils/fab_util.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:stacked/stacked.dart';
 
@@ -102,8 +100,7 @@ class SendViewModel extends BaseViewModel {
   double chainBalance = 0.0;
   bool isCustomToken = false;
   CustomTokenModel customToken = CustomTokenModel();
-  List<String> domainTlds = [];
-  String userTypedDomain = '';
+
   // Init State
   initState() async {
     setBusy(true);
@@ -148,51 +145,7 @@ class SendViewModel extends BaseViewModel {
     if (tokenType.isNotEmpty && !isCustomToken) {
       await getNativeChainTickerBalance();
     }
-    domainTlds = await apiService.getDomainSupportedTlds();
     setBusy(false);
-  }
-
-  clearAddress() {
-    receiverWalletAddressTextController.text = '';
-    userTypedDomain = '';
-    notifyListeners();
-    setBusyForObject(userTypedDomain, false);
-  }
-
-  checkDomain(String domainName) async {
-    setBusyForObject(userTypedDomain, true);
-    bool isValidDomainFormat = false;
-    userTypedDomain = '';
-    if (domainTlds == null || domainTlds.isEmpty) {
-      domainTlds = await apiService.getDomainSupportedTlds();
-    }
-    if ((domainTlds != null || domainTlds.isNotEmpty) &&
-        domainName.contains('.')) {
-      isValidDomainFormat = domainTlds.contains(domainName.split('.')[1]);
-    }
-
-    if (isValidDomainFormat) {
-      var domainInfo = await apiService.getDomainRecord(domainName);
-      log.w('get domain data for $domainName -- $domainInfo');
-      String ticker = walletInfo.tokenType.isEmpty
-          ? walletInfo.tickerName
-          : walletInfo.tokenType;
-      String domainAddress = domainInfo['records']['crypto.$ticker.address'];
-      String owner = domainInfo['meta']['owner'];
-
-      if (domainAddress != null) {
-        receiverWalletAddressTextController.text = domainAddress;
-        userTypedDomain = domainName;
-      } else if ((owner != null && owner.isNotEmpty) && domainAddress == null) {
-        userTypedDomain = AppLocalizations.of(context).addressNotSet;
-      } else {
-        userTypedDomain = AppLocalizations.of(context).invalidDomain;
-      }
-      notifyListeners();
-    } else {
-      log.e('invalid domain format');
-    }
-    setBusyForObject(userTypedDomain, false);
   }
 
   // get native chain ticker balance
@@ -310,6 +263,7 @@ class SendViewModel extends BaseViewModel {
             : (Decimal.parse(transFee.toString()) +
                     Decimal.parse(amount.toString()))
                 .toDouble();
+        finalAmount = isMaxAmount ? amount - transFee : amount + transFee;
       }
       finalAmount <= walletInfo.availableBalance
           ? isValidAmount = true
@@ -433,12 +387,12 @@ class SendViewModel extends BaseViewModel {
         }
 
         if (contractAddr == null) {
-          var coinService = locator<CoinService>();
-          await coinService.getSingleTokenData(tickerName).then((token) {
-            log.i(
-                'send :single token json of $tickerName -- ${token.toJson()}');
+          await tokenListDatabaseService
+              .getByTickerName(tickerName)
+              .then((token) {
             contractAddr = token.contract;
             decimalLimit = token.decimal;
+            log.i('send token address ${token.toJson()}');
           });
         }
 
@@ -544,7 +498,7 @@ class SendViewModel extends BaseViewModel {
 
           if (txHash.isNotEmpty) {
             log.w('Txhash $txHash');
-            clearAddress();
+            receiverWalletAddressTextController.text = '';
             amountController.text = '';
             isShowErrorDetailsButton = false;
             isShowDetailsMessage = false;
@@ -779,11 +733,11 @@ class SendViewModel extends BaseViewModel {
           Center(
             child: Text(
                 '${AppLocalizations.of(context).low} $coin ${AppLocalizations.of(context).balance}',
-                style: Theme.of(context).textTheme.headline5),
+                style: Theme.of(context).textTheme.headlineSmall),
           ),
           subtitle: Center(
             child: Text('${AppLocalizations.of(context).gasFee} 0',
-                style: Theme.of(context).textTheme.headline6),
+                style: Theme.of(context).textTheme.titleLarge),
           ),
           position: NotificationPosition.top,
           background: sellPrice);
@@ -987,6 +941,58 @@ class SendViewModel extends BaseViewModel {
                       Barcode Scan
 --------------------------------------------------------*/
 
+  // Deprecated
+  // Future scan() async {
+  //   log.i("Barcode: going to scan");
+  //   setBusy(true);
+  //
+  //   try {
+  //     log.i("Barcode: try");
+  //     String barcode = '';
+  //     storageService.isCameraOpen = true;
+  //     var result = await BarcodeScanner.scan();
+  //     barcode = result.rawContent;
+  //     log.i("Barcode Res: $result ");
+  //
+  //     receiverWalletAddressTextController.text = barcode;
+  //     setBusy(false);
+  //   } on PlatformException catch (e) {
+  //     log.i("Barcode PlatformException : ");
+  //     log.i(e.toString());
+  //     if (e.code == "PERMISSION_NOT_GRANTED") {
+  //       setBusy(false);
+  //       sharedService.alertDialog(
+  //           '', AppLocalizations.of(context).userAccessDenied,
+  //           isWarning: false);
+  //       // receiverWalletAddressTextController.text =
+  //       //     AppLocalizations.of(context).userAccessDenied;
+  //     } else {
+  //       setBusy(false);
+  //       sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+  //           isWarning: false);
+  //       // receiverWalletAddressTextController.text =
+  //       //     '${AppLocalizations.of(context).unknownError}: $e';
+  //     }
+  //   } on FormatException {
+  //     log.i("Barcode FormatException : ");
+  //     // log.i(e.toString());
+  //     setBusy(false);
+  //     // sharedService.alertDialog(AppLocalizations.of(context).scanCancelled,
+  //     //     AppLocalizations.of(context).userReturnedByPressingBackButton,
+  //     //     isWarning: false);
+  //   } catch (e) {
+  //     log.i("Barcode error : ");
+  //     log.i(e.toString());
+  //     setBusy(false);
+  //     sharedService.alertDialog('', AppLocalizations.of(context).unknownError,
+  //         isWarning: false);
+  //     // receiverWalletAddressTextController.text =
+  //     //     '${AppLocalizations.of(context).unknownError}: $e';
+  //   }
+  //   setBusy(false);
+  // }
+
+  // Using MajaScan
   Future scan() async {
     log.i("Barcode: going to scan");
     setBusy(true);

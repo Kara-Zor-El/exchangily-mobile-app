@@ -49,20 +49,16 @@ Future<void> main() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await serviceLocator();
     Logger.level = Level.nothing;
-    SystemChannels.textInput
-        .invokeMethod('TextInput.hide'); // Hides keyboard initially
-    // Force user to use only portrait mode until the development of other screen size design
-    await dotenv.load();
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-      (_) {
-        runApp(
-            //  DevicePreview(builder: (context) =>
-            MyApp(packageInfo));
-        // ));
-      },
-    );
-  } catch (err) {
-    debugPrint('main.dart (Catch) Locator setup has failed $err');
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    // await dotenv.load();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+        .then((_) {
+      runApp(MyApp(packageInfo));
+    });
+    // await dotenv.load(fileName: ".env");
+  } catch (e) {
+    debugPrint('Error in main.dart');
+    debugPrint(e.toString());
   }
 }
 
