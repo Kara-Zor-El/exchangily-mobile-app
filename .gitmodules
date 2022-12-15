@@ -1,3 +1,6 @@
 [submodule "bitbox-flutter"]
 	path = submodules/bitbox-flutter
 	url = https://github.com/tomasforgacbch/bitbox-flutter
+[submodule "submodules/bitcoin_flutter"]
+	path = submodules/bitcoin_flutter
+	url = https://github.com/dart-bitcoin/bitcoin_flutter.git
