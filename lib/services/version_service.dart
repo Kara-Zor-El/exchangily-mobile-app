@@ -12,7 +12,7 @@ import 'package:exchangilymobileapp/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:launch_review/launch_review.dart';
 import 'dart:io' show Platform;
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:exchangilymobileapp/utils/custom_http_util.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:version/version.dart';

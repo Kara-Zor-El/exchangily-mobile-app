@@ -35,7 +35,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 //import 'package:url_launcher/url_launcher.dart';
 
 import 'package:exchangilymobileapp/environments/environment.dart';
