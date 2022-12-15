@@ -159,7 +159,7 @@ dependencies:
   cached_network_image: ^3.2.3
 
   #gradient_text
-  gradient_text: ^1.0.2
+  simple_gradient_text: ^1.2.4
 
   #drop_cap_text
   drop_cap_text: ^1.0.7
