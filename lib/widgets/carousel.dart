@@ -6,7 +6,7 @@ import 'package:exchangilymobileapp/widgets/web_page.dart';
 import 'package:exchangilymobileapp/widgets/youtube.dart';
 import 'package:exchangilymobileapp/widgets/youtube_list_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 
 class Carousel extends StatelessWidget {
   final List imageData;

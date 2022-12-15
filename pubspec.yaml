@@ -150,7 +150,7 @@ dependencies:
   flutter_svg: ^1.1.6 
 
   # Carousel
-  flutter_swiper: ^1.1.6
+  flutter_swiper_view: ^1.1.8
 
   # validators
   validators: ^3.0.0
