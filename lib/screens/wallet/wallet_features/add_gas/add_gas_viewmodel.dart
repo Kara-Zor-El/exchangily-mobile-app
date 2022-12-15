@@ -16,31 +16,32 @@ import 'package:exchangilymobileapp/utils/string_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
+import 'dart:async';
 
 class AddGasViewModel extends FutureViewModel {
-  BuildContext context;
+  BuildContext? context;
   final log = getLogger('AddGasVM');
-  final walletService = locator<WalletService>();
-  final sharedService = locator<SharedService>();
-  final apiService = locator<ApiService>();
+  final WalletService? walletService = locator<WalletService>();
+  final SharedService? sharedService = locator<SharedService>();
+  final ApiService? apiService = locator<ApiService>();
 
-  final DialogService _dialogService = locator<DialogService>();
+  final DialogService? _dialogService = locator<DialogService>();
 
   final amountController = TextEditingController();
   final gasPriceTextController = TextEditingController();
   final gasLimitTextController = TextEditingController();
-  double gasBalance = 0.0;
+  double? gasBalance = 0.0;
   double transFee = 0.0;
   bool isAdvance = false;
   double sliderValue = 0.0;
   bool isAmountInvalid = false;
   double totalAmount = 0.0;
   double sumUtxos = 0.0;
-  String fabAddress = '';
-  var scarContractAddress;
-  var contractInfo;
+  String? fabAddress = '';
+  late var scarContractAddress;
+  late var contractInfo;
   var utxos;
-  double extraAmount;
+  double? extraAmount;
   int satoshisPerBytes = 14;
   var bytesPerInput;
   var feePerInput;
@@ -49,8 +50,8 @@ class AddGasViewModel extends FutureViewModel {
 
   @override
   Future futureToRun() async {
-    String exgAddress = await sharedService.getExgAddressFromWalletDatabase();
-    return walletService.gasBalance(exgAddress);
+    String exgAddress = await (sharedService!.getExgAddressFromWalletDatabase() as FutureOr<String>);
+    return walletService!.gasBalance(exgAddress);
   }
 
   init() async {
@@ -60,14 +61,14 @@ class AddGasViewModel extends FutureViewModel {
     gasPriceTextController.text = '50';
     bytesPerInput = environment["chains"]["FAB"]["bytesPerInput"];
     feePerInput = bytesPerInput * satoshisPerBytes;
-    fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
+    fabAddress = await sharedService!.getFabAddressFromCoreWalletDatabase();
     getSliderReady();
     await getFabBalance();
     setBusy(false);
   }
 
   getSliderReady() async {
-    utxos = await apiService.getFabUtxos(fabAddress);
+    utxos = await apiService!.getFabUtxos(fabAddress!);
     scarContractAddress = await kanbanUtils.getScarAddress();
     scarContractAddress = trimHexPrefix(scarContractAddress);
     var gasPrice = int.tryParse(gasPriceTextController.text);
@@ -77,7 +78,7 @@ class AddGasViewModel extends FutureViewModel {
       "gasLimit": gasLimit,
     };
     var fxnDepositCallHex = '4a58db19';
-    contractInfo = await walletService.getFabSmartContract(scarContractAddress,
+    contractInfo = await walletService!.getFabSmartContract(scarContractAddress,
         fxnDepositCallHex, options['gasLimit'], options['gasPrice']);
     extraAmount = contractInfo['totalFee'];
     if (utxos != null) {
@@ -117,12 +118,12 @@ class AddGasViewModel extends FutureViewModel {
 
   getFabBalance() async {
     setBusy(true);
-    await apiService
+    await apiService!
         .getSingleWalletBalance(fabAddress, 'FAB', fabAddress)
         .then((walletBalance) {
       if (walletBalance != null) {
         fabBalance = NumberUtil().truncateDoubleWithoutRouding(
-            walletBalance[0].balance,
+            walletBalance[0].balance!,
             precision: 6);
       }
     });
@@ -133,27 +134,27 @@ class AddGasViewModel extends FutureViewModel {
   checkPass(double amount, context) async {
     setBusy(true);
     if (isAmountInvalid) {
-      sharedService.sharedSimpleNotification(
-        AppLocalizations.of(context).notice,
-        subtitle: "FAB ${AppLocalizations.of(context).insufficientBalance}",
+      sharedService!.sharedSimpleNotification(
+        AppLocalizations.of(context)!.notice,
+        subtitle: "FAB ${AppLocalizations.of(context)!.insufficientBalance}",
       );
       return;
     }
     var gasPrice = int.tryParse(gasPriceTextController.text);
     var gasLimit = int.tryParse(gasLimitTextController.text);
-    var res = await _dialogService.showDialog(
-        title: AppLocalizations.of(context).enterPassword,
+    var res = await _dialogService!.showDialog(
+        title: AppLocalizations.of(context)!.enterPassword,
         description:
-            AppLocalizations.of(context).dialogManagerTypeSamePasswordNote,
-        buttonTitle: AppLocalizations.of(context).confirm);
-    if (res.confirmed) {
-      String mnemonic = res.returnedText;
+            AppLocalizations.of(context)!.dialogManagerTypeSamePasswordNote,
+        buttonTitle: AppLocalizations.of(context)!.confirm);
+    if (res.confirmed!) {
+      String mnemonic = res.returnedText!;
       var options = {
         "gasPrice": gasPrice ?? 50,
         "gasLimit": gasLimit ?? 800000
       };
-      Uint8List seed = walletService.generateSeed(mnemonic);
-      var ret = await walletService.addGasDo(seed, amount, options: options);
+      Uint8List seed = walletService!.generateSeed(mnemonic);
+      var ret = await walletService!.addGasDo(seed, amount, options: options);
       log.w('res $ret');
       //{'txHex': txHex, 'txHash': txHash, 'errMsg': errMsg}
       String formattedErrorMsg = '';
@@ -163,10 +164,10 @@ class AddGasViewModel extends FutureViewModel {
         formattedErrorMsg = firstCharToUppercase(errorMsg);
       }
       amountController.text = '';
-      sharedService.alertDialog(
+      sharedService!.alertDialog(
           (ret["errMsg"] == '')
-              ? AppLocalizations.of(context).addGasTransactionSuccess
-              : AppLocalizations.of(context).addGasTransactionFailed,
+              ? AppLocalizations.of(context)!.addGasTransactionSuccess
+              : AppLocalizations.of(context)!.addGasTransactionFailed,
           (ret["errMsg"] == '') ? ret['txHash'] : formattedErrorMsg,
           isWarning: false,
           isCopyTxId: ret["errMsg"] == '' ? true : false,
@@ -260,9 +261,9 @@ class AddGasViewModel extends FutureViewModel {
   }
 
   wrongPasswordNotification(context) {
-    sharedService.sharedSimpleNotification(
-      AppLocalizations.of(context).passwordMismatch,
-      subtitle: AppLocalizations.of(context).pleaseProvideTheCorrectPassword,
+    sharedService!.sharedSimpleNotification(
+      AppLocalizations.of(context)!.passwordMismatch,
+      subtitle: AppLocalizations.of(context)!.pleaseProvideTheCorrectPassword,
     );
   }
 }

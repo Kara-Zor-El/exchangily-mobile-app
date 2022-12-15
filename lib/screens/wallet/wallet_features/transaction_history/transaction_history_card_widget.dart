@@ -14,10 +14,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class TxHisotryCardWidget extends StatelessWidget {
   final TransactionHistoryViewmodel model;
   const TxHisotryCardWidget({
-    @required this.model,
-    Key key,
-    @required this.transaction,
-    @required this.customFontSize,
+    required this.model,
+    Key? key,
+    required this.transaction,
+    required this.customFontSize,
   }) : super(key: key);
 
   final TransactionHistory transaction;
@@ -25,7 +25,7 @@ class TxHisotryCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    transaction.tickerName = model.updateTickers(transaction.tickerName);
+    transaction.tickerName = model.updateTickers(transaction.tickerName!);
 
     return Card(
         elevation: 4,
@@ -40,22 +40,22 @@ class TxHisotryCardWidget extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.only(left: 4),
                         child: Padding(
-                          padding: transaction.tickerName.length > 3
+                          padding: transaction.tickerName!.length > 3
                               ? const EdgeInsets.only(left: 0.0)
                               : const EdgeInsets.only(left: 5.0),
-                          child: transaction.tickerName.contains('(')
+                          child: transaction.tickerName!.contains('(')
                               ? Column(
                                   children: [
-                                    Text(transaction.tickerName.split('(')[0],
+                                    Text(transaction.tickerName!.split('(')[0],
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleLarge),
                                     Text(
-                                        transaction.tickerName
+                                        transaction.tickerName!
                                             .split('(')[1]
                                             .substring(
                                                 0,
-                                                transaction.tickerName
+                                                transaction.tickerName!
                                                         .split('(')[1]
                                                         .length -
                                                     1),
@@ -64,14 +64,14 @@ class TxHisotryCardWidget extends StatelessWidget {
                                             .titleSmall),
                                   ],
                                 )
-                              : Text(transaction.tickerName.toUpperCase(),
+                              : Text(transaction.tickerName!.toUpperCase(),
                                   style:
                                       Theme.of(context).textTheme.titleSmall),
                         ),
                       ),
 
                       // icon
-                      transaction.tag.toUpperCase() ==
+                      transaction.tag!.toUpperCase() ==
                               model.deposit.toUpperCase()
                           ? const Padding(
                               padding: EdgeInsets.only(left: 10.0),
@@ -81,7 +81,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                                 color: buyPrice,
                               ),
                             )
-                          : transaction.tag.toUpperCase() ==
+                          : transaction.tag!.toUpperCase() ==
                                   model.send.toUpperCase()
                               ? const Padding(
                                   padding: EdgeInsets.only(left: 13.0),
@@ -100,34 +100,34 @@ class TxHisotryCardWidget extends StatelessWidget {
                                   ),
                                 ),
 
-                      if (transaction.tag.toUpperCase() ==
+                      if (transaction.tag!.toUpperCase() ==
                           model.withdraw.toUpperCase())
                         Padding(
                           padding: const EdgeInsets.only(left: 3.0),
                           child: Text(
-                            AppLocalizations.of(context).withdraw,
+                            AppLocalizations.of(context)!.withdraw,
                             style: Theme.of(context).textTheme.titleSmall,
                             textAlign: TextAlign.center,
                           ),
                         )
-                      else if (transaction.tag.toUpperCase() ==
+                      else if (transaction.tag!.toUpperCase() ==
                           model.send.toUpperCase())
                         Padding(
                           padding: const EdgeInsets.only(left: 5.0),
                           child: Text(
-                            AppLocalizations.of(context).send,
+                            AppLocalizations.of(context)!.send,
                             style: Theme.of(context).textTheme.titleSmall,
                             textAlign: TextAlign.center,
                           ),
                         )
-                      else if (transaction.tag.toUpperCase() ==
+                      else if (transaction.tag!.toUpperCase() ==
                           model.deposit.toUpperCase())
                         Padding(
                           padding: model.isChinese
                               ? const EdgeInsets.only(left: 7.0)
                               : const EdgeInsets.only(left: 3.0),
                           child: Text(
-                            AppLocalizations.of(context).deposit,
+                            AppLocalizations.of(context)!.deposit,
                             style: Theme.of(context).textTheme.titleSmall,
                             textAlign: TextAlign.center,
                           ),
@@ -143,14 +143,14 @@ class TxHisotryCardWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AutoSizeText(
-                      transaction.date.split(" ")[0].split("-")[1] +
+                      transaction.date!.split(" ")[0].split("-")[1] +
                           '-' +
-                          transaction.date.split(" ")[0].split("-")[2] +
+                          transaction.date!.split(" ")[0].split("-")[2] +
                           '-' +
-                          transaction.date.split(" ")[0].split("-")[0],
+                          transaction.date!.split(" ")[0].split("-")[0],
                       style: Theme.of(context)
                           .textTheme
-                          .headlineSmall
+                          .headlineSmall!
                           .copyWith(fontWeight: FontWeight.w400),
                       minFontSize: 8,
                       maxLines: 1,
@@ -161,11 +161,11 @@ class TxHisotryCardWidget extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 4.0),
                       child: Text(
                         transaction.tag == model.send
-                            ? transaction.date.split(" ")[1].split(".")[0]
-                            : transaction.date.split(" ")[1],
+                            ? transaction.date!.split(" ")[1].split(".")[0]
+                            : transaction.date!.split(" ")[1],
                         style: Theme.of(context)
                             .textTheme
-                            .titleSmall
+                            .titleSmall!
                             .copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -181,13 +181,13 @@ class TxHisotryCardWidget extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: AutoSizeText(
                       NumberUtil()
-                          .truncateDoubleWithoutRouding(transaction.quantity,
+                          .truncateDoubleWithoutRouding(transaction.quantity!,
                               precision: model.decimalLimit)
                           .toString(),
                       textAlign: TextAlign.right,
                       style: Theme.of(context)
                           .textTheme
-                          .headlineSmall
+                          .headlineSmall!
                           .copyWith(fontWeight: FontWeight.w400),
                       minFontSize: 8,
                       maxLines: 2,
@@ -205,7 +205,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                             // If deposit is success in both Ticker chain and kanabn chain then show completed
-                            if (transaction.tag.toUpperCase() ==
+                            if (transaction.tag!.toUpperCase() ==
                                     model.deposit.toUpperCase() &&
                                 transaction.tickerChainTxStatus ==
                                     model.success &&
@@ -213,7 +213,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                               Expanded(
                                 child: AutoSizeText(
                                   firstCharToUppercase(
-                                      AppLocalizations.of(context).completed),
+                                      AppLocalizations.of(context)!.completed),
                                   style: TextStyle(
                                       fontSize: customFontSize,
                                       color: buyPrice),
@@ -224,45 +224,45 @@ class TxHisotryCardWidget extends StatelessWidget {
                               )
 
                             // If deposit is success in only Ticker chain and not in kanban chain then show sent
-                            else if (transaction.tag.toUpperCase() ==
+                            else if (transaction.tag!.toUpperCase() ==
                                     model.deposit.toUpperCase() &&
                                 transaction.tickerChainTxStatus ==
                                     model.success &&
                                 transaction.kanbanTxStatus == model.success)
                               Text(
                                   firstCharToUppercase(
-                                      AppLocalizations.of(context).sent),
+                                      AppLocalizations.of(context)!.sent),
                                   style: TextStyle(
                                       fontSize: customFontSize,
                                       color: buyPrice))
                             // depsoit pending if ticker chain staus is pending
-                            else if (transaction.tag.toUpperCase() ==
+                            else if (transaction.tag!.toUpperCase() ==
                                     model.deposit.toUpperCase() &&
                                 transaction.tickerChainTxStatus ==
                                     model.pending)
                               Text(
                                   firstCharToUppercase(
-                                      AppLocalizations.of(context).pending),
+                                      AppLocalizations.of(context)!.pending),
                                   style: TextStyle(
                                       fontSize: customFontSize, color: yellow))
                             // depsoit pending if ticker chain staus is pending
-                            else if (transaction.tag.toUpperCase() ==
+                            else if (transaction.tag!.toUpperCase() ==
                                     model.deposit.toUpperCase() &&
                                 transaction.kanbanTxStatus == model.pending)
                               Text(
                                   firstCharToUppercase(
-                                      AppLocalizations.of(context).pending),
+                                      AppLocalizations.of(context)!.pending),
                                   style: TextStyle(
                                       fontSize: customFontSize, color: yellow))
-                            else if (transaction.tag.toUpperCase() ==
+                            else if (transaction.tag!.toUpperCase() ==
                                     model.deposit.toUpperCase() &&
                                 transaction.tickerChainTxStatus == model.failed)
                               Text(
-                                AppLocalizations.of(context).failed,
+                                AppLocalizations.of(context)!.failed,
                                 style:
                                     const TextStyle(fontSize: 12, color: red),
                               )
-                            else if (transaction.tag.toUpperCase() ==
+                            else if (transaction.tag!.toUpperCase() ==
                                         model.deposit.toUpperCase() &&
                                     transaction.kanbanTxStatus ==
                                         model.rejected ||
@@ -270,38 +270,38 @@ class TxHisotryCardWidget extends StatelessWidget {
                               RichText(
                                 text: TextSpan(
                                     text:
-                                        AppLocalizations.of(context).redeposit,
+                                        AppLocalizations.of(context)!.redeposit,
                                     style: const TextStyle(
                                         fontSize: 12,
                                         decoration: TextDecoration.underline,
                                         color: red),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
-                                        model.navigationService.navigateTo(
+                                        model.navigationService!.navigateTo(
                                             RedepositViewRoute,
                                             arguments: model.walletInfo);
                                       }),
                               ) // if withdraw status is success on kanban but null on ticker chain then display sent
-                            else if (transaction.tag.toUpperCase() ==
+                            else if (transaction.tag!.toUpperCase() ==
                                     model.withdraw.toUpperCase() &&
                                 transaction.kanbanTxStatus == model.success &&
                                 transaction.tickerChainTxId == '')
                               Text(
                                   firstCharToUppercase(
-                                      AppLocalizations.of(context).sent),
+                                      AppLocalizations.of(context)!.sent),
                                   style: TextStyle(
                                       fontSize: customFontSize,
                                       color:
                                           buyPrice)) // if withdraw status is success on kanban but null on ticker chain then display sent
-                            else if (transaction.tag.toUpperCase() ==
+                            else if (transaction.tag!.toUpperCase() ==
                                     model.withdraw.toUpperCase() &&
                                 transaction.kanbanTxStatus == model.success &&
-                                transaction.tickerChainTxStatus
+                                transaction.tickerChainTxStatus!
                                     .startsWith('sent'))
                               Expanded(
                                 child: AutoSizeText(
                                   firstCharToUppercase(
-                                      AppLocalizations.of(context).completed),
+                                      AppLocalizations.of(context)!.completed),
                                   style: TextStyle(
                                       fontSize: customFontSize,
                                       color: buyPrice),
@@ -316,7 +316,7 @@ class TxHisotryCardWidget extends StatelessWidget {
                       child: Container(
                           child: Text(
                               firstCharToUppercase(
-                                AppLocalizations.of(context).sent,
+                                AppLocalizations.of(context)!.sent,
                               ),
                               textAlign: TextAlign.start,
                               style: TextStyle(

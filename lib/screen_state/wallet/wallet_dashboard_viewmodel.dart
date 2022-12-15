@@ -13,6 +13,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 
 import 'package:exchangilymobileapp/constants/api_routes.dart';
 import 'package:exchangilymobileapp/constants/colors.dart';
@@ -69,29 +70,30 @@ import 'package:json_diff/json_diff.dart';
 class WalletDashboardViewModel extends BaseViewModel {
   final log = getLogger('WalletDashboardViewModel');
 
-  WalletService walletService = locator<WalletService>();
-  SharedService sharedService = locator<SharedService>();
+  WalletService? walletService = locator<WalletService>();
+  SharedService? sharedService = locator<SharedService>();
 
-  final NavigationService navigationService = locator<NavigationService>();
-  final DecimalConfigDatabaseService decimalConfigDatabaseService =
+  final NavigationService? navigationService = locator<NavigationService>();
+  final DecimalConfigDatabaseService? decimalConfigDatabaseService =
       locator<DecimalConfigDatabaseService>();
-  ApiService apiService = locator<ApiService>();
+  ApiService? apiService = locator<ApiService>();
 
-  TokenInfoDatabaseService tokenListDatabaseService =
+  TokenInfoDatabaseService? tokenListDatabaseService =
       locator<TokenInfoDatabaseService>();
-  var coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
-  var storageService = locator<LocalStorageService>();
-  final dialogService = locator<DialogService>();
+  CoreWalletDatabaseService? coreWalletDatabaseService =
+      locator<CoreWalletDatabaseService>();
+  LocalStorageService? storageService = locator<LocalStorageService>();
+  final DialogService? dialogService = locator<DialogService>();
   //final userDatabaseService = locator<UserSettingsDatabaseService>();
-  final coinService = locator<CoinService>();
+  final CoinService? coinService = locator<CoinService>();
 
-  BuildContext context;
+  BuildContext? context;
 
-  List<WalletBalance> wallets = [];
-  List<WalletBalance> walletsCopy = [];
+  List<WalletBalance>? wallets = [];
+  List<WalletBalance>? walletsCopy = [];
   List<WalletBalance> favWallets = [];
 
-  WalletInfo rightWalletInfo;
+  WalletInfo? rightWalletInfo;
   final double elevation = 5;
   String totalUsdBalance = '';
   double gasAmount = 0;
@@ -108,7 +110,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   var top = 0.0;
   final freeFabAnswerTextController = TextEditingController();
   String postFreeFabResult = '';
-  bool isEligibleForFreeGas = false;
+  bool? isEligibleForFreeGas = false;
   double fabBalance = 0.0;
   // List<String> formattedUsdValueList = [];
   // List<String> formattedUsdValueListCopy = [];
@@ -116,12 +118,12 @@ class WalletDashboardViewModel extends BaseViewModel {
   final searchCoinTextController = TextEditingController();
   // final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   //     FlutterLocalNotificationsPlugin();
-  var refreshController;
+  late var refreshController;
   //vars for announcement
   bool hasApiError = false;
-  List announceList;
-  GlobalKey globalKeyOne;
-  GlobalKey globalKeyTwo;
+  List? announceList;
+  late GlobalKey globalKeyOne;
+  late GlobalKey globalKeyTwo;
 
   bool _isShowCaseView = false;
   get isShowCaseView => _isShowCaseView;
@@ -136,20 +138,20 @@ class WalletDashboardViewModel extends BaseViewModel {
   bool isBottomOfTheList = false;
   bool isTopOfTheList = true;
   final fabUtils = FabUtils();
-  List<Map<String, int>> walletDecimalList = [];
+  List<Map<String?, int?>> walletDecimalList = [];
   String totalWalletBalance = '';
   String totalLockedBalance = '';
 
   String totalExchangeBalance = '';
-  List<CustomTokenModel> customTokens = [];
-  List<CustomTokenModel> selectedCustomTokens = [];
+  List<CustomTokenModel>? customTokens = [];
+  List<CustomTokenModel>? selectedCustomTokens = [];
   var receiverWalletAddressTextController = TextEditingController();
   int swiperWidgetIndex = 0;
   var walletUtil = WalletUtil();
   bool isHideSearch = false;
   bool isHideSmallAssetsButton = false;
   var coinsToHideList = [];
-  var versionService = locator<VersionService>();
+  VersionService? versionService = locator<VersionService>();
 
 /*----------------------------------------------------------------------
                     INIT
@@ -158,7 +160,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   init() async {
     setBusy(true);
 
-    sharedService.context = context;
+    sharedService!.context = context;
     //currentTabSelection = storageService.isFavCoinTabSelected ? 1 : 0;
 
     await refreshBalancesV2();
@@ -167,14 +169,14 @@ class WalletDashboardViewModel extends BaseViewModel {
 
     checkAnnouncement();
 
-    customTokens = await apiService.getCustomTokens();
+    customTokens = await apiService!.getCustomTokens();
     await getBalanceForSelectedCustomTokens();
     setBusy(false);
 
-    await versionService.checkVersion(context, isForceUpdate: true);
+    await versionService!.checkVersion(context, isForceUpdate: true);
 
     Future.delayed(const Duration(seconds: 2), () async {
-      await walletService.storeTokenListUpdatesInDB();
+      await walletService!.storeTokenListUpdatesInDB();
     });
   }
 
@@ -187,21 +189,21 @@ class WalletDashboardViewModel extends BaseViewModel {
     log.w('routeWithWalletInfoArgs walletInfo ${walletInfo.toJson()}');
     searchCoinTextController.clear();
     // navigate accordingly
-    navigationService.navigateTo(routeName, arguments: walletInfo);
+    navigationService!.navigateTo(routeName, arguments: walletInfo);
   }
 
 // Send custom token
   routeCustomToken(CustomTokenModel customTokenModel,
       {bool isSend = true}) async {
-    var exgAddress = await sharedService.getExgAddressFromWalletDatabase();
+    var exgAddress = await sharedService!.getExgAddressFromWalletDatabase();
 
     var wallet = WalletInfo(
         tickerName: customTokenModel.symbol,
         tokenType: 'FAB',
         address: exgAddress,
         availableBalance: customTokenModel.balance);
-    storageService.customTokenData = jsonEncode(customTokenModel.toJson());
-    navigationService.navigateTo(
+    storageService!.customTokenData = jsonEncode(customTokenModel.toJson());
+    navigationService!.navigateTo(
         isSend ? SendViewRoute : TransactionHistoryViewRoute,
         arguments: wallet);
   }
@@ -210,24 +212,24 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   Future getBalanceForSelectedCustomTokens() async {
     setBusyForObject(selectedCustomTokens, true);
-    String fabAddress = await sharedService.getExgAddressFromWalletDatabase();
-    selectedCustomTokens.clear();
-    String selectedCustomTokensJson = storageService.customTokens;
+    String? fabAddress = await sharedService!.getExgAddressFromWalletDatabase();
+    selectedCustomTokens!.clear();
+    String selectedCustomTokensJson = storageService!.customTokens;
     if (selectedCustomTokensJson != null && selectedCustomTokensJson != '') {
-      List<CustomTokenModel> customTokensFromStorage =
+      List<CustomTokenModel>? customTokensFromStorage =
           CustomTokenModelList.fromJson(jsonDecode(selectedCustomTokensJson))
               .customTokens;
 
       selectedCustomTokens = customTokensFromStorage;
-      if (selectedCustomTokens.isNotEmpty) {
+      if (selectedCustomTokens!.isNotEmpty) {
         log.w(
-            'selectedCustomTokens length ${selectedCustomTokens.length} --selectedCustomTokens last item ${selectedCustomTokens.last.toJson()}');
-        for (var token in selectedCustomTokens) {
+            'selectedCustomTokens length ${selectedCustomTokens!.length} --selectedCustomTokens last item ${selectedCustomTokens!.last.toJson()}');
+        for (var token in selectedCustomTokens!) {
           log.w('token before adding balance ${token.toJson()}');
           var balance = await fabUtils.getFabTokenBalanceForABI(
               Constants.CustomTokenSignatureAbi,
-              token.tokenId,
-              fabAddress,
+              token.tokenId!,
+              fabAddress!,
               token.decimal);
 
           token.balance = balance;
@@ -251,13 +253,13 @@ class WalletDashboardViewModel extends BaseViewModel {
     // and show added checkmark infront of those tokens
     // as well as remove button which will remove the token from the list
 
-    String isMatched;
-    if (customTokens.isNotEmpty) {
+    String? isMatched;
+    if (customTokens!.isNotEmpty) {
       showModalBottomSheet(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
-          context: context,
+          context: context!,
           builder: (BuildContext context) => FractionallySizedBox(
                 heightFactor: 0.9,
                 child: StatefulBuilder(
@@ -268,22 +270,22 @@ class WalletDashboardViewModel extends BaseViewModel {
                     padding: const EdgeInsets.all(5),
                     //  height: 500,
                     child: ListView.builder(
-                        itemCount: customTokens.length,
+                        itemCount: customTokens!.length,
                         itemBuilder: (context, index) {
                           try {
-                            isMatched = selectedCustomTokens
+                            isMatched = selectedCustomTokens!
                                 .firstWhere((element) =>
                                     element.tokenId ==
-                                    customTokens[index].tokenId)
+                                    customTokens![index].tokenId)
                                 .symbol;
 
                             // ignore: avoid_print
                             debugPrint(
-                                '${customTokens[index].symbol} -- is in the selectedCustomTokens list ? $isMatched match found -- with token id ${customTokens[index].tokenId}');
+                                '${customTokens![index].symbol} -- is in the selectedCustomTokens list ? $isMatched match found -- with token id ${customTokens![index].tokenId}');
                           } catch (err) {
                             isMatched = null;
                             log.w(
-                                'no match found for ${customTokens[index].symbol} with token id ${customTokens[index].tokenId}');
+                                'no match found for ${customTokens![index].symbol} with token id ${customTokens![index].tokenId}');
                           }
                           return Container(
                             padding: const EdgeInsets.only(bottom: 10),
@@ -303,8 +305,8 @@ class WalletDashboardViewModel extends BaseViewModel {
                                           padding:
                                               const EdgeInsets.only(top: 10.0),
                                           child: Text(
-                                              customTokens[index]
-                                                  .symbol
+                                              customTokens![index]
+                                                  .symbol!
                                                   .toUpperCase(),
                                               textAlign: TextAlign.start,
                                               style: const TextStyle(
@@ -312,7 +314,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold)),
                                         ),
-                                        Text(customTokens[index].name,
+                                        Text(customTokens![index].name!,
                                             style: const TextStyle(
                                               color: primaryColor,
                                               fontSize: 12,
@@ -329,14 +331,14 @@ class WalletDashboardViewModel extends BaseViewModel {
                                           padding: const EdgeInsets.only(
                                               bottom: 3.0),
                                           child: Text(
-                                              AppLocalizations.of(context)
+                                              AppLocalizations.of(context)!
                                                   .totalSupply,
                                               style: const TextStyle(
                                                   color: primaryColor,
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold)),
                                         ),
-                                        Text(customTokens[index].totalSupply,
+                                        Text(customTokens![index].totalSupply!,
                                             style: const TextStyle(
                                                 color: grey, fontSize: 12))
                                       ],
@@ -367,10 +369,10 @@ class WalletDashboardViewModel extends BaseViewModel {
                                             child: Text(
                                                 isMatched == null
                                                     ? AppLocalizations.of(
-                                                            context)
+                                                            context)!
                                                         .add
                                                     : AppLocalizations.of(
-                                                            context)
+                                                            context)!
                                                         .remove,
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
@@ -392,42 +394,43 @@ class WalletDashboardViewModel extends BaseViewModel {
                                       ),
                                       onPressed: () {
                                         int tokenIndexToRemove =
-                                            selectedCustomTokens.indexWhere(
+                                            selectedCustomTokens!.indexWhere(
                                                 (element) =>
                                                     element.tokenId ==
-                                                    customTokens[index]
+                                                    customTokens![index]
                                                         .tokenId);
                                         setBusyForObject(
                                             selectedCustomTokens, true);
 
                                         if (tokenIndexToRemove.isNegative) {
-                                          setState(() => selectedCustomTokens
-                                              .add(customTokens[index]));
+                                          setState(() => selectedCustomTokens!
+                                              .add(customTokens![index]));
                                         } else {
-                                          if (selectedCustomTokens.isNotEmpty) {
+                                          if (selectedCustomTokens!
+                                              .isNotEmpty) {
                                             log.w(
-                                                'last item ${selectedCustomTokens.last.toJson()}');
+                                                'last item ${selectedCustomTokens!.last.toJson()}');
                                           }
                                           log.i(
-                                              'selectedCustomTokens - length before removing token ${selectedCustomTokens.length}');
-                                          setState(() => selectedCustomTokens
+                                              'selectedCustomTokens - length before removing token ${selectedCustomTokens!.length}');
+                                          setState(() => selectedCustomTokens!
                                               .removeAt(tokenIndexToRemove));
 
                                           log.e(
-                                              'selectedCustomTokens - length --selectedCustomTokens.length => removed token ${customTokens[index].symbol}');
+                                              'selectedCustomTokens - length --selectedCustomTokens.length => removed token ${customTokens![index].symbol}');
                                         }
                                         setBusyForObject(
                                             selectedCustomTokens, false);
 
                                         log.i(
-                                            'customTokens - length ${selectedCustomTokens.length}');
+                                            'customTokens - length ${selectedCustomTokens!.length}');
                                         var jsonString = [];
-                                        jsonString = selectedCustomTokens
+                                        jsonString = selectedCustomTokens!
                                             .map((cToken) =>
                                                 jsonEncode(cToken.toJson()))
                                             .toList();
-                                        storageService.customTokens = '';
-                                        storageService.customTokens =
+                                        storageService!.customTokens = '';
+                                        storageService!.customTokens =
                                             jsonString.toString();
                                       },
                                     ),
@@ -447,31 +450,31 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   storeWalletDecimalData() async {
     walletDecimalList = [];
-    await apiService.getTokenList().then((token) {
-      for (var token in token) {
+    await apiService!.getTokenList().then((token) {
+      for (var token in token!) {
         walletDecimalList.add({token.tickerName: token.decimal});
       }
     });
 
-    await apiService.getTokenListUpdates().then((token) {
-      for (var token in token) {
+    await apiService!.getTokenListUpdates().then((token) {
+      for (var token in token!) {
         walletDecimalList.add({token.tickerName: token.decimal});
       }
     });
 
     log.i('walletDecimalList $walletDecimalList');
     int storedDecimalListLength =
-        storageService.getStoredListLength(storageService.walletDecimalList);
+        storageService!.getStoredListLength(storageService!.walletDecimalList);
 
     if (walletDecimalList.length != storedDecimalListLength) {
       log.w('clearing storedDecimalList');
-      if (storedDecimalListLength != 0) storageService.walletDecimalList = '';
+      if (storedDecimalListLength != 0) storageService!.walletDecimalList = '';
 
       var t = {walletDecimalList.map((e) => jsonEncode(e)).toList()};
       log.w('json encode decimal data before storing $t');
-      storageService.walletDecimalList = t.toString();
+      storageService!.walletDecimalList = t.toString();
     }
-    log.i('latest storedDecimalList ${storageService.walletDecimalList}');
+    log.i('latest storedDecimalList ${storageService!.walletDecimalList}');
   }
 
   _scrollListener() {
@@ -510,8 +513,8 @@ class WalletDashboardViewModel extends BaseViewModel {
     bool isSuccess = false;
 
     if (isHideSmallAssetsButton &&
-        (wallet.balance * wallet.usdValue.usd).toInt() < 0.1 &&
-        wallet.balance < 0.1) {
+        (wallet.balance! * wallet.usdValue!.usd!).toInt() < 0.1 &&
+        wallet.balance! < 0.1) {
       isSuccess = true;
     }
     return isSuccess;
@@ -536,7 +539,7 @@ class WalletDashboardViewModel extends BaseViewModel {
     if (tabIndex != 1) {
       isShowFavCoins = false;
     }
-    storageService.isFavCoinTabSelected = isShowFavCoins ? true : false;
+    storageService!.isFavCoinTabSelected = isShowFavCoins ? true : false;
     debugPrint(
         'current tab sel $currentTabSelection -- isShowFavCoins $isShowFavCoins');
 
@@ -587,7 +590,7 @@ class WalletDashboardViewModel extends BaseViewModel {
     setBusyForObject(favWallets, true);
 
     favWallets.clear();
-    String favCoinsJson = storageService.favWalletCoins;
+    String favCoinsJson = storageService!.favWalletCoins;
     if (favCoinsJson != null && favCoinsJson != '') {
       List<String> favWalletCoins =
           (jsonDecode(favCoinsJson) as List<dynamic>).cast<String>();
@@ -595,7 +598,7 @@ class WalletDashboardViewModel extends BaseViewModel {
       var wallets = await refreshBalancesV2();
 
       for (var i = 0; i < favWalletCoins.length; i++) {
-        for (var j = 0; j < wallets.length; j++) {
+        for (var j = 0; j < wallets!.length; j++) {
           if (wallets[j].coin == favWalletCoins[i].toString()) {
             favWallets.add(wallets[j]);
             break;
@@ -645,12 +648,12 @@ class WalletDashboardViewModel extends BaseViewModel {
   moveCoin(String tickerName, int desiredIndexPosition) {
     try {
       var walletObj =
-          wallets.singleWhere((element) => element.coin == tickerName);
+          wallets!.singleWhere((element) => element.coin == tickerName);
       if (walletObj != null) {
-        int walletObjIndex = wallets.indexOf(walletObj);
+        int walletObjIndex = wallets!.indexOf(walletObj);
         if (walletObjIndex != desiredIndexPosition) {
-          wallets.removeAt(walletObjIndex);
-          wallets.insert(desiredIndexPosition, walletObj);
+          wallets!.removeAt(walletObjIndex);
+          wallets!.insert(desiredIndexPosition, walletObj);
         } else {
           log.i(
               '2nd else moveCoin $tickerName already at $desiredIndexPosition');
@@ -673,8 +676,8 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   checkToUpdateWallet() async {
     setBusy(true);
-    String wallet =
-        await walletService.getAddressFromCoreWalletDatabaseByTickerName('TRX');
+    String? wallet = await walletService!
+        .getAddressFromCoreWalletDatabaseByTickerName('TRX');
     if (wallet != null) {
       log.w('$wallet TRX present');
       isUpdateWallet = false;
@@ -693,7 +696,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   showUpdateWalletDialog() {
     showDialog(
-      context: context,
+      context: context!,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Platform.isIOS
@@ -704,10 +707,10 @@ class WalletDashboardViewModel extends BaseViewModel {
                     margin: const EdgeInsets.only(bottom: 5.0),
                     child: Center(
                         child: Text(
-                      AppLocalizations.of(context).appUpdateNotice,
+                      AppLocalizations.of(context)!.appUpdateNotice,
                       style: Theme.of(context)
                           .textTheme
-                          .headlineMedium
+                          .headlineMedium!
                           .copyWith(
                               color: primaryColor, fontWeight: FontWeight.w500),
                     )),
@@ -718,7 +721,8 @@ class WalletDashboardViewModel extends BaseViewModel {
                             Navigator.of(context).pop(true);
                             updateWallet();
                           },
-                          child: Text(AppLocalizations.of(context).updateNow))),
+                          child:
+                              Text(AppLocalizations.of(context)!.updateNow))),
                   actions: const <Widget>[],
                 ))
             : AlertDialog(
@@ -731,11 +735,11 @@ class WalletDashboardViewModel extends BaseViewModel {
                   color: secondaryColor.withOpacity(0.5),
                   child: Center(
                       child:
-                          Text(AppLocalizations.of(context).appUpdateNotice)),
+                          Text(AppLocalizations.of(context)!.appUpdateNotice)),
                 ),
                 titleTextStyle: Theme.of(context)
                     .textTheme
-                    .headlineMedium
+                    .headlineMedium!
                     .copyWith(fontWeight: FontWeight.bold),
                 contentTextStyle: const TextStyle(color: grey),
                 content: Container(
@@ -755,7 +759,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                               if (res) Navigator.of(context).pop();
                             });
                           },
-                          child: Text(AppLocalizations.of(context).updateNow,
+                          child: Text(AppLocalizations.of(context)!.updateNow,
                               style: Theme.of(context).textTheme.headlineSmall),
                         ),
                       ]),
@@ -769,17 +773,17 @@ class WalletDashboardViewModel extends BaseViewModel {
   updateWallet() async {
     setBusy(true);
     //  bool isSuccess = false;
-    String mnemonic = '';
-    await dialogService
+    String? mnemonic = '';
+    await dialogService!
         .showDialog(
-            title: AppLocalizations.of(context).enterPassword,
-            description:
-                AppLocalizations.of(context).dialogManagerTypeSamePasswordNote,
-            buttonTitle: AppLocalizations.of(context).confirm)
+            title: AppLocalizations.of(context!)!.enterPassword,
+            description: AppLocalizations.of(context!)!
+                .dialogManagerTypeSamePasswordNote,
+            buttonTitle: AppLocalizations.of(context!)!.confirm)
         .then((res) async {
-      if (res.confirmed) {
+      if (res.confirmed!) {
         mnemonic = res.returnedText;
-        var address = tron_address_util.generateTrxAddress(mnemonic);
+        var address = tron_address_util.generateTrxAddress(mnemonic!);
         WalletInfo wi = WalletInfo(
             id: null,
             tickerName: 'TRX',
@@ -811,9 +815,9 @@ class WalletDashboardViewModel extends BaseViewModel {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
     // var lang = await userSettingsDatabaseService.getLanguage();
-    lang = storageService.language;
+    lang = storageService!.language;
     if (lang == '' || lang == null) {
-      lang = Platform.localeName.substring(0, 2) ?? 'en';
+      lang = Platform.localeName.substring(0, 2);
     }
 
     setlangGlobal(lang);
@@ -821,7 +825,7 @@ class WalletDashboardViewModel extends BaseViewModel {
 
     var announceContent;
 
-    announceContent = await apiService.getAnnouncement(lang);
+    announceContent = await apiService!.getAnnouncement(lang);
 
     if (announceContent == "error") {
       hasApiError = true;
@@ -833,11 +837,11 @@ class WalletDashboardViewModel extends BaseViewModel {
       // test code end///////////////////////////////
 
       bool checkValue = prefs.containsKey('announceData');
-      List tempAnnounceData = [];
+      List? tempAnnounceData = [];
       if (checkValue) {
         //log.i("announcement: has cache!!!");
         // var x = prefs.getStringList('announceData');
-        List tempdata = prefs.getStringList('announceData');
+        List tempdata = prefs.getStringList('announceData')!;
         // tempdata.forEach((e) {
         //   e = json.decode(e);
         // });
@@ -865,7 +869,7 @@ class WalletDashboardViewModel extends BaseViewModel {
             //    debugPrint("Start map");
             bool hasId = false;
             // log.i("annNew['_id']: " + annNew['_id']);
-            tempAnnounceData.asMap().entries.map((tempAnn) {
+            tempAnnounceData!.asMap().entries.map((tempAnn) {
               int idx = tempAnn.key;
               var val = tempAnn.value;
               // log.i("val['_id']: " + val['_id']);
@@ -881,7 +885,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                 if (diff.changed != null &&
                     diff.changed.toString().length > 3) {
                   //   log.w('ann data diff!!!!');
-                  tempAnnounceData[idx] = annNew;
+                  tempAnnounceData![idx] = annNew;
                   tempAnnounceData[idx]['isRead'] = false;
                 }
               }
@@ -918,14 +922,14 @@ class WalletDashboardViewModel extends BaseViewModel {
 
         tempAnnounceData = announceContent;
 
-        if (tempAnnounceData.isNotEmpty) {
+        if (tempAnnounceData!.isNotEmpty) {
           tempAnnounceData.asMap().entries.map((announ) {
             int idx = announ.key;
             // var val = announ.value;
             // tempAnnounceData[idx]['isRead']=false;
             // var tempString = val.toString();
             // tempString = tempString.substring(0, tempString.length - 1) + 'isRead:false';
-            tempAnnounceData[idx]['isRead'] = false;
+            tempAnnounceData![idx]['isRead'] = false;
           }).toList();
 
           prefs.remove("announceData");
@@ -980,9 +984,9 @@ class WalletDashboardViewModel extends BaseViewModel {
 ----------------------------------------------------------------------*/
   showcaseEvent(BuildContext ctx) async {
     log.e(
-        'Is showvcase: ${storageService.isShowCaseView} --- gas amount: $gasAmount');
+        'Is showvcase: ${storageService!.isShowCaseView} --- gas amount: $gasAmount');
     // if (!isBusy) setBusyForObject(isShowCaseView, true);
-    _isShowCaseView = storageService.isShowCaseView;
+    _isShowCaseView = storageService!.isShowCaseView;
     // if (!isBusy) setBusyForObject(isShowCaseView, false);
     if (isShowCaseView && !isBusy) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -1000,14 +1004,14 @@ class WalletDashboardViewModel extends BaseViewModel {
 ----------------------------------------------------------------------*/
 
   onSingleCoinCardClick(index) async {
-    if (MediaQuery.of(context).size.width < largeSize) {
-      FocusScope.of(context).requestFocus(FocusNode());
-      navigationService.navigateTo(WalletFeaturesViewRoute,
-          arguments: wallets[index]);
+    if (MediaQuery.of(context!).size.width < largeSize) {
+      FocusScope.of(context!).requestFocus(FocusNode());
+      navigationService!
+          .navigateTo(WalletFeaturesViewRoute, arguments: wallets![index]);
       searchCoinTextController.clear();
     } else {
       rightWalletInfo =
-          await walletUtil.getWalletInfoObjFromWalletBalance(wallets[index]);
+          await walletUtil.getWalletInfoObjFromWalletBalance(wallets![index]);
       (context as Element).markNeedsBuild();
     }
   }
@@ -1019,15 +1023,15 @@ class WalletDashboardViewModel extends BaseViewModel {
   searchCoinsByTickerName(String value) async {
     setBusy(true);
 
-    debugPrint('length ${walletsCopy.length} -- value $value');
-    for (var i = 0; i < walletsCopy.length; i++) {
-      if (walletsCopy[i].coin.toUpperCase() == value.toUpperCase()) {
+    debugPrint('length ${walletsCopy!.length} -- value $value');
+    for (var i = 0; i < walletsCopy!.length; i++) {
+      if (walletsCopy![i].coin!.toUpperCase() == value.toUpperCase()) {
         setBusy(true);
         wallets = [];
         // String holder =
         //     NumberUtil.currencyFormat(walletInfoCopy[i].usdValue, 2);
         // formattedUsdValueList.add(holder);
-        wallets.add(walletsCopy[i]);
+        wallets!.add(walletsCopy![i]);
         // debugPrint(
         //     'matched wallet ${walletInfoCopy[i].toJson()} --  wallet info length ${walletInfo.length}');
         setBusy(false);
@@ -1042,9 +1046,9 @@ class WalletDashboardViewModel extends BaseViewModel {
 
   bool isFirstCharacterMatched(String value, int index) {
     debugPrint(
-        'value 1st char ${value[0]} == first chracter ${wallets[index].coin[0]}');
-    log.w(value.startsWith(wallets[index].coin[0]));
-    return value.startsWith(wallets[index].coin[0]);
+        'value 1st char ${value[0]} == first chracter ${wallets![index].coin![0]}');
+    log.w(value.startsWith(wallets![index].coin![0]));
+    return value.startsWith(wallets![index].coin![0]);
   }
 
 /*----------------------------------------------------------------------
@@ -1054,7 +1058,7 @@ class WalletDashboardViewModel extends BaseViewModel {
   getAppVersion() async {
     setBusy(true);
     Map<String, String> localAppVersion =
-        await sharedService.getLocalAppVersion();
+        await sharedService!.getLocalAppVersion();
     String store = '';
     String appDownloadLinkOnWebsite = exchangilyAppLatestApkUrl;
     if (Platform.isIOS) {
@@ -1062,17 +1066,17 @@ class WalletDashboardViewModel extends BaseViewModel {
     } else {
       store = 'Google Play Store';
     }
-    await apiService.getApiAppVersion().then((apiAppVersion) {
+    await apiService!.getApiAppVersion().then((apiAppVersion) {
       if (apiAppVersion != null) {
-        log.e('condition ${localAppVersion['name'].compareTo(apiAppVersion)}');
+        log.e('condition ${localAppVersion['name']!.compareTo(apiAppVersion)}');
 
         log.i(
             'api app version $apiAppVersion -- local version $localAppVersion');
 
-        if (localAppVersion['name'].compareTo(apiAppVersion) == -1) {
-          sharedService.alertDialog(
-              AppLocalizations.of(context).appUpdateNotice,
-              '${AppLocalizations.of(context).pleaseUpdateYourAppFrom} $localAppVersion ${AppLocalizations.of(context).toLatestBuild} $apiAppVersion ${AppLocalizations.of(context).inText} $store ${AppLocalizations.of(context).clickOnWebsiteButton}',
+        if (localAppVersion['name']!.compareTo(apiAppVersion) == -1) {
+          sharedService!.alertDialog(
+              AppLocalizations.of(context!)!.appUpdateNotice,
+              '${AppLocalizations.of(context!)!.pleaseUpdateYourAppFrom} $localAppVersion ${AppLocalizations.of(context!)!.toLatestBuild} $apiAppVersion ${AppLocalizations.of(context!)!.inText} $store ${AppLocalizations.of(context!)!.clickOnWebsiteButton}',
               isUpdate: true,
               isLater: true,
               isWebsite: true,
@@ -1090,15 +1094,15 @@ class WalletDashboardViewModel extends BaseViewModel {
 ----------------------------------------------------------------------*/
 
   getFreeFab() async {
-    String address =
-        await walletService.getAddressFromCoreWalletDatabaseByTickerName('EXG');
-    await apiService.getFreeFab(address).then((res) {
+    String? address = await walletService!
+        .getAddressFromCoreWalletDatabaseByTickerName('EXG');
+    await apiService!.getFreeFab(address).then((res) {
       if (res != null) {
         if (res['ok']) {
           isEligibleForFreeGas = res['ok'];
           debugPrint(res['_body']['question'].toString());
           showDialog(
-              context: context,
+              context: context!,
               builder: (context) {
                 return Center(
                   child: SizedBox(
@@ -1119,7 +1123,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                             color: primaryColor,
                             padding: const EdgeInsets.all(5),
                             child: Text(
-                              AppLocalizations.of(context).question,
+                              AppLocalizations.of(context)!.question,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -1130,7 +1134,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                                 res['_body']['question'].toString(),
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyLarge
+                                    .bodyLarge!
                                     .copyWith(
                                         color: red,
                                         fontWeight: FontWeight.bold),
@@ -1187,7 +1191,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              AppLocalizations.of(context)
+                                              AppLocalizations.of(context)!
                                                   .cancel,
                                               style: const TextStyle(
                                                   color: Colors.black,
@@ -1214,7 +1218,7 @@ class WalletDashboardViewModel extends BaseViewModel {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              AppLocalizations.of(context)
+                                              AppLocalizations.of(context)!
                                                   .confirm,
                                               style: const TextStyle(
                                                   color: Colors.white,
@@ -1222,8 +1226,9 @@ class WalletDashboardViewModel extends BaseViewModel {
                                             ),
                                           ),
                                           onPressed: () async {
-                                            String fabAddress = await sharedService
-                                                .getFabAddressFromCoreWalletDatabase();
+                                            String? fabAddress =
+                                                await sharedService!
+                                                    .getFabAddressFromCoreWalletDatabase();
                                             postFreeFabResult = '';
                                             Map data = {
                                               "address": fabAddress,
@@ -1248,34 +1253,34 @@ class WalletDashboardViewModel extends BaseViewModel {
                                                         isEligibleForFreeGas =
                                                             false);
 
-                                                    sharedService
+                                                    sharedService!
                                                         .sharedSimpleNotification(
                                                             AppLocalizations.of(
-                                                                    context)
+                                                                    context)!
                                                                 .freeFabUpdate,
                                                             subtitle: AppLocalizations
-                                                                    .of(context)
+                                                                    .of(context)!
                                                                 .freeFabSuccess,
                                                             isError: false);
                                                   } else {
-                                                    sharedService
+                                                    sharedService!
                                                         .sharedSimpleNotification(
                                                             AppLocalizations.of(
-                                                                    context)
+                                                                    context)!
                                                                 .freeFabUpdate,
                                                             subtitle: AppLocalizations
-                                                                    .of(context)
+                                                                    .of(context)!
                                                                 .incorrectAnswer);
                                                   }
                                                 } else {
-                                                  sharedService
+                                                  sharedService!
                                                       .sharedSimpleNotification(
                                                           AppLocalizations.of(
-                                                                  context)
+                                                                  context)!
                                                               .notice,
                                                           subtitle:
                                                               AppLocalizations.of(
-                                                                      context)
+                                                                      context)!
                                                                   .genericError);
                                                 }
                                               },
@@ -1302,9 +1307,9 @@ class WalletDashboardViewModel extends BaseViewModel {
           isEligibleForFreeGas = res['ok'];
           debugPrint(isEligibleForFreeGas.toString());
 
-          sharedService.sharedSimpleNotification(
-              AppLocalizations.of(context).notice,
-              subtitle: AppLocalizations.of(context).freeFabUsedAlready);
+          sharedService!.sharedSimpleNotification(
+              AppLocalizations.of(context!)!.notice,
+              subtitle: AppLocalizations.of(context!)!.freeFabUsedAlready);
         }
       }
     });
@@ -1344,18 +1349,19 @@ class WalletDashboardViewModel extends BaseViewModel {
     var tlb = 0.0;
     var teb = 0.0;
 
-    for (var i = 0; i < wallets.length; i++) {
-      if (!wallets[i].usdValue.usd.isNegative) {
-        if (!wallets[i].balance.isNegative) {
-          twb += wallets[i].balance * wallets[i].usdValue.usd;
+    for (var i = 0; i < wallets!.length; i++) {
+      if (!wallets![i].usdValue!.usd!.isNegative) {
+        if (!wallets![i].balance!.isNegative) {
+          twb += wallets![i].balance! * wallets![i].usdValue!.usd!;
         }
 
-        if (!wallets[i].lockBalance.isNegative) {
-          tlb += wallets[i].lockBalance * wallets[i].usdValue.usd;
+        if (!wallets![i].lockBalance!.isNegative) {
+          tlb += wallets![i].lockBalance! * wallets![i].usdValue!.usd!;
         }
 
-        if (!wallets[i].unlockedExchangeBalance.isNegative) {
-          teb += wallets[i].unlockedExchangeBalance * wallets[i].usdValue.usd;
+        if (!wallets![i].unlockedExchangeBalance!.isNegative) {
+          teb +=
+              wallets![i].unlockedExchangeBalance! * wallets![i].usdValue!.usd!;
         }
       }
     }
@@ -1372,9 +1378,10 @@ class WalletDashboardViewModel extends BaseViewModel {
   }
 
   getGas() async {
-    String address =
-        await walletService.getAddressFromCoreWalletDatabaseByTickerName('EXG');
-    await walletService
+    String address = await (walletService!
+            .getAddressFromCoreWalletDatabaseByTickerName('EXG')
+        as FutureOr<String>);
+    await walletService!
         .gasBalance(address)
         .then((data) => gasAmount = data)
         .catchError((onError) => log.e(onError));
@@ -1383,18 +1390,19 @@ class WalletDashboardViewModel extends BaseViewModel {
   }
 
   getConfirmDepositStatus() async {
-    String address =
-        await walletService.getAddressFromCoreWalletDatabaseByTickerName('EXG');
-    await walletService.getErrDeposit(address).then((result) async {
-      List<String> pendingDepositCoins = [];
+    String address = await (walletService!
+            .getAddressFromCoreWalletDatabaseByTickerName('EXG')
+        as FutureOr<String>);
+    await walletService!.getErrDeposit(address).then((result) async {
+      List<String?> pendingDepositCoins = [];
       if (result != null) {
         log.w('getConfirmDepositStatus reesult $result');
         for (var i = 0; i < result.length; i++) {
           var item = result[i];
           var coinType = item['coinType'];
-          String tickerNameByCointype = newCoinTypeMap[coinType];
+          String? tickerNameByCointype = newCoinTypeMap[coinType];
           if (tickerNameByCointype == null) {
-            await tokenListDatabaseService.getAll().then((tokenList) {
+            await tokenListDatabaseService!.getAll().then((tokenList) {
               if (tokenList != null) {
                 tickerNameByCointype = tokenList
                     .firstWhere((element) => element.coinType == coinType)
@@ -1404,7 +1412,7 @@ class WalletDashboardViewModel extends BaseViewModel {
           }
           log.w('tickerNameByCointype $tickerNameByCointype');
           tickerNameByCointype = walletUtil.updateSpecialTokensTickerName(
-              tickerNameByCointype)["tickerName"];
+              tickerNameByCointype!)["tickerName"];
           log.i(
               'if Special then updated tickerNameByCointype $tickerNameByCointype');
           if (tickerNameByCointype != null &&
@@ -1419,7 +1427,7 @@ class WalletDashboardViewModel extends BaseViewModel {
         String f = holder.substring(1, holder.length - 1);
         if (pendingDepositCoins.isNotEmpty) {
           showSimpleNotification(
-              Text('${AppLocalizations.of(context).requireRedeposit}: $f'),
+              Text('${AppLocalizations.of(context!)!.requireRedeposit}: $f'),
               position: NotificationPosition.bottom,
               slideDismissDirection: DismissDirection.down,
               background: primaryColor);
@@ -1433,22 +1441,22 @@ class WalletDashboardViewModel extends BaseViewModel {
   showDialogWarning() {
     log.w('in showDialogWarning isConfirmDeposit $isConfirmDeposit');
     if (gasAmount == 0.0) {
-      sharedService.alertDialog(
-          AppLocalizations.of(context).insufficientGasAmount,
-          AppLocalizations.of(context).pleaseAddGasToTrade);
+      sharedService!.alertDialog(
+          AppLocalizations.of(context!)!.insufficientGasAmount,
+          AppLocalizations.of(context!)!.pleaseAddGasToTrade);
     }
     if (isConfirmDeposit) {
-      sharedService.alertDialog(
-          AppLocalizations.of(context).pendingConfirmDeposit,
-          '${AppLocalizations.of(context).pleaseConfirmYour} ${wallets[0].coin} ${AppLocalizations.of(context).deposit}',
+      sharedService!.alertDialog(
+          AppLocalizations.of(context!)!.pendingConfirmDeposit,
+          '${AppLocalizations.of(context!)!.pleaseConfirmYour} ${wallets![0].coin} ${AppLocalizations.of(context!)!.deposit}',
           path: '/walletFeatures',
-          arguments: wallets[0],
+          arguments: wallets![0],
           isWarning: true);
     }
   }
 
   jsonTransformation() {
-    var walletBalancesBody = jsonDecode(storageService.walletBalancesBody);
+    var walletBalancesBody = jsonDecode(storageService!.walletBalancesBody);
     log.i('Coin address body $walletBalancesBody');
   }
 
@@ -1458,17 +1466,17 @@ class WalletDashboardViewModel extends BaseViewModel {
     // UserSettings userSettings = UserSettings(favWalletCoins: [tickerName]);
     // await userDatabaseService.update(userSettings);
 
-    storageService.favWalletCoins = json.encode(favWalletCoins);
+    storageService!.favWalletCoins = json.encode(favWalletCoins);
   }
 
   buildNewWalletObject(
       TokenModel newToken, WalletBalance newTokenWalletBalance) async {
-    double marketPrice = newTokenWalletBalance.usdValue.usd ?? 0.0;
+    double marketPrice = newTokenWalletBalance.usdValue!.usd ?? 0.0;
     double availableBal = newTokenWalletBalance.balance ?? 0.0;
     double lockedBal = newTokenWalletBalance.lockBalance ?? 0.0;
 
-    double usdValue = walletService.calculateCoinUsdBalance(
-        marketPrice, availableBal, lockedBal);
+    double? usdValue = walletService!
+        .calculateCoinUsdBalance(marketPrice, availableBal, lockedBal);
     // String holder = NumberUtil.currencyFormat(usdValue, 2);
     // formattedUsdValueList.add(holder);
 
@@ -1478,51 +1486,51 @@ class WalletDashboardViewModel extends BaseViewModel {
         lockBalance: newTokenWalletBalance.lockedExchangeBalance,
         usdValue: UsdValue(usd: usdValue),
         unlockedExchangeBalance: newTokenWalletBalance.unlockedExchangeBalance);
-    wallets.add(wb);
+    wallets!.add(wb);
     log.e('new coin ${wb.coin} added ${wb.toJson()} in wallet info object');
   }
 
-  Future<List<WalletBalance>> refreshBalancesV2() async {
+  Future<List<WalletBalance>?> refreshBalancesV2() async {
     setBusy(true);
-    var walletBalancesApiRes = [];
+    List<dynamic>? walletBalancesApiRes = [];
     // get the walletbalancebody from the DB
     var walletBalancesBodyFromDB =
-        await coreWalletDatabaseService.getWalletBalancesBody();
-    var finalWbb = '';
+        await coreWalletDatabaseService!.getWalletBalancesBody();
+    String? finalWbb = '';
     if (walletBalancesBodyFromDB == null) {
-      finalWbb = storageService.walletBalancesBody;
+      finalWbb = storageService!.walletBalancesBody;
       var walletCoreModel = CoreWalletModel(
         id: 1,
         walletBalancesBody: finalWbb,
       );
       // store in single core database
       if (finalWbb.isNotEmpty) {
-        await coreWalletDatabaseService.insert(walletCoreModel);
+        await coreWalletDatabaseService!.insert(walletCoreModel);
       }
     } else if (walletBalancesBodyFromDB != null) {
       finalWbb = walletBalancesBodyFromDB['walletBalancesBody'];
     }
     if (finalWbb == null || finalWbb == '') {
-      storageService.hasWalletVerified = false;
-      navigationService
+      storageService!.hasWalletVerified = false;
+      navigationService!
           .navigateUsingPushNamedAndRemoveUntil(WalletSetupViewRoute);
       return [];
     }
     walletBalancesApiRes =
-        await apiService.getWalletBalance(jsonDecode(finalWbb));
+        await apiService!.getWalletBalance(jsonDecode(finalWbb));
     if (walletBalancesApiRes != null) {
-      log.w('walletBalances LENGTH ${walletBalancesApiRes.length ?? 0}');
+      log.w('walletBalances LENGTH ${walletBalancesApiRes.length}');
     }
     if (isProduction && coinsToHideList.isNotEmpty) {
       for (var coinToHideTicker in coinsToHideList) {
-        walletBalancesApiRes
+        walletBalancesApiRes!
             .removeWhere((element) => element.coin == coinToHideTicker);
       }
     }
     if (walletBalancesApiRes != null) {
-      log.i('walletBalances LENGTH ${walletBalancesApiRes.length ?? 0}');
+      log.i('walletBalances LENGTH ${walletBalancesApiRes.length}');
     }
-    wallets = walletBalancesApiRes;
+    wallets = walletBalancesApiRes as List<WalletBalance>?;
     walletsCopy = wallets;
 
     if (currentTabSelection == 0) {
@@ -1537,18 +1545,18 @@ class WalletDashboardViewModel extends BaseViewModel {
 
       // check gas and fab balance if 0 then ask for free fab
       if (gasAmount == 0.0 && fabBalance == 0.0) {
-        String address =
-            await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
-        if (storageService.isShowCaseView != null) {
-          if (storageService.isShowCaseView) {
-            storageService.isShowCaseView = true;
+        String? address = await coreWalletDatabaseService!
+            .getWalletAddressByTickerName('FAB');
+        if (storageService!.isShowCaseView != null) {
+          if (storageService!.isShowCaseView) {
+            storageService!.isShowCaseView = true;
             _isShowCaseView = true;
           }
         } else {
-          storageService.isShowCaseView = true;
+          storageService!.isShowCaseView = true;
           _isShowCaseView = true;
         }
-        var res = await apiService.getFreeFab(address);
+        var res = await apiService!.getFreeFab(address);
         if (res != null) {
           isEligibleForFreeGas = res['ok'];
         }
@@ -1564,14 +1572,14 @@ class WalletDashboardViewModel extends BaseViewModel {
   debugVersionPopup() async {
     // await _showNotification();
 
-    sharedService.alertDialog(AppLocalizations.of(context).notice,
-        AppLocalizations.of(context).testVersion,
+    sharedService!.alertDialog(AppLocalizations.of(context!)!.notice,
+        AppLocalizations.of(context!)!.testVersion,
         isWarning: false);
   }
 
   onBackButtonPressed() async {
-    sharedService.context = context;
-    await sharedService.closeApp();
+    sharedService!.context = context;
+    await sharedService!.closeApp();
   }
 
   updateAppbarHeight(h) {

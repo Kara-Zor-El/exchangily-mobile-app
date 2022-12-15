@@ -65,7 +65,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
                   Expanded(
                     flex: 3,
                     child: Text(
-                        AppLocalizations.of(context).pleaseChooseTheLanguage,
+                        AppLocalizations.of(context)!.pleaseChooseTheLanguage,
                         textAlign: TextAlign.start,
                         style: Theme.of(context).textTheme.headlineSmall),
                   )
@@ -79,7 +79,7 @@ class ChooseWalletLanguageView extends StatelessWidget {
                     highlightColor: globals.white,
                     child: Center(
                       child: Text(
-                        AppLocalizations.of(context).loading + '...',
+                        AppLocalizations.of(context)!.loading + '...',
                         style: Theme.of(context).textTheme.bodyMedium,
                       ),
                     ),

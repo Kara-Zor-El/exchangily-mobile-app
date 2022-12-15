@@ -17,7 +17,7 @@ class Erc20Util {
     };
     var errMsg = '';
     log.i('url $baseUrl -- body $body');
-    String txHash;
+    String? txHash;
     try {
       var response = await client.post(Uri.parse(baseUrl),
           headers: <String, String>{
@@ -40,7 +40,7 @@ class Erc20Util {
     return {'txHash': txHash, 'errMsg': errMsg};
   }
 
-  Future getNonce({String baseUrl, String smartContractAddress}) async {
+  Future getNonce({required String baseUrl, String? smartContractAddress}) async {
     var body = {
       "jsonrpc": "2.0",
       "method": "eth_getTransactionCount",

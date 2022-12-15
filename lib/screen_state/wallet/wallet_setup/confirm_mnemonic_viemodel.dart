@@ -23,7 +23,7 @@ import '../../../logger.dart';
 import '../../../service_locator.dart';
 
 class ConfirmMnemonicViewmodel extends BaseViewModel {
-  final sharedService = locator<SharedService>();
+  final SharedService? sharedService = locator<SharedService>();
   final log = getLogger('ConfirmMnemonicScreenState');
   String errorMessage = '';
   List<String> userTypedMnemonicList = [];
@@ -58,15 +58,15 @@ class ConfirmMnemonicViewmodel extends BaseViewModel {
         if (isValid) {
           importWallet(listToStringMnemonic, context);
         } else {
-          sharedService.sharedSimpleNotification(
-              AppLocalizations.of(context).invalidMnemonic,
-              subtitle: AppLocalizations.of(context)
+          sharedService!.sharedSimpleNotification(
+              AppLocalizations.of(context)!.invalidMnemonic,
+              subtitle: AppLocalizations.of(context)!
                   .pleaseFillAllTheTextFieldsCorrectly);
         }
       } else {
-        sharedService.sharedSimpleNotification(
-            AppLocalizations.of(context).invalidMnemonic,
-            subtitle: AppLocalizations.of(context)
+        sharedService!.sharedSimpleNotification(
+            AppLocalizations.of(context)!.invalidMnemonic,
+            subtitle: AppLocalizations.of(context)!
                 .pleaseFillAllTheTextFieldsCorrectly);
       }
     } else {
@@ -91,24 +91,24 @@ class ConfirmMnemonicViewmodel extends BaseViewModel {
         Navigator.of(context).pushNamed('/createPassword', arguments: args);
       } else {
         showSimpleNotification(
-            Text(AppLocalizations.of(context).invalidMnemonic,
+            Text(AppLocalizations.of(context)!.invalidMnemonic,
                 style: Theme.of(context)
                     .textTheme
-                    .headlineMedium
+                    .headlineMedium!
                     .copyWith(color: red)),
             position: NotificationPosition.bottom,
-            subtitle: Text(AppLocalizations.of(context)
+            subtitle: Text(AppLocalizations.of(context)!
                 .pleaseFillAllTheTextFieldsCorrectly));
       }
     } else {
       showSimpleNotification(
-          Text(AppLocalizations.of(context).invalidMnemonic,
+          Text(AppLocalizations.of(context)!.invalidMnemonic,
               style: Theme.of(context)
                   .textTheme
-                  .headlineMedium
+                  .headlineMedium!
                   .copyWith(color: red)),
           position: NotificationPosition.bottom,
-          subtitle: Text(AppLocalizations.of(context)
+          subtitle: Text(AppLocalizations.of(context)!
               .pleaseFillAllTheTextFieldsCorrectly));
     }
   }

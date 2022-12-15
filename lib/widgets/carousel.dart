@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 
 class Carousel extends StatelessWidget {
-  final List imageData;
-  final String lang;
+  final List? imageData;
+  final String? lang;
   const Carousel({this.imageData, this.lang});
 
   @override
@@ -24,7 +24,7 @@ class Carousel extends StatelessWidget {
               height: MediaQuery.of(context).size.width * 0.45,
               child: Swiper(
                 loop: true,
-                autoplay: imageData.length > 1 ? true : false,
+                autoplay: imageData!.length > 1 ? true : false,
                 autoplayDelay: 7000,
                 // duration: 600,
                 pagination: SwiperPagination(builder: SwiperCustomPagination(
@@ -37,9 +37,9 @@ class Carousel extends StatelessWidget {
                       .build(context, config);
                 })),
                 itemBuilder: (BuildContext context, int index) {
-                  String imgUrl = lang == "en"
-                      ? imageData[index]["url"]
-                      : imageData[index]["urlzh"];
+                  String? imgUrl = lang == "en"
+                      ? imageData![index]["url"]
+                      : imageData![index]["urlzh"];
                   return InkWell(
                     onTap: () {},
                     child: ClipRRect(
@@ -52,58 +52,50 @@ class Carousel extends StatelessWidget {
                         onTap: () {
                           // debugPrint("Event type: " + imageData[index]["type"]);
 
-                          if (!imageData[index].containsKey("type")) {
-                            imageData[index].containsKey("route") &&
-                                    imageData[index]["route"].length > 0
+                          if (!imageData![index].containsKey("type")) {
+                            imageData![index].containsKey("route") &&
+                                    imageData![index]["route"].length > 0
                                 ? Navigator.pushNamed(
-                                    context, imageData[index]["route"],
-                                    arguments: imageData[index]["arguments"])
+                                    context, imageData![index]["route"],
+                                    arguments: imageData![index]["arguments"])
                                 : null;
                           } else {
-                            switch (imageData[index]["type"]) {
+                            switch (imageData![index]["type"]) {
                               case "flutterPage":
-                                return imageData[index].containsKey("route") &&
-                                        imageData[index]["route"].length > 0
-                                    ? Navigator.pushNamed(
-                                        context, imageData[index]["route"],
-                                        arguments: imageData[index]
-                                            ["arguments"])
-                                    : null;
+                                if (imageData![index].containsKey("route") &&
+                                    imageData![index]["route"].length > 0) {
+                                  Navigator.pushNamed(
+                                      context, imageData![index]["route"],
+                                      arguments: imageData![index]
+                                          ["arguments"]);
+                                }
                                 break;
                               case "webPage":
-                                return Navigator.push(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => WebViewPage(
-                                              url: imageData[index][model.lang]
+                                              url: imageData![index][model.lang]
                                                   ["url"],
-                                              title: imageData[index]
+                                              title: imageData![index]
                                                   [model.lang]["title"],
                                             )));
                                 break;
-                              // case "video":
-                              //   return Navigator.push(
-                              //       context,
-                              //       MaterialPageRoute(
-                              //           builder: (context) => VideoPage(
-                              //               videoObj: imageData[index]
-                              //                   [model.lang])));
-                              //   break;
                               case "youtube":
-                                return Navigator.push(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => YoutubePage(
-                                            videoObj: imageData[index]
-                                                [model.lang])));
+                                            videoObj: imageData![index]
+                                                [model.lang] as Map)));
                                 break;
                               case "youtubeList":
-                                return Navigator.push(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => YoutubeListPage(
-                                            videoObj: imageData[index]
-                                                [model.lang])));
+                                            videoObj: imageData![index]
+                                                [model.lang] as Map)));
                                 break;
                               default:
                                 return null;
@@ -114,7 +106,7 @@ class Carousel extends StatelessWidget {
                     ),
                   );
                 },
-                itemCount: imageData.length,
+                itemCount: imageData!.length,
                 viewportFraction: (MediaQuery.of(context).size.width - 20) /
                     MediaQuery.of(context).size.width,
                 scale: 0.90,

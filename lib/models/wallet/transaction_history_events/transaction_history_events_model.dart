@@ -1,11 +1,11 @@
 import 'transactions.dart';
 
 class TransactionHistoryEvents {
-  String action;
-  String coin;
-  int timestamp;
-  String quantity;
-  List<Transactions> transactions;
+  String? action;
+  String? coin;
+  int? timestamp;
+  String? quantity;
+  List<Transactions>? transactions;
 
   TransactionHistoryEvents({
     this.action,
@@ -22,11 +22,11 @@ class TransactionHistoryEvents {
 
   factory TransactionHistoryEvents.fromJson(Map<String, dynamic> json) {
     return TransactionHistoryEvents(
-      action: json['action'] as String,
-      coin: json['coin'] as String,
-      timestamp: json['timestamp'] as int,
-      quantity: json['quantity'] as String,
-      transactions: (json['transactions'] as List<Transactions>)?.map((e) {
+      action: json['action'] as String?,
+      coin: json['coin'] as String?,
+      timestamp: json['timestamp'] as int?,
+      quantity: json['quantity'] as String?,
+      transactions: (json['transactions'] as List<Transactions>?)?.map((e) {
         return e == null
             ? null
             : Transactions.fromJson(e as Map<String, dynamic>);
@@ -46,7 +46,7 @@ class TransactionHistoryEvents {
 }
 
 class TransactionHistoryEventsList {
-  final List<TransactionHistoryEvents> transactions;
+  final List<TransactionHistoryEvents>? transactions;
   TransactionHistoryEventsList({this.transactions});
 
   factory TransactionHistoryEventsList.fromJson(List<dynamic> parsedJson) {

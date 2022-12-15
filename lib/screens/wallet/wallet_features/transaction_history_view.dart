@@ -10,8 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 class TransactionHistoryView extends StatelessWidget {
-  final WalletInfo walletInfo;
-  const TransactionHistoryView({Key key, this.walletInfo}) : super(key: key);
+  final WalletInfo? walletInfo;
+  const TransactionHistoryView({Key? key, this.walletInfo}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class TransactionHistoryView extends StatelessWidget {
                   //     onPressed: () => {},
                   //   )
                   // ],
-                  title: Text(AppLocalizations.of(context).transactionHistory,
+                  title: Text(AppLocalizations.of(context)!.transactionHistory,
                       style: Theme.of(context).textTheme.displaySmall),
                   backgroundColor: secondaryColor,
                 ),
@@ -63,7 +63,7 @@ class TransactionHistoryView extends StatelessWidget {
                     ? SizedBox(
                         width: double.infinity,
                         height: 300,
-                        child: model.sharedService.loadingIndicator())
+                        child: model.sharedService!.loadingIndicator())
                     : model.txHistoryToView.isEmpty
                         ? Container(
                             margin: const EdgeInsets.only(top: 20),
@@ -78,7 +78,7 @@ class TransactionHistoryView extends StatelessWidget {
                                 Row(
                                   children: [
                                     UIHelper.horizontalSpaceSmall,
-                                    Text(AppLocalizations.of(context).action,
+                                    Text(AppLocalizations.of(context)!.action,
                                         style: Theme.of(context)
                                             .textTheme
                                             .titleSmall),
@@ -86,7 +86,7 @@ class TransactionHistoryView extends StatelessWidget {
                                     Expanded(
                                       flex: 1,
                                       child: Text(
-                                          AppLocalizations.of(context).date,
+                                          AppLocalizations.of(context)!.date,
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
@@ -95,7 +95,7 @@ class TransactionHistoryView extends StatelessWidget {
                                     Expanded(
                                       flex: 2,
                                       child: Text(
-                                          AppLocalizations.of(context).quantity,
+                                          AppLocalizations.of(context)!.quantity,
                                           textAlign: TextAlign.right,
                                           style: Theme.of(context)
                                               .textTheme
@@ -108,7 +108,7 @@ class TransactionHistoryView extends StatelessWidget {
                                         margin:
                                             const EdgeInsets.only(left: 10.0),
                                         child: Text(
-                                            AppLocalizations.of(context).status,
+                                            AppLocalizations.of(context)!.status,
                                             textAlign: TextAlign.left,
                                             style: Theme.of(context)
                                                 .textTheme
@@ -118,7 +118,7 @@ class TransactionHistoryView extends StatelessWidget {
                                     Expanded(
                                       flex: 1,
                                       child: Text(
-                                          AppLocalizations.of(context).details,
+                                          AppLocalizations.of(context)!.details,
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme

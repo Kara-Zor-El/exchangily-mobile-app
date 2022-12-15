@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../../shared/globals.dart' as globals;
 
 class OtcDetailsScreen extends StatelessWidget {
-  const OtcDetailsScreen({Key key}) : super(key: key);
+  const OtcDetailsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class OtcDetailsScreen extends StatelessWidget {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
             centerTitle: true,
-            title: Text('OTC ${AppLocalizations.of(context).details}'),
+            title: Text('OTC ${AppLocalizations.of(context)!.details}'),
             backgroundColor: globals.secondaryColor),
         body: Container(
             padding: const EdgeInsets.all(5.0),
@@ -223,7 +223,7 @@ class OtcDetailsScreen extends StatelessWidget {
                                 Container(
                                     //  width: 50,
                                     child: Text(
-                                        AppLocalizations.of(context).quantity,
+                                        AppLocalizations.of(context)!.quantity,
                                         style: Theme.of(context)
                                             .textTheme
                                             .headlineSmall)),
@@ -270,7 +270,7 @@ class OtcDetailsScreen extends StatelessWidget {
                                 Container(
                                     //  width: 50,
                                     child: Text(
-                                        AppLocalizations.of(context).amount,
+                                        AppLocalizations.of(context)!.amount,
                                         style: Theme.of(context)
                                             .textTheme
                                             .headlineSmall)),
@@ -325,7 +325,7 @@ class OtcDetailsScreen extends StatelessWidget {
                                               color:
                                                   globals.grey.withAlpha(105),
                                               child: Text(
-                                                  AppLocalizations.of(context)
+                                                  AppLocalizations.of(context)!
                                                       .cancel,
                                                   style: Theme.of(context)
                                                       .textTheme
@@ -352,7 +352,7 @@ class OtcDetailsScreen extends StatelessWidget {
                                                   padding: const EdgeInsets.all(5.0),
                                                 ),
                                                 child: Text(
-                                                  AppLocalizations.of(context)
+                                                  AppLocalizations.of(context)!
                                                         .cancel,
                                                   style: Theme.of(context)
                                                         .textTheme
@@ -370,7 +370,7 @@ class OtcDetailsScreen extends StatelessWidget {
                                               color: globals.primaryColor,
                                               padding: const EdgeInsets.all(5.0),
                                               child: Text(
-                                                  AppLocalizations.of(context)
+                                                  AppLocalizations.of(context)!
                                                       .confirm,
                                                   style: Theme.of(context)
                                                       .textTheme
@@ -397,7 +397,7 @@ class OtcDetailsScreen extends StatelessWidget {
                                                            padding: const EdgeInsets.all(5.0),
                                                          ),
                                                          child: Text(
-                                                           AppLocalizations.of(context)
+                                                           AppLocalizations.of(context)!
                                                                     .confirm,
                                                            style: Theme.of(context)
                                                                     .textTheme

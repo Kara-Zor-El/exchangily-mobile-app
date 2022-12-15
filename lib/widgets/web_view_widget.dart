@@ -19,7 +19,7 @@ class _WebViewWidgetState extends State<WebViewWidget>
     with TickerProviderStateMixin {
   bool isLoading = true;
   int loadingProgress = 0;
-  AnimationController animationController;
+  late AnimationController animationController;
   @override
   void dispose() {
     animationController.dispose();

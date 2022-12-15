@@ -24,7 +24,7 @@ import 'package:exchangilymobileapp/shared/ui_helpers.dart';
 
 class CreatePasswordScreen extends StatefulWidget {
   final args;
-  const CreatePasswordScreen({Key key, this.args}) : super(key: key);
+  const CreatePasswordScreen({Key? key, this.args}) : super(key: key);
 
   @override
   _CreatePasswordScreenState createState() => _CreatePasswordScreenState();
@@ -36,7 +36,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
   Widget build(BuildContext context) {
     return ViewModelBuilder.reactive(
       viewModelBuilder: () => CreatePasswordViewModel(),
-      onModelReady: (model) {
+      onModelReady: (dynamic model) {
         model.randomMnemonicFromRoute = widget.args['mnemonic'];
         model.context = context;
         model.errorMessage = '';
@@ -45,7 +45,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
       builder: (context, CreatePasswordViewModel model, child) => Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text(AppLocalizations.of(context).secureYourWallet,
+          title: Text(AppLocalizations.of(context)!.secureYourWallet,
               style: Theme.of(context).textTheme.headlineMedium),
           backgroundColor: secondaryColor,
         ),
@@ -61,7 +61,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     Text(
-                      AppLocalizations.of(context).setPasswordConditions,
+                      AppLocalizations.of(context)!.setPasswordConditions,
                       style: Theme.of(context).textTheme.bodyLarge,
                       textAlign: TextAlign.left,
                     ),
@@ -73,7 +73,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                         ? model.passwordMatch
                             ? Center(
                                 child: Text(
-                                AppLocalizations.of(context).passwordMatched,
+                                AppLocalizations.of(context)!.passwordMatched,
                                 style: const TextStyle(color: white),
                               ))
                             : model.password.isEmpty ||
@@ -81,7 +81,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                                 ? const Text('')
                                 : Center(
                                     child: Text(
-                                        AppLocalizations.of(context)
+                                        AppLocalizations.of(context)!
                                             .passwordDoesNotMatched,
                                         style: const TextStyle(color: grey)))
                         : const Text(''),
@@ -90,7 +90,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                         child: Text(model.errorMessage,
                             style: Theme.of(context)
                                 .textTheme
-                                .headlineSmall
+                                .headlineSmall!
                                 .copyWith(color: red))),
                     UIHelper.verticalSpaceLarge,
                     UIHelper.verticalSpaceLarge,
@@ -101,9 +101,9 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                               highlightColor: grey,
                               child: Text(
                                 widget.args['isImport']
-                                    ? AppLocalizations.of(context)
+                                    ? AppLocalizations.of(context)!
                                         .importingWallet
-                                    : AppLocalizations.of(context)
+                                    : AppLocalizations.of(context)!
                                         .creatingWallet,
                                 style: Theme.of(context).textTheme.labelLarge,
                               ),
@@ -112,11 +112,11 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                     ),
                     UIHelper.verticalSpaceLarge,
                     Text(
-                      AppLocalizations.of(context).setPasswordNote,
+                      AppLocalizations.of(context)!.setPasswordNote,
                       textAlign: TextAlign.left,
                       style: Theme.of(context)
                           .textTheme
-                          .headlineSmall
+                          .headlineSmall!
                           .copyWith(fontWeight: FontWeight.bold),
                     )
                   ],
@@ -168,7 +168,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                 TogglePasswordWidget(model)
               ],
             ),
-            labelText: AppLocalizations.of(context).enterPassword,
+            labelText: AppLocalizations.of(context)!.enterPassword,
             prefixIcon: const Icon(Icons.lock_outline, color: Colors.white),
             labelStyle: Theme.of(context).textTheme.headlineSmall,
             helperStyle: Theme.of(context).textTheme.headlineSmall));
@@ -216,7 +216,7 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
                 TogglePasswordWidget(model)
               ],
             ),
-            labelText: AppLocalizations.of(context).confirmPassword,
+            labelText: AppLocalizations.of(context)!.confirmPassword,
             prefixIcon: const Icon(Icons.lock, color: Colors.white),
             labelStyle: Theme.of(context).textTheme.headlineSmall,
             helperStyle: Theme.of(context).textTheme.headlineSmall));
@@ -245,11 +245,11 @@ class _CreatePasswordScreenState extends State<CreatePasswordScreen> {
         },
         child: Text(
           widget.args['isImport']
-              ? AppLocalizations.of(context).importWallet
-              : AppLocalizations.of(context).createWallet,
+              ? AppLocalizations.of(context)!.importWallet
+              : AppLocalizations.of(context)!.createWallet,
           style: Theme.of(context)
               .textTheme
-              .headlineMedium
+              .headlineMedium!
               .copyWith(fontWeight: FontWeight.w400),
         ),
       ),

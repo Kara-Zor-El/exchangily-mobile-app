@@ -23,34 +23,35 @@ import 'package:exchangilymobileapp/services/db/token_info_database_service.dart
 import 'dart:convert';
 import 'package:exchangilymobileapp/utils/fab_util.dart';
 import 'package:stacked/stacked.dart';
+import 'dart:async';
 
 class MoveToWalletViewmodel extends BaseViewModel {
   final log = getLogger('MoveToWalletViewmodel');
 
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
-  final DialogService _dialogService = locator<DialogService>();
-  WalletService walletService = locator<WalletService>();
-  ApiService apiService = locator<ApiService>();
-  SharedService sharedService = locator<SharedService>();
-  final tokenListDatabaseService = locator<TokenInfoDatabaseService>();
-  final coinService = locator<CoinService>();
+  final DialogService? _dialogService = locator<DialogService>();
+  WalletService? walletService = locator<WalletService>();
+  ApiService? apiService = locator<ApiService>();
+  SharedService? sharedService = locator<SharedService>();
+  final TokenInfoDatabaseService? tokenListDatabaseService = locator<TokenInfoDatabaseService>();
+  final CoinService? coinService = locator<CoinService>();
 
-  WalletInfo walletInfo;
-  BuildContext context;
+  WalletInfo? walletInfo;
+  BuildContext? context;
 
   String gasFeeUnit = '';
   String feeMeasurement = '';
   final kanbanGasPriceTextController = TextEditingController();
   final kanbanGasLimitTextController = TextEditingController();
   final amountController = TextEditingController();
-  var kanbanTransFee;
+  late var kanbanTransFee;
   var minimumAmount;
   bool transFeeAdvance = false;
   double gasAmount = 0.0;
 
   bool isShowErrorDetailsButton = false;
   bool isShowDetailsMessage = false;
-  String serverError = '';
+  String? serverError = '';
 
   List<Map<String, dynamic>> chainBalances = [];
 
@@ -62,7 +63,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
   bool isWithdrawChoice = false;
 
-  String _groupValue;
+  String? _groupValue;
   get groupValue => _groupValue;
 
   bool isShowFabChainBalance = false;
@@ -70,12 +71,12 @@ class MoveToWalletViewmodel extends BaseViewModel {
   bool isShowBnbTsWalletBalance = false;
   bool isShowPolygonTsWalletBalance = false;
 
-  String specialTicker = '';
-  String updateTickerForErc = '';
+  String? specialTicker = '';
+  String? updateTickerForErc = '';
 
   bool isAlert = false;
   bool isSpeicalTronTokenWithdraw = false;
-  String message = '';
+  String? message = '';
 
   bool isWithdrawChoicePopup = false;
   int decimalLimit = 6;
@@ -98,73 +99,73 @@ class MoveToWalletViewmodel extends BaseViewModel {
   void initState() async {
     setBusy(true);
 
-    sharedService.context = context;
+    sharedService!.context = context;
 
     var gasPrice = environment["chains"]["KANBAN"]["gasPrice"];
     var gasLimit = environment["chains"]["KANBAN"]["gasLimit"];
     kanbanGasPriceTextController.text = gasPrice.toString();
     kanbanGasLimitTextController.text = gasLimit.toString();
 
-    tokenType = walletInfo.tokenType;
+    tokenType = walletInfo!.tokenType;
 
     kanbanTransFee = bigNum2Double(gasPrice * gasLimit);
 
     _groupValue = 'ETH';
 
-    if (walletInfo.tickerName == 'ETH' || walletInfo.tickerName == 'USDT') {
+    if (walletInfo!.tickerName == 'ETH' || walletInfo!.tickerName == 'USDT') {
       gasFeeUnit = 'WEI';
-    } else if (walletInfo.tickerName == 'FAB') {
+    } else if (walletInfo!.tickerName == 'FAB') {
       gasFeeUnit = 'LIU';
       feeMeasurement = '10^(-8)';
     }
 
     // ETH
-    if (walletInfo.tickerName == 'ETH' || walletInfo.tokenType == 'ETH') {
+    if (walletInfo!.tickerName == 'ETH' || walletInfo!.tokenType == 'ETH') {
       radioButtonSelection('ETH');
     }
     //FAB
-    else if (walletInfo.tickerName == 'FAB' || walletInfo.tokenType == 'FAB') {
+    else if (walletInfo!.tickerName == 'FAB' || walletInfo!.tokenType == 'FAB') {
       isShowFabChainBalance = true;
       radioButtonSelection('FAB');
     }
     // TRX
-    else if (walletInfo.tickerName == 'USDTX' ||
-        walletInfo.tickerName == 'TRX' ||
-        walletInfo.tokenType == 'TRX') {
+    else if (walletInfo!.tickerName == 'USDTX' ||
+        walletInfo!.tickerName == 'TRX' ||
+        walletInfo!.tokenType == 'TRX') {
       isShowTrxTsWalletBalance = true;
 
       radioButtonSelection('TRX');
     }
     // BNB
-    else if (walletInfo.tickerName == 'FABB' ||
-        walletInfo.tickerName == 'USDTB' ||
-        walletInfo.tokenType == 'BNB') {
+    else if (walletInfo!.tickerName == 'FABB' ||
+        walletInfo!.tickerName == 'USDTB' ||
+        walletInfo!.tokenType == 'BNB') {
       isShowBnbTsWalletBalance = true;
 
       radioButtonSelection('BNB');
     }
     // POLYGON
-    else if (walletInfo.tokenType == 'MATICM' ||
-        walletInfo.tickerName == 'MATICM' ||
-        walletInfo.tokenType == 'POLYGON') {
+    else if (walletInfo!.tokenType == 'MATICM' ||
+        walletInfo!.tickerName == 'MATICM' ||
+        walletInfo!.tokenType == 'POLYGON') {
       isShowPolygonTsWalletBalance = true;
 
       radioButtonSelection('POLYGON');
     } else {
-      setWithdrawLimit(walletInfo.tickerName);
+      setWithdrawLimit(walletInfo!.tickerName);
     }
-    if (walletUtil.usdtSpecialTokens.contains(walletInfo.tickerName)) {
+    if (walletUtil.usdtSpecialTokens.contains(walletInfo!.tickerName)) {
       specialTicker = "USDT";
-    } else if (walletUtil.fabSpecialTokens.contains(walletInfo.tickerName)) {
+    } else if (walletUtil.fabSpecialTokens.contains(walletInfo!.tickerName)) {
       specialTicker = "FAB";
-    } else if (walletUtil.dscSpecialTokens.contains(walletInfo.tickerName)) {
+    } else if (walletUtil.dscSpecialTokens.contains(walletInfo!.tickerName)) {
       specialTicker = "DSC";
-    } else if (walletUtil.bstSpecialTokens.contains(walletInfo.tickerName)) {
+    } else if (walletUtil.bstSpecialTokens.contains(walletInfo!.tickerName)) {
       specialTicker = "BST";
-    } else if (walletUtil.exgSpecialTokens.contains(walletInfo.tickerName)) {
+    } else if (walletUtil.exgSpecialTokens.contains(walletInfo!.tickerName)) {
       specialTicker = "EXG";
     } else {
-      specialTicker = walletInfo.tickerName;
+      specialTicker = walletInfo!.tickerName;
     }
 
     await checkGasBalance();
@@ -180,7 +181,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
   popupToConfirmWithdrawSelection() {
     showDialog(
-        context: context,
+        context: context!,
         barrierDismissible: true,
         builder: (BuildContext context) {
           return
@@ -252,7 +253,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
               padding: const EdgeInsets.all(10.0),
               color: secondaryColor.withOpacity(0.5),
               child: Center(
-                  child: Text(AppLocalizations.of(context).withdrawPopupNote)),
+                  child: Text(AppLocalizations.of(context)!.withdrawPopupNote)),
             ),
             titleTextStyle: headText5,
             contentTextStyle: const TextStyle(color: grey),
@@ -270,8 +271,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 isShowTrxTsWalletBalance ||
-                                        walletInfo.tickerName == "USDT" ||
-                                        walletInfo.tickerName == "USDTX"
+                                        walletInfo!.tickerName == "USDT" ||
+                                        walletInfo!.tickerName == "USDTX"
                                     ? Row(
                                         children: <Widget>[
                                           SizedBox(
@@ -279,7 +280,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                             width: 10,
                                             child: Radio(
                                                 activeColor: primaryColor,
-                                                onChanged: (value) {
+                                                onChanged: (dynamic value) {
                                                   setState(() {
                                                     _groupValue = value;
 
@@ -303,7 +304,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                                 //       .resolveWith(
                                                 //           (states) => Colors.blue),
                                                 activeColor: primaryColor,
-                                                onChanged: (value) {
+                                                onChanged: (dynamic value) {
                                                   setState(() {
                                                     _groupValue = value;
                                                     if (value == 'FAB') {
@@ -311,32 +312,32 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                                           true;
                                                       isShowTrxTsWalletBalance =
                                                           false;
-                                                      if (walletInfo
+                                                      if (walletInfo!
                                                               .tickerName !=
                                                           'FAB') {
-                                                        walletInfo.tokenType =
+                                                        walletInfo!.tokenType =
                                                             'FAB';
                                                       }
-                                                      if (walletInfo
+                                                      if (walletInfo!
                                                               .tickerName ==
                                                           'FAB') {
-                                                        walletInfo.tokenType =
+                                                        walletInfo!.tokenType =
                                                             '';
                                                       }
                                                       updateTickerForErc =
-                                                          walletInfo.tickerName;
+                                                          walletInfo!.tickerName;
                                                       log.i(
-                                                          'chain type ${walletInfo.tokenType}');
+                                                          'chain type ${walletInfo!.tokenType}');
                                                       setWithdrawLimit(
-                                                          walletInfo
+                                                          walletInfo!
                                                               .tickerName);
                                                     } else if (value == 'TRX') {
                                                       isShowTrxTsWalletBalance =
                                                           true;
-                                                      if (walletInfo
+                                                      if (walletInfo!
                                                               .tickerName !=
                                                           'TRX') {
-                                                        walletInfo.tokenType =
+                                                        walletInfo!.tokenType =
                                                             'TRX';
                                                       }
 
@@ -344,7 +345,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                                           true;
                                                       //  walletInfo.tokenType = 'TRX';
                                                       log.i(
-                                                          'chain type ${walletInfo.tokenType}');
+                                                          'chain type ${walletInfo!.tokenType}');
                                                       setWithdrawLimit('USDTX');
                                                     }
                                                     // else if (walletInfo.tickerName == 'TRX' && !isShowTrxTsWalletBalance) {
@@ -358,35 +359,35 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                                           false;
                                                       isShowFabChainBalance =
                                                           false;
-                                                      walletInfo.tokenType =
+                                                      walletInfo!.tokenType =
                                                           'ETH';
                                                       log.i(
-                                                          'chain type ${walletInfo.tokenType}');
-                                                      if (walletInfo
+                                                          'chain type ${walletInfo!.tokenType}');
+                                                      if (walletInfo!
                                                                   .tickerName ==
                                                               'FAB' &&
                                                           !isShowFabChainBalance) {
                                                         setWithdrawLimit(
                                                             'FABE');
-                                                      } else if (walletInfo
+                                                      } else if (walletInfo!
                                                                   .tickerName ==
                                                               'DSC' &&
                                                           !isShowFabChainBalance) {
                                                         setWithdrawLimit(
                                                             'DSCE');
-                                                      } else if (walletInfo
+                                                      } else if (walletInfo!
                                                                   .tickerName ==
                                                               'BST' &&
                                                           !isShowFabChainBalance) {
                                                         setWithdrawLimit(
                                                             'BSTE');
-                                                      } else if (walletInfo
+                                                      } else if (walletInfo!
                                                                   .tickerName ==
                                                               'EXG' &&
                                                           !isShowFabChainBalance) {
                                                         setWithdrawLimit(
                                                             'EXGE');
-                                                      } else if (walletInfo
+                                                      } else if (walletInfo!
                                                                   .tickerName ==
                                                               'USDTX' &&
                                                           !isShowTrxTsWalletBalance) {
@@ -394,7 +395,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                                             'USDT');
                                                       } else {
                                                         setWithdrawLimit(
-                                                            walletInfo
+                                                            walletInfo!
                                                                 .tickerName);
                                                       }
                                                       setBusy(false);
@@ -419,7 +420,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                       width: 20,
                                       child: Radio(
                                           activeColor: primaryColor,
-                                          onChanged: (value) {
+                                          onChanged: (dynamic value) {
                                             setState(() {
                                               _groupValue = value;
                                               //   if (value == 'FAB') {
@@ -536,10 +537,10 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                     // borderRadius:
                                     //     BorderRadius.all(Radius.circular(4)),
                                     child: Text(
-                                      AppLocalizations.of(context).withdraw,
+                                      AppLocalizations.of(context)!.withdraw,
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyMedium
+                                          .bodyMedium!
                                           .copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),
@@ -574,8 +575,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
           isUsedInView ? MainAxisAlignment.start : MainAxisAlignment.center,
       children: [
         isShowTrxTsWalletBalance ||
-                walletInfo.tickerName == "USDT" ||
-                walletInfo.tickerName == "USDTX"
+                walletInfo!.tickerName == "USDT" ||
+                walletInfo!.tickerName == "USDTX"
             ? Row(
                 children: <Widget>[
                   SizedBox(
@@ -583,7 +584,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                     width: 10,
                     child: Radio(
                         activeColor: primaryColor,
-                        onChanged: (value) {
+                        onChanged: (dynamic value) {
                           radioButtonSelection(value);
                         },
                         groupValue: groupValue,
@@ -603,7 +604,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                         //       .resolveWith(
                         //           (states) => Colors.blue),
                         activeColor: primaryColor,
-                        onChanged: (value) {
+                        onChanged: (dynamic value) {
                           radioButtonSelection(value);
                         },
                         groupValue: groupValue,
@@ -623,7 +624,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
               width: 20,
               child: Radio(
                   activeColor: primaryColor,
-                  onChanged: (value) {
+                  onChanged: (dynamic value) {
                     radioButtonSelection(value);
                   },
                   groupValue: groupValue,
@@ -654,7 +655,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
     updateIsAlert(true);
 
     showDialog(
-      context: context,
+      context: context!,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return Platform.isIOS
@@ -665,7 +666,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                     margin: const EdgeInsets.only(bottom: 5.0),
                     child: Center(
                         child: Text(
-                      AppLocalizations.of(context).note,
+                      AppLocalizations.of(context)!.note,
                       style: headText4.copyWith(
                           color: primaryColor, fontWeight: FontWeight.w500),
                     )),
@@ -674,7 +675,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                     child: !isTSWalletInfo
                         ? Column(children: [
                             Text(
-                                AppLocalizations.of(context)
+                                AppLocalizations.of(context)!
                                     .specialExchangeBalanceNote,
                                 style: headText5),
                             Padding(
@@ -684,19 +685,19 @@ class MoveToWalletViewmodel extends BaseViewModel {
                             ),
                           ])
                         : Column(children: [
-                            Text(AppLocalizations.of(context).tsWalletNote,
+                            Text(AppLocalizations.of(context)!.tsWalletNote,
                                 style: headText5),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text(
-                                  AppLocalizations.of(context)
+                                  AppLocalizations.of(context)!
                                       .specialWithdrawNote,
                                   style: headText5),
                             ),
                             UIHelper.verticalSpaceSmall,
                             Text(
-                                AppLocalizations.of(context)
+                                AppLocalizations.of(context)!
                                     .specialWithdrawFailNote,
                                 style: headText5),
                           ]),
@@ -712,7 +713,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(4)),
                             child: Text(
-                              AppLocalizations.of(context).close,
+                              AppLocalizations.of(context)!.close,
                               textAlign: TextAlign.center,
                               style: bodyText2.copyWith(
                                   fontWeight: FontWeight.bold),
@@ -735,7 +736,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                 title: Container(
                   padding: const EdgeInsets.all(10.0),
                   color: secondaryColor.withOpacity(0.5),
-                  child: Center(child: Text(AppLocalizations.of(context).note)),
+                  child: Center(child: Text(AppLocalizations.of(context)!.note)),
                 ),
                 titleTextStyle: headText4.copyWith(fontWeight: FontWeight.bold),
                 contentTextStyle: const TextStyle(color: grey),
@@ -748,7 +749,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                               Text(
-                                  AppLocalizations.of(context)
+                                  AppLocalizations.of(context)!
                                       .specialExchangeBalanceNote,
                                   style: headText5),
                               Padding(
@@ -764,7 +765,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                     updateIsAlert(false);
                                   },
                                   child: Text(
-                                    AppLocalizations.of(context).close,
+                                    AppLocalizations.of(context)!.close,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(color: red),
                                   ),
@@ -776,19 +777,19 @@ class MoveToWalletViewmodel extends BaseViewModel {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                              Text(AppLocalizations.of(context).tsWalletNote,
+                              Text(AppLocalizations.of(context)!.tsWalletNote,
                                   style: headText5),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Text(
-                                    AppLocalizations.of(context)
+                                    AppLocalizations.of(context)!
                                         .specialWithdrawNote,
                                     style: headText5),
                               ),
                               UIHelper.verticalSpaceSmall,
                               Text(
-                                  AppLocalizations.of(context)
+                                  AppLocalizations.of(context)!
                                       .specialWithdrawFailNote,
                                   style: headText5),
                               TextButton(
@@ -797,7 +798,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                                   updateIsAlert(false);
                                 },
                                 child: Text(
-                                  AppLocalizations.of(context).close,
+                                  AppLocalizations.of(context)!.close,
                                   style: const TextStyle(color: red),
                                 ),
                               )
@@ -820,7 +821,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
                         Set Withdraw Limit
 -------------------------------------------------------------- */
 
-  setWithdrawLimit(String ticker) async {
+  setWithdrawLimit(String? ticker) async {
     setBusy(true);
     // if (ercChainToken.feeWithdraw != null && _groupValue == 'ETH') {
     //   token = ercChainToken;
@@ -844,17 +845,17 @@ class MoveToWalletViewmodel extends BaseViewModel {
     //   return;
     // }
     token = TokenModel();
-    int ct = 0;
-    await coinService.getCoinTypeByTickerName(ticker).then((value) {
+    int? ct = 0;
+    await coinService!.getCoinTypeByTickerName(ticker).then((value) {
       ct = value;
       log.i('setWithdrawLimit coin type $ct for $ticker');
     });
-    await tokenListDatabaseService.getByCointype(ct).then((res) async {
+    await tokenListDatabaseService!.getByCointype(ct).then((res) async {
       if (res != null) {
         token = res;
         assignToken(token);
       } else {
-        await coinService
+        await coinService!
             .getSingleTokenData(ticker, coinType: ct)
             .then((resFromApi) {
           if (resFromApi != null) {
@@ -881,14 +882,14 @@ class MoveToWalletViewmodel extends BaseViewModel {
 --------------------------------------------------- */
 
   checkGasBalance() async {
-    String address = await sharedService.getExgAddressFromWalletDatabase();
-    await walletService.gasBalance(address).then((data) {
+    String address = await (sharedService!.getExgAddressFromWalletDatabase() as FutureOr<String>);
+    await walletService!.gasBalance(address).then((data) {
       gasAmount = data;
       log.i('gas balance $gasAmount');
       if (gasAmount == 0) {
-        sharedService.alertDialog(
-          AppLocalizations.of(context).notice,
-          AppLocalizations.of(context).insufficientGasAmount,
+        sharedService!.alertDialog(
+          AppLocalizations.of(context!)!.notice,
+          AppLocalizations.of(context!)!.insufficientGasAmount,
         );
       }
     }).catchError((onError) => log.e(onError));
@@ -899,28 +900,28 @@ class MoveToWalletViewmodel extends BaseViewModel {
   // Check single coin exchange balance as exchange balance is same for special tokens
   Future getSingleCoinExchangeBal() async {
     setBusy(true);
-    String tickerName = '';
-    if (walletInfo.tickerName == 'DSCE' || walletInfo.tickerName == 'DSC') {
+    String? tickerName = '';
+    if (walletInfo!.tickerName == 'DSCE' || walletInfo!.tickerName == 'DSC') {
       tickerName = 'DSC';
       isWithdrawChoice = true;
-    } else if (walletInfo.tickerName == 'BSTE' ||
-        walletInfo.tickerName == 'BST') {
+    } else if (walletInfo!.tickerName == 'BSTE' ||
+        walletInfo!.tickerName == 'BST') {
       tickerName = 'BST';
       isWithdrawChoice = true;
-    } else if (walletUtil.isSpecialFab(walletInfo.tickerName) ||
-        walletInfo.tickerName == 'FAB') {
+    } else if (walletUtil.isSpecialFab(walletInfo!.tickerName) ||
+        walletInfo!.tickerName == 'FAB') {
       tickerName = 'FAB';
       isWithdrawChoice = true;
-    } else if (walletInfo.tickerName == 'EXGE' ||
-        walletInfo.tickerName == 'EXG') {
+    } else if (walletInfo!.tickerName == 'EXGE' ||
+        walletInfo!.tickerName == 'EXG') {
       tickerName = 'EXG';
       isWithdrawChoice = true;
-    } else if (walletUtil.isSpecialUsdt(walletInfo.tickerName) ||
-        walletInfo.tickerName == 'USDT') {
+    } else if (walletUtil.isSpecialUsdt(walletInfo!.tickerName) ||
+        walletInfo!.tickerName == 'USDT') {
       tickerName = 'USDT';
       isWithdrawChoice = true;
       isShowFabChainBalance = false;
-    } else if (walletInfo.tickerName == 'MATICM') {
+    } else if (walletInfo!.tickerName == 'MATICM') {
       tickerName = 'MATIC';
     }
     //  else if (walletInfo.tickerName == 'USDTX') {
@@ -930,15 +931,15 @@ class MoveToWalletViewmodel extends BaseViewModel {
     //   isShowTrxTsWalletBalance = true;
     // }
     else {
-      tickerName = walletInfo.tickerName;
+      tickerName = walletInfo!.tickerName;
     }
-    String fabAddress =
-        await sharedService.getFabAddressFromCoreWalletDatabase();
-    await apiService
-        .getSingleWalletBalance(fabAddress, tickerName, walletInfo.address)
+    String? fabAddress =
+        await sharedService!.getFabAddressFromCoreWalletDatabase();
+    await apiService!
+        .getSingleWalletBalance(fabAddress, tickerName, walletInfo!.address)
         .then((res) {
-      walletInfo.inExchange = res[0].unlockedExchangeBalance;
-      log.w('single coin exchange balance check ${walletInfo.inExchange}');
+      walletInfo!.inExchange = res![0].unlockedExchangeBalance;
+      log.w('single coin exchange balance check ${walletInfo!.inExchange}');
     });
 
     if (isSubmittingTx) {
@@ -957,7 +958,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
       if (_groupValue == 'FAB') {
         tickerName == 'FAB'
             ? await getFabBalance()
-            : await getFabChainBalance(tickerName);
+            : await getFabChainBalance(tickerName!);
       }
     }
     setBusy(false);
@@ -968,8 +969,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
 ----------------------------------------------------------------------*/
   getTrxTsWalletBalance() async {
     setBusy(true);
-    String trxOfficialddress = coinService.getCoinOfficalAddress('TRX');
-    await apiService.getTronTsWalletBalance(trxOfficialddress).then((res) {
+    String? trxOfficialddress = coinService!.getCoinOfficalAddress('TRX');
+    await apiService!.getTronTsWalletBalance(trxOfficialddress).then((res) {
       trxTsWalletBalance = res['balance'] / 1e6;
       log.e('getTrxTsWalletBalance $trxTsWalletBalance');
     });
@@ -982,19 +983,19 @@ class MoveToWalletViewmodel extends BaseViewModel {
   getTrxUsdtTsWalletBalance() async {
     setBusy(true);
 
-    String smartContractAddress = '';
+    String? smartContractAddress = '';
     log.e(
         'getFabChainBalance tokenlist db empty, in else now-- getting data from api');
-    await apiService.getTokenListUpdates().then((tokens) {
-      for (var tokenRes in tokens) {
+    await apiService!.getTokenListUpdates().then((tokens) {
+      for (var tokenRes in tokens!) {
         if (tokenRes.tickerName == 'USDTX') {
           smartContractAddress = tokenRes.contract;
         }
       }
     });
 
-    String trxOfficialddress = coinService.getCoinOfficalAddress('TRX');
-    await apiService
+    String trxOfficialddress = coinService!.getCoinOfficalAddress('TRX');
+    await apiService!
         .getTronUsdtTsWalletBalance(trxOfficialddress, smartContractAddress)
         .then((res) {
       trxTsWalletBalance = res / 1e6;
@@ -1009,8 +1010,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
   getFabBalance() async {
     setBusy(true);
-    String officialFabAddress = coinService.getCoinOfficalAddress('FAB');
-    await walletService
+    String? officialFabAddress = coinService!.getCoinOfficalAddress('FAB');
+    await walletService!
         .coinBalanceByAddress('FAB', officialFabAddress, '')
         .then((res) {
       fabChainBalance = res['balance'];
@@ -1021,21 +1022,21 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
   getFabChainBalance(String tickerName) async {
     setBusy(true);
-    var address = sharedService.getExgOfficialAddress();
+    var address = sharedService!.getExgOfficialAddress()!;
 
-    String smartContractAddress;
-    await coinService
+    String? smartContractAddress;
+    await coinService!
         .getSmartContractAddressByTickerName(tickerName)
         .then((value) => smartContractAddress = value);
 
     String balanceInfoABI = '70a08231';
 
     var body = {
-      'address': trimHexPrefix(smartContractAddress),
+      'address': trimHexPrefix(smartContractAddress!),
       'data': balanceInfoABI + fixLength(trimHexPrefix(address), 64)
     };
     var tokenBalance;
-    var url = fabBaseUrl + 'callcontract';
+    var url = fabBaseUrl! + 'callcontract';
     debugPrint(
         'Fab_util -- address $address getFabTokenBalanceForABI balance by address url -- $url -- body $body');
 
@@ -1067,32 +1068,32 @@ class MoveToWalletViewmodel extends BaseViewModel {
 ----------------------------------------------------------------------*/
   getEthChainBalance() async {
     setBusy(true);
-    String officialAddress = '';
-    officialAddress = coinService.getCoinOfficalAddress('ETH');
+    String? officialAddress = '';
+    officialAddress = coinService!.getCoinOfficalAddress('ETH');
     // call to get token balance
-    if (walletInfo.tickerName == 'FAB' ||
-        walletUtil.isSpecialFab(walletInfo.tickerName)) {
+    if (walletInfo!.tickerName == 'FAB' ||
+        walletUtil.isSpecialFab(walletInfo!.tickerName)) {
       updateTickerForErc = 'FABE';
-    } else if (walletInfo.tickerName == 'DSC') {
+    } else if (walletInfo!.tickerName == 'DSC') {
       updateTickerForErc = 'DSCE';
-    } else if (walletInfo.tickerName == 'BST') {
+    } else if (walletInfo!.tickerName == 'BST') {
       updateTickerForErc = 'BSTE';
-    } else if (walletInfo.tickerName == 'EXG') {
+    } else if (walletInfo!.tickerName == 'EXG') {
       updateTickerForErc = 'EXGE';
-    } else if (walletUtil.isSpecialUsdt(walletInfo.tickerName) ||
-        walletInfo.tickerName == 'USDT') {
+    } else if (walletUtil.isSpecialUsdt(walletInfo!.tickerName) ||
+        walletInfo!.tickerName == 'USDT') {
       updateTickerForErc = 'USDT';
     } else {
-      updateTickerForErc = walletInfo.tickerName;
+      updateTickerForErc = walletInfo!.tickerName;
     }
     // ercSmartContractAddress = await coinService
     //     .getSmartContractAddressByTickerName(updateTickerForErc);
 
-    var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    await apiService
+    var fabAddress = await sharedService!.getFabAddressFromCoreWalletDatabase();
+    await apiService!
         .getSingleWalletBalance(fabAddress, updateTickerForErc, officialAddress)
         .then((res) {
-      ethChainBalance = res[0].balance;
+      ethChainBalance = res![0].balance;
     });
 
     log.w('ethChainBalance $ethChainBalance');
@@ -1101,23 +1102,23 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
   getBnbTsWalletBalance() async {
     setBusy(true);
-    String officialAddress = '';
-    officialAddress = coinService.getCoinOfficalAddress('ETH');
-    var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    String updatedTicker = '';
-    if (walletUtil.isSpecialUsdt(walletInfo.tickerName) ||
-        walletInfo.tickerName == 'USDT') {
+    String? officialAddress = '';
+    officialAddress = coinService!.getCoinOfficalAddress('ETH');
+    var fabAddress = await sharedService!.getFabAddressFromCoreWalletDatabase();
+    String? updatedTicker = '';
+    if (walletUtil.isSpecialUsdt(walletInfo!.tickerName) ||
+        walletInfo!.tickerName == 'USDT') {
       updatedTicker = 'USDTB';
-    } else if (walletInfo.tickerName == 'FAB' ||
-        walletUtil.isSpecialFab(walletInfo.tickerName)) {
+    } else if (walletInfo!.tickerName == 'FAB' ||
+        walletUtil.isSpecialFab(walletInfo!.tickerName)) {
       updatedTicker = 'FABB';
     } else {
-      updatedTicker = walletInfo.tickerName;
+      updatedTicker = walletInfo!.tickerName;
     }
-    await apiService
+    await apiService!
         .getSingleWalletBalance(fabAddress, updatedTicker, officialAddress)
         .then((res) {
-      bnbTsWalletBalance = res[0].balance;
+      bnbTsWalletBalance = res![0].balance;
     });
 
     log.w('bnbTsWalletBalance $bnbTsWalletBalance');
@@ -1127,20 +1128,20 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
   getPolygonTsWalletBalance() async {
     setBusy(true);
-    String officialAddress = '';
-    officialAddress = coinService.getCoinOfficalAddress('ETH');
-    var fabAddress = await sharedService.getFabAddressFromCoreWalletDatabase();
-    String updatedTicker = '';
-    if (walletUtil.isSpecialUsdt(walletInfo.tickerName) ||
-        walletInfo.tickerName == 'USDT') {
+    String? officialAddress = '';
+    officialAddress = coinService!.getCoinOfficalAddress('ETH');
+    var fabAddress = await sharedService!.getFabAddressFromCoreWalletDatabase();
+    String? updatedTicker = '';
+    if (walletUtil.isSpecialUsdt(walletInfo!.tickerName) ||
+        walletInfo!.tickerName == 'USDT') {
       updatedTicker = 'USDTM';
     } else {
-      updatedTicker = walletInfo.tickerName;
+      updatedTicker = walletInfo!.tickerName;
     }
-    await apiService
+    await apiService!
         .getSingleWalletBalance(fabAddress, updatedTicker, officialAddress)
         .then((res) {
-      polygonTsWalletBalance = res[0].balance;
+      polygonTsWalletBalance = res![0].balance;
     });
 
     log.w('POLYGON TsWalletBalance $polygonTsWalletBalance');
@@ -1160,34 +1161,34 @@ class MoveToWalletViewmodel extends BaseViewModel {
       isShowTrxTsWalletBalance = false;
       isShowPolygonTsWalletBalance = false;
       isShowBnbTsWalletBalance = false;
-      if (walletInfo.tickerName != 'FAB' &&
-          !walletUtil.isSpecialFab(walletInfo.tickerName)) tokenType = 'FAB';
-      if (walletInfo.tickerName == 'FAB' ||
-          walletUtil.isSpecialFab(walletInfo.tickerName)) tokenType = '';
+      if (walletInfo!.tickerName != 'FAB' &&
+          !walletUtil.isSpecialFab(walletInfo!.tickerName)) tokenType = 'FAB';
+      if (walletInfo!.tickerName == 'FAB' ||
+          walletUtil.isSpecialFab(walletInfo!.tickerName)) tokenType = '';
       // updateTickerForErc = walletInfo.tickerName;
-      log.i('walletInfo token type ${walletInfo.tokenType}');
+      log.i('walletInfo token type ${walletInfo!.tokenType}');
       log.w('updated token type ${tokenType}');
-      if (walletUtil.isSpecialFab(walletInfo.tickerName)) {
+      if (walletUtil.isSpecialFab(walletInfo!.tickerName)) {
         await setWithdrawLimit('FAB');
-      } else if (walletInfo.tickerName == 'DSCE' && isShowFabChainBalance) {
+      } else if (walletInfo!.tickerName == 'DSCE' && isShowFabChainBalance) {
         await setWithdrawLimit('DSC');
-      } else if (walletInfo.tickerName == 'BSTE' && isShowFabChainBalance) {
+      } else if (walletInfo!.tickerName == 'BSTE' && isShowFabChainBalance) {
         await setWithdrawLimit('BST');
-      } else if (walletInfo.tickerName == 'EXGE' && isShowFabChainBalance) {
+      } else if (walletInfo!.tickerName == 'EXGE' && isShowFabChainBalance) {
         await setWithdrawLimit('EXG');
       } else {
-        await setWithdrawLimit(walletInfo.tickerName);
+        await setWithdrawLimit(walletInfo!.tickerName);
       }
     } else if (value == 'TRX') {
       isShowTrxTsWalletBalance = true;
       isShowPolygonTsWalletBalance = false;
       isShowFabChainBalance = false;
       isSpeicalTronTokenWithdraw = true;
-      log.i('chain type ${walletInfo.tokenType}');
-      if (walletInfo.tickerName == 'TRX' && isShowTrxTsWalletBalance) {
+      log.i('chain type ${walletInfo!.tokenType}');
+      if (walletInfo!.tickerName == 'TRX' && isShowTrxTsWalletBalance) {
         await setWithdrawLimit('TRX');
-      } else if (walletUtil.isSpecialUsdt(walletInfo.tickerName) ||
-          walletInfo.tickerName == 'USDT') {
+      } else if (walletUtil.isSpecialUsdt(walletInfo!.tickerName) ||
+          walletInfo!.tickerName == 'USDT') {
         await setWithdrawLimit('USDTX');
         tokenType = 'TRX';
       }
@@ -1196,14 +1197,14 @@ class MoveToWalletViewmodel extends BaseViewModel {
       isShowTrxTsWalletBalance = false;
       isShowFabChainBalance = false;
       isShowPolygonTsWalletBalance = false;
-      if (walletUtil.isSpecialUsdt(walletInfo.tickerName) ||
-          walletInfo.tickerName == 'USDT') {
+      if (walletUtil.isSpecialUsdt(walletInfo!.tickerName) ||
+          walletInfo!.tickerName == 'USDT') {
         await setWithdrawLimit('USDTB');
-      } else if (walletUtil.isSpecialFab(walletInfo.tickerName) ||
-          walletInfo.tickerName == 'FAB') {
+      } else if (walletUtil.isSpecialFab(walletInfo!.tickerName) ||
+          walletInfo!.tickerName == 'FAB') {
         await setWithdrawLimit('FABB');
       } else {
-        await setWithdrawLimit(walletInfo.tickerName);
+        await setWithdrawLimit(walletInfo!.tickerName);
       }
       tokenType = 'BNB';
     } else if (value == 'POLYGON') {
@@ -1211,11 +1212,11 @@ class MoveToWalletViewmodel extends BaseViewModel {
       isShowFabChainBalance = false;
       isShowBnbTsWalletBalance = false;
       isShowTrxTsWalletBalance = false;
-      if (walletUtil.isSpecialUsdt(walletInfo.tickerName) ||
-          walletInfo.tickerName == 'USDT') {
+      if (walletUtil.isSpecialUsdt(walletInfo!.tickerName) ||
+          walletInfo!.tickerName == 'USDT') {
         await setWithdrawLimit('USDTM');
       } else {
-        await setWithdrawLimit(walletInfo.tickerName);
+        await setWithdrawLimit(walletInfo!.tickerName);
       }
       tokenType = 'POLYGON';
     } else {
@@ -1225,21 +1226,21 @@ class MoveToWalletViewmodel extends BaseViewModel {
       isShowPolygonTsWalletBalance = false;
 
       tokenType = 'ETH';
-      log.i('chain type ${walletInfo.tokenType}');
-      if (walletInfo.tickerName == 'FAB' ||
-          walletUtil.isSpecialFab(walletInfo.tickerName)) {
+      log.i('chain type ${walletInfo!.tokenType}');
+      if (walletInfo!.tickerName == 'FAB' ||
+          walletUtil.isSpecialFab(walletInfo!.tickerName)) {
         await setWithdrawLimit('FABE');
-      } else if (walletInfo.tickerName == 'DSC' && !isShowFabChainBalance) {
+      } else if (walletInfo!.tickerName == 'DSC' && !isShowFabChainBalance) {
         await setWithdrawLimit('DSCE');
-      } else if (walletInfo.tickerName == 'BST' && !isShowFabChainBalance) {
+      } else if (walletInfo!.tickerName == 'BST' && !isShowFabChainBalance) {
         await setWithdrawLimit('BSTE');
-      } else if (walletInfo.tickerName == 'EXG' && !isShowFabChainBalance) {
+      } else if (walletInfo!.tickerName == 'EXG' && !isShowFabChainBalance) {
         await setWithdrawLimit('EXGE');
-      } else if (walletUtil.isSpecialUsdt(walletInfo.tickerName) ||
-          walletInfo.tickerName == 'USDT') {
+      } else if (walletUtil.isSpecialUsdt(walletInfo!.tickerName) ||
+          walletInfo!.tickerName == 'USDT') {
         await setWithdrawLimit('USDT');
       } else {
-        await setWithdrawLimit(walletInfo.tickerName);
+        await setWithdrawLimit(walletInfo!.tickerName);
       }
       setBusy(false);
     }
@@ -1253,38 +1254,38 @@ class MoveToWalletViewmodel extends BaseViewModel {
     isSubmittingTx = true;
     try {
       if (amountController.text.isEmpty) {
-        sharedService.sharedSimpleNotification(
-            AppLocalizations.of(context).amountMissing,
-            subtitle: AppLocalizations.of(context).pleaseEnterValidNumber);
+        sharedService!.sharedSimpleNotification(
+            AppLocalizations.of(context!)!.amountMissing,
+            subtitle: AppLocalizations.of(context!)!.pleaseEnterValidNumber);
         setBusy(false);
         return;
       }
       await checkGasBalance();
       if (gasAmount == 0.0 || gasAmount < kanbanTransFee) {
-        sharedService.alertDialog(
-          AppLocalizations.of(context).notice,
-          AppLocalizations.of(context).insufficientGasAmount,
+        sharedService!.alertDialog(
+          AppLocalizations.of(context!)!.notice,
+          AppLocalizations.of(context!)!.insufficientGasAmount,
         );
         setBusy(false);
         return;
       }
 
-      var amount = double.tryParse(amountController.text);
-      if (amount < double.parse(token.minWithdraw)) {
-        sharedService.sharedSimpleNotification(
-          AppLocalizations.of(context).minimumAmountError,
-          subtitle: AppLocalizations.of(context)
+      var amount = double.tryParse(amountController.text)!;
+      if (amount < double.parse(token.minWithdraw!)) {
+        sharedService!.sharedSimpleNotification(
+          AppLocalizations.of(context!)!.minimumAmountError,
+          subtitle: AppLocalizations.of(context!)!
               .yourWithdrawMinimumAmountaIsNotSatisfied,
         );
         setBusy(false);
         return;
       }
       if (amount == null ||
-          amount > walletInfo.inExchange ||
+          amount > walletInfo!.inExchange! ||
           amount == 0 ||
           amount.isNegative) {
-        sharedService.alertDialog(AppLocalizations.of(context).invalidAmount,
-            AppLocalizations.of(context).pleaseEnterValidNumber,
+        sharedService!.alertDialog(AppLocalizations.of(context!)!.invalidAmount,
+            AppLocalizations.of(context!)!.pleaseEnterValidNumber,
             isWarning: false);
         setBusy(false);
         return;
@@ -1293,13 +1294,13 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
       //  if (isWithdrawChoice) {
       if (groupValue == 'FAB' && amount > fabChainBalance) {
-        sharedService.alertDialog(
-            AppLocalizations.of(context).notice,
-            AppLocalizations.of(context).lowTsWalletBalanceErrorFirstPart +
+        sharedService!.alertDialog(
+            AppLocalizations.of(context!)!.notice,
+            AppLocalizations.of(context!)!.lowTsWalletBalanceErrorFirstPart +
                 ' ' +
                 fabChainBalance.toString() +
                 '. ' +
-                AppLocalizations.of(context).lowTsWalletBalanceErrorSecondPart,
+                AppLocalizations.of(context!)!.lowTsWalletBalanceErrorSecondPart,
             isWarning: false);
 
         setBusy(false);
@@ -1310,13 +1311,13 @@ class MoveToWalletViewmodel extends BaseViewModel {
       /// instead of displaying the generic error
 
       if (groupValue == 'ETH' && amount > ethChainBalance) {
-        sharedService.alertDialog(
-            AppLocalizations.of(context).notice,
-            AppLocalizations.of(context).lowTsWalletBalanceErrorFirstPart +
+        sharedService!.alertDialog(
+            AppLocalizations.of(context!)!.notice,
+            AppLocalizations.of(context!)!.lowTsWalletBalanceErrorFirstPart +
                 ' ' +
                 ethChainBalance.toString() +
                 '. ' +
-                AppLocalizations.of(context).lowTsWalletBalanceErrorSecondPart,
+                AppLocalizations.of(context!)!.lowTsWalletBalanceErrorSecondPart,
             isWarning: false);
 
         setBusy(false);
@@ -1324,39 +1325,39 @@ class MoveToWalletViewmodel extends BaseViewModel {
       }
 
       if (groupValue == 'TRX' && amount > trxTsWalletBalance) {
-        sharedService.alertDialog(
-            AppLocalizations.of(context).notice,
-            AppLocalizations.of(context).lowTsWalletBalanceErrorFirstPart +
+        sharedService!.alertDialog(
+            AppLocalizations.of(context!)!.notice,
+            AppLocalizations.of(context!)!.lowTsWalletBalanceErrorFirstPart +
                 ' ' +
                 trxTsWalletBalance.toString() +
                 '. ' +
-                AppLocalizations.of(context).lowTsWalletBalanceErrorSecondPart,
+                AppLocalizations.of(context!)!.lowTsWalletBalanceErrorSecondPart,
             isWarning: false);
         setBusy(false);
         return;
       }
 
       if (groupValue == 'BNB' && amount > bnbTsWalletBalance) {
-        sharedService.alertDialog(
-            AppLocalizations.of(context).notice,
-            AppLocalizations.of(context).lowTsWalletBalanceErrorFirstPart +
+        sharedService!.alertDialog(
+            AppLocalizations.of(context!)!.notice,
+            AppLocalizations.of(context!)!.lowTsWalletBalanceErrorFirstPart +
                 ' ' +
                 bnbTsWalletBalance.toString() +
                 '. ' +
-                AppLocalizations.of(context).lowTsWalletBalanceErrorSecondPart,
+                AppLocalizations.of(context!)!.lowTsWalletBalanceErrorSecondPart,
             isWarning: false);
         setBusy(false);
         return;
       }
 
       if (groupValue == 'POLYGON' && amount > polygonTsWalletBalance) {
-        sharedService.alertDialog(
-            AppLocalizations.of(context).notice,
-            AppLocalizations.of(context).lowTsWalletBalanceErrorFirstPart +
+        sharedService!.alertDialog(
+            AppLocalizations.of(context!)!.notice,
+            AppLocalizations.of(context!)!.lowTsWalletBalanceErrorFirstPart +
                 ' ' +
                 polygonTsWalletBalance.toString() +
                 '. ' +
-                AppLocalizations.of(context).lowTsWalletBalanceErrorSecondPart,
+                AppLocalizations.of(context!)!.lowTsWalletBalanceErrorSecondPart,
             isWarning: false);
         setBusy(false);
         return;
@@ -1364,20 +1365,20 @@ class MoveToWalletViewmodel extends BaseViewModel {
       //  }
 
       message = '';
-      var res = await _dialogService.showDialog(
-          title: AppLocalizations.of(context).enterPassword,
+      var res = await _dialogService!.showDialog(
+          title: AppLocalizations.of(context!)!.enterPassword,
           description:
-              AppLocalizations.of(context).dialogManagerTypeSamePasswordNote,
-          buttonTitle: AppLocalizations.of(context).confirm);
-      if (res.confirmed) {
-        String exgAddress =
-            await sharedService.getExgAddressFromWalletDatabase();
-        String mnemonic = res.returnedText;
-        Uint8List seed = walletService.generateSeed(mnemonic);
+              AppLocalizations.of(context!)!.dialogManagerTypeSamePasswordNote,
+          buttonTitle: AppLocalizations.of(context!)!.confirm);
+      if (res.confirmed!) {
+        String? exgAddress =
+            await sharedService!.getExgAddressFromWalletDatabase();
+        String mnemonic = res.returnedText!;
+        Uint8List seed = walletService!.generateSeed(mnemonic);
         // if (walletInfo.tickerName == 'FAB' && ) walletInfo.tokenType = '';
 
-        var coinName = walletInfo.tickerName;
-        var coinAddress = '';
+        var coinName = walletInfo!.tickerName;
+        String? coinAddress = '';
         if (isShowFabChainBalance &&
             coinName != 'FAB' &&
             !walletUtil.isSpecialFab(coinName)) {
@@ -1389,7 +1390,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
         /// Ticker is FAB but fab chain balance is false then
         /// take coin address as ETH wallet address because coin is an erc20
         else if ((coinName == 'FAB' && !isShowFabChainBalance)) {
-          coinAddress = await walletService
+          coinAddress = await walletService!
               .getAddressFromCoreWalletDatabaseByTickerName('ETH');
           log.i('coin address is ETH address');
         }
@@ -1397,7 +1398,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
         // then token type set to empty and uses fab address
         else if ((coinName != 'FAB' && isShowFabChainBalance) &&
             walletUtil.isSpecialFab(coinName)) {
-          coinAddress = await walletService
+          coinAddress = await walletService!
               .getAddressFromCoreWalletDatabaseByTickerName('FAB');
           tokenType = '';
           coinName = 'FAB';
@@ -1407,19 +1408,19 @@ class MoveToWalletViewmodel extends BaseViewModel {
           log.i('coin address is EXG address');
         } else if ((coinName == 'USDT' || walletUtil.isSpecialUsdt(coinName)) &&
             isShowTrxTsWalletBalance) {
-          coinAddress = await walletService
+          coinAddress = await walletService!
               .getAddressFromCoreWalletDatabaseByTickerName('TRX');
           log.i('coin address is TRX address');
           coinName = 'USDTX';
         } else {
-          coinAddress = walletInfo.address;
+          coinAddress = walletInfo!.address;
           log.i('coin address is its own wallet info address');
         }
         // if (!isShowFabChainBalance) {
         //   amount = BigInt.tryParse(amountController.text);
         // }
         if (coinName == 'BCH') {
-          await walletService.getBchAddressDetails(coinAddress).then(
+          await walletService!.getBchAddressDetails(coinAddress).then(
               (addressDetails) =>
                   coinAddress = addressDetails['legacyAddress']);
         }
@@ -1433,21 +1434,21 @@ class MoveToWalletViewmodel extends BaseViewModel {
         //   log.w('Bigint $bigIntAmount from amount $amount ');
         // }
 
-        if (walletInfo.tokenType == 'TRX' ||
-            walletInfo.tickerName == 'TRX' ||
-            walletInfo.tickerName == 'USDTX' ||
+        if (walletInfo!.tokenType == 'TRX' ||
+            walletInfo!.tickerName == 'TRX' ||
+            walletInfo!.tickerName == 'USDTX' ||
             tokenType == 'TRX' ||
             coinName == 'USDTX') {
-          int kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
-          int kanbanGasLimit = environment['chains']['KANBAN']['gasLimit'];
-          await walletService
-              .withdrawTron(seed, coinName, coinAddress, tokenType, amount,
+          int? kanbanGasPrice = environment['chains']['KANBAN']['gasPrice'];
+          int? kanbanGasLimit = environment['chains']['KANBAN']['gasLimit'];
+          await walletService!
+              .withdrawTron(seed, coinName, coinAddress!, tokenType, amount,
                   kanbanPrice, kanbanGasLimit)
               .then((ret) {
             log.w(ret);
             bool success = ret["success"];
             if (success && ret['transactionHash'] != null) {
-              String txId = ret['transactionHash'];
+              String? txId = ret['transactionHash'];
               log.i('txid $txId');
               amountController.text = '';
               serverError = '';
@@ -1459,18 +1460,18 @@ class MoveToWalletViewmodel extends BaseViewModel {
             } else {
               serverError = ret['data'].toString();
               if (serverError == null || serverError == '') {
-                var errMsg = AppLocalizations.of(context).serverError;
+                var errMsg = AppLocalizations.of(context!)!.serverError;
                 error(errMsg);
                 isShowErrorDetailsButton = true;
                 isSubmittingTx = false;
               }
             }
-            sharedService.sharedSimpleNotification(
+            sharedService!.sharedSimpleNotification(
                 success && ret['transactionHash'] != null
-                    ? AppLocalizations.of(context).withdrawTransactionSuccessful
-                    : AppLocalizations.of(context).withdrawTransactionFailed,
+                    ? AppLocalizations.of(context!)!.withdrawTransactionSuccessful
+                    : AppLocalizations.of(context!)!.withdrawTransactionFailed,
                 subtitle:
-                    success ? "" : AppLocalizations.of(context).networkIssue,
+                    success ? "" : AppLocalizations.of(context!)!.networkIssue,
                 isError: success ? false : true);
           }).catchError((err) {
             log.e('Withdraw catch $err');
@@ -1480,14 +1481,14 @@ class MoveToWalletViewmodel extends BaseViewModel {
           });
         } else {
           // noraml withdraw function
-          await walletService
+          await walletService!
               .withdrawDo(seed, coinName, coinAddress, tokenType, amount,
                   kanbanPrice, kanbanGasLimit, isSpeicalTronTokenWithdraw)
               .then((ret) {
             log.w(ret);
             bool success = ret["success"];
             if (success && ret['transactionHash'] != null) {
-              String txId = ret['transactionHash'];
+              String? txId = ret['transactionHash'];
               log.i('txid $txId');
               amountController.text = '';
               serverError = '';
@@ -1499,17 +1500,17 @@ class MoveToWalletViewmodel extends BaseViewModel {
             } else {
               serverError = ret['data'];
               if (serverError == null || serverError == '') {
-                var errMsg = AppLocalizations.of(context).serverError;
+                var errMsg = AppLocalizations.of(context!)!.serverError;
                 error(errMsg);
                 isShowErrorDetailsButton = true;
                 isSubmittingTx = false;
               }
             }
-            sharedService.sharedSimpleNotification(
+            sharedService!.sharedSimpleNotification(
                 success && ret['transactionHash'] != null
-                    ? AppLocalizations.of(context).withdrawTransactionSuccessful
-                    : AppLocalizations.of(context).withdrawTransactionFailed,
-                subtitle: success ? "" : serverError,
+                    ? AppLocalizations.of(context!)!.withdrawTransactionSuccessful
+                    : AppLocalizations.of(context!)!.withdrawTransactionFailed,
+                subtitle: success ? "" : serverError!,
                 isError: success ? false : true);
           }).catchError((err) {
             log.e('Withdraw catch $err');
@@ -1518,7 +1519,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
             isSubmittingTx = false;
           });
         }
-      } else if (!res.confirmed && res.returnedText == 'Closed') {
+      } else if (!res.confirmed! && res.returnedText == 'Closed') {
         debugPrint('else if close button pressed');
         isSubmittingTx = false;
       } else {
@@ -1540,9 +1541,9 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
   showNotification(context) {
     setBusy(true);
-    sharedService.sharedSimpleNotification(
-      AppLocalizations.of(context).passwordMismatch,
-      subtitle: AppLocalizations.of(context).pleaseProvideTheCorrectPassword,
+    sharedService!.sharedSimpleNotification(
+      AppLocalizations.of(context)!.passwordMismatch,
+      subtitle: AppLocalizations.of(context)!.pleaseProvideTheCorrectPassword,
     );
     setBusy(false);
   }
@@ -1551,8 +1552,8 @@ class MoveToWalletViewmodel extends BaseViewModel {
 
   updateTransFee() async {
     setBusy(true);
-    var kanbanPrice = int.tryParse(kanbanGasPriceTextController.text);
-    var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
+    var kanbanPrice = int.tryParse(kanbanGasPriceTextController.text)!;
+    var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text)!;
 
     var kanbanPriceBig = BigInt.from(kanbanPrice);
     var kanbanGasLimitBig = BigInt.from(kanbanGasLimit);
@@ -1565,7 +1566,7 @@ class MoveToWalletViewmodel extends BaseViewModel {
   }
 
 // Copy txid and display flushbar
-  copyAndShowNotification(String message) {
-    sharedService.copyAddress(context, message);
+  copyAndShowNotification(String? message) {
+    sharedService!.copyAddress(context, message);
   }
 }

@@ -31,10 +31,11 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../shared/globals.dart' as globals;
 import 'package:exchangilymobileapp/utils/fab_util.dart';
+import 'dart:async';
 
 class ReceiveWalletScreen extends StatefulWidget {
-  final WalletInfo walletInfo;
-  const ReceiveWalletScreen({Key key, this.walletInfo}) : super(key: key);
+  final WalletInfo? walletInfo;
+  const ReceiveWalletScreen({Key? key, this.walletInfo}) : super(key: key);
 
   @override
   _ReceiveWalletScreenState createState() => _ReceiveWalletScreenState();
@@ -64,7 +65,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).receive,
+        title: Text(AppLocalizations.of(context)!.receive,
             style: Theme.of(context).textTheme.displaySmall),
         centerTitle: true,
       ),
@@ -110,7 +111,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                     child: QrImage(
                         backgroundColor: globals.white,
                         data: convertedToFabAddress == ''
-                            ? widget.walletInfo.address
+                            ? widget.walletInfo!.address!
                             : convertedToFabAddress,
                         version: QrVersions.auto,
                         size: 300,
@@ -119,7 +120,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                           return Container(
                             child: Center(
                               child: Text(
-                                  AppLocalizations.of(context)
+                                  AppLocalizations.of(context)!
                                       .somethingWentWrong,
                                   textAlign: TextAlign.center),
                             ),
@@ -156,10 +157,10 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
             //     }),
             // Replaced deprecated RaisedButton with ElevatedButton
             child: ElevatedButton(
-                child: Text(AppLocalizations.of(context).saveAndShareQrCode,
+                child: Text(AppLocalizations.of(context)!.saveAndShareQrCode,
                     style: Theme.of(context)
                         .textTheme
-                        .headlineMedium
+                        .headlineMedium!
                         .copyWith(fontWeight: FontWeight.w400)),
                 onPressed: () {
                   String receiveFileName = 'qr-code.png';
@@ -169,7 +170,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
 
                     Future.delayed(const Duration(milliseconds: 30), () {
                       _capturePng().then((byteData) {
-                        file.writeAsBytes(byteData).then((onFile) {
+                        file.writeAsBytes(byteData!).then((onFile) {
                           // use shareXFiles instead of shareFiles
                           // turn onFiles.path list into list of XFile list
                           List<XFile> xFileList = [];
@@ -178,7 +179,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                           }
                           Share.shareXFiles(xFileList,
                               text: convertedToFabAddress == ''
-                                  ? widget.walletInfo.address
+                                  ? widget.walletInfo!.address
                                   : convertedToFabAddress);
                         });
                       });
@@ -198,7 +199,7 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
   --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
   Container buildCopyAddressContainer(BuildContext context,
-      {WalletInfo walletInfo}) {
+      {WalletInfo? walletInfo}) {
     return Container(
       width: double.infinity,
       height: 150,
@@ -210,11 +211,11 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
         children: <Widget>[
           Text(
               convertedToFabAddress == ''
-                  ? widget.walletInfo.address
+                  ? widget.walletInfo!.address!
                   : convertedToFabAddress,
               style: Theme.of(context)
                   .textTheme
-                  .headlineSmall
+                  .headlineSmall!
                   .copyWith(fontWeight: FontWeight.w800)),
           SizedBox(
             width: 200,
@@ -241,10 +242,10 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
                     ),
                   ),
                   Text(
-                    AppLocalizations.of(context).copyAddress,
+                    AppLocalizations.of(context)!.copyAddress,
                     style: Theme.of(context)
                         .textTheme
-                        .headlineSmall
+                        .headlineSmall!
                         .copyWith(fontWeight: FontWeight.w400),
                   ),
                 ],
@@ -266,14 +267,14 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
   --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
   copyAddress() {
-    String address = convertedToFabAddress == ''
-        ? widget.walletInfo.address
+    String? address = convertedToFabAddress == ''
+        ? widget.walletInfo!.address
         : convertedToFabAddress;
     log.w(address);
     Clipboard.setData(ClipboardData(text: address));
     SharedService sharedService = locator<SharedService>();
     sharedService.sharedSimpleNotification(
-      AppLocalizations.of(context).addressCopied,
+      AppLocalizations.of(context)!.addressCopied,
       isError: false,
     );
   }
@@ -284,12 +285,13 @@ class _ReceiveWalletScreenState extends State<ReceiveWalletScreen> {
 
   --------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-  Future<Uint8List> _capturePng() async {
+  Future<Uint8List?> _capturePng() async {
     try {
-      RenderRepaintBoundary boundary =
-          _globalKey.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary = _globalKey.currentContext!
+          .findRenderObject() as RenderRepaintBoundary;
       var image = await boundary.toImage(pixelRatio: 3.0);
-      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
+      ByteData byteData = await (image.toByteData(format: ImageByteFormat.png)
+          as FutureOr<ByteData>);
       Uint8List pngBytes = byteData.buffer.asUint8List();
       return pngBytes;
     } catch (e) {

@@ -31,10 +31,10 @@ class EthUtils {
 
   // Eth Post
   Future postEthTx(String txHex) async {
-    var url = ethBaseUrl + 'sendsignedtransaction';
+    var url = ethBaseUrl! + 'sendsignedtransaction';
     var data = {'signedtx': txHex};
-    var errMsg = '';
-    String txHash;
+    String? errMsg = '';
+    String? txHash;
     try {
       var response =
           await client.post(Uri.parse(url), headers: {"responseType": "text"}, body: data);
@@ -52,7 +52,7 @@ class EthUtils {
 
   // Eth Nonce
   Future getEthNonce(String address) async {
-    var url = ethBaseUrl + getNonceApiRoute + address + '/latest';
+    var url = ethBaseUrl! + getNonceApiRoute + address + '/latest';
     var nonce = 0;
     try {
       var response = await client.get(Uri.parse(url));
@@ -70,7 +70,7 @@ class EthUtils {
   }
 
   Future getEthTransactionStatus(String txid) async {
-    var url = ethBaseUrl + 'getconfirmationcount/' + txid;
+    var url = ethBaseUrl! + 'getconfirmationcount/' + txid;
 
     var response = await client.get(Uri.parse(url));
     debugPrint(response.body);
@@ -97,7 +97,7 @@ class EthUtils {
   }
 
   Future getEthBalanceByAddress(String address) async {
-    var url = ethBaseUrl + 'getbalance/' + address;
+    var url = ethBaseUrl! + 'getbalance/' + address;
     var ethBalance = 0.0;
     try {
       var response = await client.get(Uri.parse(url));
@@ -110,7 +110,7 @@ class EthUtils {
   }
 
   Future getEthTokenBalanceByAddress(String address, String coinName) async {
-    TokenInfoDatabaseService tokenListDatabaseService =
+    TokenInfoDatabaseService? tokenListDatabaseService =
         locator<TokenInfoDatabaseService>();
     var smartContractAddress =
         environment["addresses"]["smartContract"][coinName];
@@ -118,13 +118,13 @@ class EthUtils {
       debugPrint('$coinName contract is null so fetching from token database');
       await tokenListDatabaseService
           .getContractAddressByTickerName(coinName)
-          .then((String value) {
+          .then((String? value) {
         //  if(!value.startsWith('0x'))
         smartContractAddress = value;
       });
     }
     var url =
-        ethBaseUrl + 'callcontract/' + smartContractAddress + '/' + address;
+        ethBaseUrl! + 'callcontract/' + smartContractAddress + '/' + address;
     debugPrint('eth_util - getEthTokenBalanceByAddress - $url ');
 
     var tokenBalanceIe18 = 0.0;

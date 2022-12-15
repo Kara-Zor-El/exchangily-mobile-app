@@ -234,7 +234,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
     return crypto_web3.MsgSignature(sig.r, sig.s, recId);
   }
 
-  BigInt _recoverFromSignature(
+  BigInt? _recoverFromSignature(
       int recId, ECSignature sig, Uint8List msg, ECDomainParameters params) {
     final n = params.n;
     final i = BigInt.from(recId ~/ 2);
@@ -246,8 +246,8 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
         radix: 16);
     if (x.compareTo(prime) >= 0) return null;
 
-    final R = _decompressKey(x, (recId & 1) == 1, params.curve);
-    if (!(R * n).isInfinity) return null;
+    final R = _decompressKey(x, (recId & 1) == 1, params.curve)!;
+    if (!(R * n)!.isInfinity) return null;
 
     final e = crypto_web3.bytesToInt(msg);
 
@@ -256,7 +256,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
     final srInv = (rInv * sig.s) % n;
     final eInvrInv = (rInv * eInv) % n;
 
-    final q = (params.G * eInvrInv) + (R * srInv);
+    final q = ((params.G * eInvrInv)! + (R * srInv))!;
 
     final bytes = q.getEncoded(false);
     return crypto_web3.bytesToInt(bytes.sublist(1));
@@ -268,7 +268,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
     return Uint8List.fromList(data);
   }
 
-  ECPoint _decompressKey(BigInt xBN, bool yBit, ECCurve c) {
+  ECPoint? _decompressKey(BigInt xBN, bool yBit, ECCurve c) {
     List<int> x9IntegerToBytes(BigInt s, int qLength) {
       //https://github.com/bcgit/bc-java/blob/master/core/src/main/java/org/bouncycastle/asn1/x9/X9IntegerConverter.java#L45
       final bytes = crypto_web3.intToBytes(s);
@@ -303,7 +303,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
   }
 
   Future<Uint8List> signBtcMessageWith(originalMessage, Uint8List privateKey,
-      {int chainId, var network}) async {
+      {int? chainId, var network}) async {
     debugPrint('signBtcMessageWith begin');
     Uint8List messageHash = magicHash(originalMessage, network);
 
@@ -342,7 +342,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
   }
 
   Future<Uint8List> signDogeMessageWith(originalMessage, Uint8List privateKey,
-      {int chainId, var network}) async {
+      {int? chainId, var network}) async {
     debugPrint('signDogeMessageWith');
     Uint8List messageHash = magicHashDoge(originalMessage, network);
     //messageHash.insert(1, 25);
@@ -382,7 +382,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
 
   Future<Uint8List> signPersonalMessageWith(
       String _messagePrefix, Uint8List privateKey, Uint8List payload,
-      {int chainId}) async {
+      {int? chainId}) async {
     final prefix = _messagePrefix + payload.length.toString();
     final prefixBytes = ascii.encode(prefix);
 
@@ -416,9 +416,9 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
     //return credential.sign(concat, chainId: chainId);
   }
 
-  Uint8List magicHash(String message, [NetworkType network]) {
+  Uint8List magicHash(String message, [NetworkType? network]) {
     network = network ?? bitcoin;
-    Uint8List messagePrefix = utf8.encode(network.messagePrefix);
+    Uint8List messagePrefix = utf8.encode(network.messagePrefix) as Uint8List;
     debugPrint('messagePrefix===');
     debugPrint(messagePrefix.toString());
     int messageVISize = encodingLength(message.length);
@@ -434,9 +434,9 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
     return hash256(buffer);
   }
 
-  Uint8List magicHashDoge(String message, [NetworkType network]) {
+  Uint8List magicHashDoge(String message, [NetworkType? network]) {
     network = network ?? bitcoin;
-    Uint8List messagePrefix = utf8.encode(network.messagePrefix);
+    Uint8List messagePrefix = utf8.encode(network.messagePrefix) as Uint8List;
 
     int messageVISize = encodingLength(message.length);
 
@@ -461,7 +461,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
   ) async {
     var r = '';
     var s = '';
-    var v = '';
+    String? v = '';
 
     var signedMess;
     if (coinName == 'TRX' || tokenType == 'TRX' || tokenType == 'TRON') {
@@ -487,7 +487,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
       var coinType = environment["CoinType"]["ETH"];
       final ethCoinChild =
           root.derivePath("m/44'/" + coinType.toString() + "'/0'/0/0");
-      var privateKey = ethCoinChild.privateKey;
+      var privateKey = ethCoinChild.privateKey!;
       //var credentials = EthPrivateKey.fromHex(privateKey);
       //var credentials = EthPrivateKey(privateKey);
 
@@ -519,7 +519,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
       var coinType = environment["CoinType"]["ETH"];
       final ethCoinChild =
           root.derivePath("m/44'/" + coinType.toString() + "'/0'/0/0");
-      var privateKey = ethCoinChild.privateKey;
+      var privateKey = ethCoinChild.privateKey!;
       //var credentials = EthPrivateKey.fromHex(privateKey);
       //var credentials = EthPrivateKey(privateKey);
       var chainId;
@@ -590,10 +590,10 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
       // var credentials = EthPrivateKey(privateKey);
 
       if (coinName == 'DOGE') {
-        signedMess = await signDogeMessageWith(originalMessage, privateKey,
+        signedMess = await signDogeMessageWith(originalMessage, privateKey!,
             network: network);
       } else {
-        signedMess = await signBtcMessageWith(originalMessage, privateKey,
+        signedMess = await signBtcMessageWith(originalMessage, privateKey!,
             network: network);
       }
 
@@ -635,16 +635,16 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
     return {'r': r, 's': s, 'v': v};
   }
 
-  getOfficalAddress(String coinName, {String tokenType = ''}) {
+  getOfficalAddress(String? coinName, {String? tokenType = ''}) {
     if (tokenType == 'FAB') {
-      String fabTokensOfficialAddress =
+      String? fabTokensOfficialAddress =
           environment['addresses']['exchangilyOfficial'][0]['address'];
       debugPrint(
           'fabTokensOfficialAddress $fabTokensOfficialAddress for $coinName');
       return fabTokensOfficialAddress;
     }
     if (tokenType == 'TRX' || tokenType == 'TRON') {
-      String trxTokensOfficialAddress =
+      String? trxTokensOfficialAddress =
           environment['addresses']['exchangilyOfficial'][9]['address'];
       debugPrint(
           'TRXTokensOfficialAddress $trxTokensOfficialAddress for $coinName');
@@ -676,7 +676,7 @@ Future signedBitcoinMessage(String originalMessage, String wif) async {
       var address = environment['addresses']['exchangilyOfficial']
           .where((addr) => addr['name'] == coinName)
           .toList();
-      String majorsOfficialAddress =
+      String? majorsOfficialAddress =
           (address as List).isNotEmpty ? address[0]['address'] : '';
       debugPrint(
           'majors official address $majorsOfficialAddress for $coinName');
@@ -722,19 +722,19 @@ getAddressForCoin(root, 'EXG', tokenType: 'FAB');
   }
 
 // Future Coin Balances With Addresses
-  Future getCoinBalanceByAddress(String coinName, String address,
+  Future getCoinBalanceByAddress(String coinName, String? address,
       {tokenType = ''}) async {
     try {
       if (coinName == 'BTC') {
-        return await btcUtils.getBtcBalanceByAddress(address);
+        return await btcUtils.getBtcBalanceByAddress(address!);
       } else if (coinName == 'LTC') {
-        return await ltcUtils.getLtcBalanceByAddress(address);
+        return await ltcUtils.getLtcBalanceByAddress(address!);
       } else if (coinName == 'ETH') {
-        return await ethUtils.getEthBalanceByAddress(address);
+        return await ethUtils.getEthBalanceByAddress(address!);
       } else if (coinName == 'FAB') {
-        return await fabUtils.getFabBalanceByAddress(address);
+        return await fabUtils.getFabBalanceByAddress(address!);
       } else if (tokenType == 'ETH') {
-        return await ethUtils.getEthTokenBalanceByAddress(address, coinName);
+        return await ethUtils.getEthTokenBalanceByAddress(address!, coinName);
       } else if (tokenType == 'FAB') {
         return await fabUtils.getFabTokenBalanceByAddress(address, coinName);
       }

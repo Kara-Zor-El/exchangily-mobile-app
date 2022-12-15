@@ -13,7 +13,7 @@ import 'package:stacked/stacked.dart';
 import '../../../../widgets/sliver_appbar_delegate.dart';
 
 class MyExchangeAssetsView extends StatelessWidget {
-  const MyExchangeAssetsView({Key key}) : super(key: key);
+  const MyExchangeAssetsView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -124,10 +124,10 @@ class MyExchangeAssetsView extends StatelessWidget {
                         )
                       : ListView.builder(
                           shrinkWrap: true,
-                          itemCount: model.exchangeBalances.length,
+                          itemCount: model.exchangeBalances!.length,
                           itemBuilder: (BuildContext context, int index) {
                             String tickerName =
-                                model.exchangeBalances[index].ticker;
+                                model.exchangeBalances![index].ticker!;
                             return Row(
                               children: [
                                 UIHelper.horizontalSpaceSmall,
@@ -158,7 +158,7 @@ class MyExchangeAssetsView extends StatelessWidget {
                                     child: Padding(
                                       padding: const EdgeInsets.only(left: 2),
                                       child: Text(
-                                          model.exchangeBalances[index].ticker,
+                                          model.exchangeBalances![index].ticker!,
                                           style: Theme.of(context)
                                               .textTheme
                                               .titleLarge),
@@ -167,7 +167,7 @@ class MyExchangeAssetsView extends StatelessWidget {
                                 Expanded(
                                     flex: 2,
                                     child: Text(
-                                        model.exchangeBalances[index]
+                                        model.exchangeBalances![index]
                                             .unlockedAmount
                                             .toString(),
                                         style: Theme.of(context)
@@ -176,7 +176,7 @@ class MyExchangeAssetsView extends StatelessWidget {
                                 Expanded(
                                     flex: 2,
                                     child: Text(
-                                        model.exchangeBalances[index]
+                                        model.exchangeBalances![index]
                                             .lockedAmount
                                             .toString(),
                                         style: Theme.of(context)

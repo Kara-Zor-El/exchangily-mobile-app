@@ -5,7 +5,7 @@ import 'package:http/src/response.dart';
 import 'package:flutter/widgets.dart';
 import 'custom_http_util.dart';
 
-final String ltcBaseUrl = environment["endpoints"]["ltc"];
+final String? ltcBaseUrl = environment["endpoints"]["ltc"];
 
 // Main net config
 BitcoinFlutter.NetworkType liteCoinMainnetNetwork = BitcoinFlutter.NetworkType(
@@ -29,7 +29,7 @@ generateLtcAddress(root, {index = 0}) async {
   var node =
       root.derivePath("m/44'/" + coinType + "'/0'/0/" + index.toString());
 
-  String address = BitcoinFlutter.P2PKH(
+  String? address = BitcoinFlutter.P2PKH(
           data: BitcoinFlutter.PaymentData(pubkey: node.publicKey),
           network: environment["chains"]["LTC"]["network"])
       .data
@@ -41,7 +41,7 @@ generateLtcAddress(root, {index = 0}) async {
 class LtcUtils {
   var httpClient = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
 // Generate getLtcAddressForNode
-  String getLtcAddressForNode(node, {String tickerName}) {
+  String? getLtcAddressForNode(node, {String? tickerName}) {
     return BitcoinFlutter.P2PKH(
             data: BitcoinFlutter.PaymentData(pubkey: node.publicKey),
             network: environment["chains"]["LTC"]["network"])
@@ -51,8 +51,8 @@ class LtcUtils {
 
 // getLtcTransactionStatus
   Future getLtcTransactionStatus(String txid) async {
-    Response response;
-    var url = ltcBaseUrl + 'gettransactionjson/' + txid;
+    Response? response;
+    var url = ltcBaseUrl! + 'gettransactionjson/' + txid;
 
     try {
       response = await httpClient.get(Uri.parse(url));
@@ -63,7 +63,7 @@ class LtcUtils {
 
 // getLtcBalanceByAddress
   Future getLtcBalanceByAddress(String address) async {
-    var url = ltcBaseUrl + 'getbalance/' + address;
+    var url = ltcBaseUrl! + 'getbalance/' + address;
     debugPrint('ltc_util- getLtcBalanceByAddress url $url');
     var btcBalance = 0.0;
     try {

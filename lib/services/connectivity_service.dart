@@ -10,7 +10,7 @@ class ConnectivityService {
       StreamController<ConnectivityStatus>();
 
   ConnectivityService() {
-    bool isConnected;
+    late bool isConnected;
     StreamSubscription subscription;
     SimpleConnectionChecker _connectionChecker = SimpleConnectionChecker()
       ..setLookUpAddress('exchangily.com');

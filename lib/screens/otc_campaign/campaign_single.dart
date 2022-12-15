@@ -9,7 +9,7 @@ import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class CampaignSingle extends StatelessWidget {
   const CampaignSingle(this.eventID);
-  final String eventID;
+  final String? eventID;
   @override
   Widget build(BuildContext context) {
     return BaseScreen<CampaignSingleScreenState>(
@@ -29,7 +29,7 @@ class CampaignSingle extends StatelessWidget {
                         )
                       : Container(
                           color: HexColor(
-                              model.campaignInfoSingle["setting"]["bgColor"]),
+                              model.campaignInfoSingle!["setting"]["bgColor"]),
                           child: ListView(
                             children: <Widget>[
                               // List of instruction SVG images
@@ -44,16 +44,16 @@ class CampaignSingle extends StatelessWidget {
                                     decoration: BoxDecoration(
                                         image: DecorationImage(
                                       alignment: Alignment.topCenter,
-                                      image: model.campaignInfoSingle["setting"]
+                                      image: (model.campaignInfoSingle!["setting"]
                                                   ["bgImage"]
                                               .startsWith("http")
                                           ? NetworkImage(model
-                                                  .campaignInfoSingle["setting"]
+                                                  .campaignInfoSingle!["setting"]
                                               ["bgImage"])
                                           : AssetImage(
-                                              model.campaignInfoSingle[
+                                              model.campaignInfoSingle![
                                                   "setting"]["bgImage"],
-                                            ),
+                                            )) as ImageProvider<Object>,
                                       fit: BoxFit.contain,
                                     )),
                                     child: Container(
@@ -75,7 +75,7 @@ class CampaignSingle extends StatelessWidget {
                                               child: FittedBox(
                                                 fit: BoxFit.contain,
                                                 child: Text(
-                                                  model.campaignInfoSingle[model
+                                                  model.campaignInfoSingle![model
                                                           .lang]["title"]["up"]
                                                       .toUpperCase(),
                                                   style: const TextStyle(
@@ -94,7 +94,7 @@ class CampaignSingle extends StatelessWidget {
                                               child: FittedBox(
                                                   fit: BoxFit.contain,
                                                   child: GradientText(
-                                                      model.campaignInfoSingle[
+                                                      model.campaignInfoSingle![
                                                               model.lang]
                                                           ["title"]["main"],
                                                       style: const TextStyle(
@@ -140,7 +140,7 @@ class CampaignSingle extends StatelessWidget {
                                                   ),
                                                   const SizedBox(width: 5),
                                                   Text(
-                                                    model.campaignInfoSingle[
+                                                    model.campaignInfoSingle![
                                                             model.lang]["title"]
                                                         ["label"],
                                                     style: const TextStyle(
@@ -212,7 +212,7 @@ class CampaignSingle extends StatelessWidget {
                                     ),
                                     child: Center(
                                       child: Text(
-                                        model.campaignInfoSingle[model.lang]
+                                        model.campaignInfoSingle![model.lang]
                                             ["title"]["leading"],
                                         style: const TextStyle(
                                             fontSize: 16,
@@ -233,7 +233,7 @@ class CampaignSingle extends StatelessWidget {
                               ),
                               // content rows
                               EventMainContent(
-                                  model.campaignInfoSingle[model.lang]["body"]),
+                                  model.campaignInfoSingle![model.lang]["body"]),
 
                               const SizedBox(height: 50),
 

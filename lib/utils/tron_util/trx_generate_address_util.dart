@@ -42,7 +42,7 @@ generateTrxAddress(String mnemonic) {
   //  log.w('pub key $pubKey -- length ${pubKey.length}');
   var uncompressedPubKey =
       BitcoinFlutter.ECPair.fromPrivateKey(privKey, compressed: false)
-          .publicKey;
+          .publicKey!;
   // debugPrint('uncompressedPubKey  length ${uncompressedPubKey.length}');
   // debugPrint('uncompressedPubKey ${StringUtil.uint8ListToHex(uncompressedPubKey)}');
 

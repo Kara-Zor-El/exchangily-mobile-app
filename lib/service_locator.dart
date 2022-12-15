@@ -66,6 +66,7 @@ import 'package:get_it/get_it.dart';
 import 'package:exchangilymobileapp/screen_state/otc/otc_details_screen_state.dart';
 import 'package:exchangilymobileapp/services/local_storage_service.dart';
 import 'package:exchangilymobileapp/screen_state/otc_campaign/team_reward_details_screen_state.dart';
+import 'dart:async';
 
 import 'screens/exchange/trade/my_exchange_assets/exchange_balance_service.dart';
 
@@ -105,8 +106,9 @@ Future serviceLocator() async {
   locator.registerLazySingleton(() => VersionService());
 
   // LocalStorageService Singelton
-  var instance = await LocalStorageService.getInstance();
-  locator.registerSingleton<LocalStorageService>(instance);
+  var instance = await (LocalStorageService.getInstance());
+  locator
+      .registerSingleton<LocalStorageService>(instance as LocalStorageService);
 
   // Factory returns the new instance
 

@@ -53,20 +53,24 @@ import 'package:exchangilymobileapp/screens/wallet/wallet_features/redeposit/red
 import 'package:exchangilymobileapp/screens/wallet/wallet_features/smart_contract.dart';
 import 'package:exchangilymobileapp/screens/settings/settings_view.dart';
 
+import 'package:exchangilymobileapp/models/wallet/wallet_model.dart';
+import 'package:exchangilymobileapp/screens/exchange/markets/price_model.dart';
+import 'package:exchangilymobileapp/models/campaign/reward.dart';
+import 'package:exchangilymobileapp/models/campaign/order_info.dart';
+
 import 'package:exchangilymobileapp/screens/exchange/trade/my_orders/my_orders_view.dart';
 import 'screens/otc_campaign/token_details_screen.dart';
 
 final log = getLogger('Routes');
 
 class RouteGenerator {
-  static String _lastRoute = '/';
-  static String get lastRoute => _lastRoute;
+  static String? _lastRoute = '/';
+  static String? get lastRoute => _lastRoute;
   static Route<dynamic> generateRoute(RouteSettings settings) {
     log.w(
         'generateRoute | name: ${settings.name} arguments:${settings.arguments}');
     final args = settings.arguments;
     _lastRoute = settings.name;
-
     switch (settings.name) {
       case '/':
         return MaterialPageRoute(builder: (_) => const WalletSetupView());
@@ -89,8 +93,8 @@ class RouteGenerator {
 
       case ConfirmMnemonicViewRoute:
         return MaterialPageRoute(
-            builder: (_) =>
-                ConfirmMnemonicView(randomMnemonicListFromRoute: args));
+            builder: (_) => ConfirmMnemonicView(
+                randomMnemonicListFromRoute: args as List<String>?));
 
       case CreatePasswordViewRoute:
         return MaterialPageRoute(
@@ -113,35 +117,39 @@ class RouteGenerator {
 
       case DepositViewRoute:
         return MaterialPageRoute(
-            builder: (_) => MoveToExchangeScreen(walletInfo: args));
+            builder: (_) =>
+                MoveToExchangeScreen(walletInfo: args as WalletInfo?));
 
       case RedepositViewRoute:
-        return MaterialPageRoute(builder: (_) => Redeposit(walletInfo: args));
+        return MaterialPageRoute(
+            builder: (_) => Redeposit(walletInfo: args as WalletInfo?));
 
       case WithdrawViewRoute:
         return MaterialPageRoute(
-            builder: (_) => MoveToWalletScreen(walletInfo: args));
+            builder: (_) =>
+                MoveToWalletScreen(walletInfo: args as WalletInfo?));
 
       case WalletFeaturesViewRoute:
         return MaterialPageRoute(
-            builder: (_) => WalletFeaturesView(walletInfo: args));
+            builder: (_) =>
+                WalletFeaturesView(walletInfo: args as WalletInfo?));
 
       case ReceiveViewRoute:
         return MaterialPageRoute(
             builder: (_) => ReceiveWalletScreen(
-                  walletInfo: args,
+                  walletInfo: args as WalletInfo?,
                 ));
 
       case SendViewRoute:
         return MaterialPageRoute(
             builder: (_) => SendWalletView(
-                  walletInfo: args,
+                  walletInfo: args as WalletInfo?,
                 ));
 
       case TransactionHistoryViewRoute:
         return MaterialPageRoute(
             builder: (_) => TransactionHistoryView(
-                  walletInfo: args,
+                  walletInfo: args as WalletInfo?,
                 ));
 
 /*----------------------------------------------------------------------
@@ -151,15 +159,15 @@ class RouteGenerator {
       case MarketsViewRoute:
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'MarketsView'),
-            builder: (_) => MarketsView(hideSlider: args));
+            builder: (_) => MarketsView(hideSlider: args as bool?));
 
       case '/exchangeTrade':
         return MaterialPageRoute(
-            builder: (_) => TradeView(pairPriceByRoute: args));
+            builder: (_) => TradeView(pairPriceByRoute: args as Price?));
 
       case '/myExchangeOrders':
         return MaterialPageRoute(
-            builder: (_) => MyOrdersView(tickerName: args));
+            builder: (_) => MyOrdersView(tickerName: args as String?));
 
 /*----------------------------------------------------------------------
                           Campaign Routes
@@ -172,7 +180,7 @@ class RouteGenerator {
       case '/campaignSingle':
         return MaterialPageRoute(
             settings: const RouteSettings(name: 'CampaignSingle'),
-            builder: (_) => CampaignSingle(args));
+            builder: (_) => CampaignSingle(args as String?));
 
       case '/campaignPayment':
         return MaterialPageRoute(builder: (_) => const CampaignPaymentScreen());
@@ -182,20 +190,23 @@ class RouteGenerator {
 
       case '/campaignTokenDetails':
         return MaterialPageRoute(
-            builder: (_) =>
-                CampaignTokenDetailsScreen(campaignRewardList: args));
+            builder: (_) => CampaignTokenDetailsScreen(
+                campaignRewardList: args as List<CampaignReward>?));
 
       case '/MyRewardDetails':
         return MaterialPageRoute(
-            builder: (_) => MyRewardDetailsScreen(campaignRewardList: args));
+            builder: (_) => MyRewardDetailsScreen(
+                campaignRewardList: args as List<CampaignReward>?));
 
       case '/campaignOrderDetails':
         return MaterialPageRoute(
-            builder: (_) => CampaignOrderDetailsScreen(orderInfoList: args));
+            builder: (_) => CampaignOrderDetailsScreen(
+                orderInfoList: args as List<OrderInfo>?));
 
       case '/teamRewardDetails':
         return MaterialPageRoute(
-            builder: (_) => TeamRewardDetailsView(team: args));
+            builder: (_) =>
+                TeamRewardDetailsView(team: args as List<dynamic>?));
 
       case '/teamReferralView':
         return MaterialPageRoute(
@@ -203,12 +214,13 @@ class RouteGenerator {
 
       case '/myReferralView':
         return MaterialPageRoute(
-            builder: (_) => MyReferralView(referralDetails: args));
+            builder: (_) =>
+                MyReferralView(referralDetails: args as List<String>?));
 
       case '/campaignLogin':
         return MaterialPageRoute(
             builder: (_) => CampaignLoginScreen(
-                  errorMessage: args,
+                  errorMessage: args as String?,
                 ));
 
       case '/campaignRegisterAccount':
@@ -248,16 +260,17 @@ class RouteGenerator {
   }
 
   static Route _errorRoute(settings) {
-    BuildContext context;
+    late BuildContext context = settings.arguments as BuildContext;
     return MaterialPageRoute(builder: (_) {
       return Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context).error,
+          title: Text(AppLocalizations.of(context)!.error,
               style: const TextStyle(color: Colors.white)),
         ),
         body: Center(
           child: Text(
-              AppLocalizations.of(context).noRouteDefined + ' ${settings.name}',
+              AppLocalizations.of(context)!.noRouteDefined +
+                  ' ${settings.name}',
               style: const TextStyle(color: Colors.white)),
         ),
       );

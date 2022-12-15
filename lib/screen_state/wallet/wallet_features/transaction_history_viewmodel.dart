@@ -33,7 +33,7 @@ import 'package:exchangilymobileapp/services/db/user_settings_database_service.d
 import 'package:overlay_support/overlay_support.dart';
 
 class TransactionHistoryViewmodel extends FutureViewModel {
-  final WalletInfo walletInfo;
+  final WalletInfo? walletInfo;
   final String success = 'success';
   final String bindpay = 'bindpay';
   final String send = 'send';
@@ -45,28 +45,28 @@ class TransactionHistoryViewmodel extends FutureViewModel {
 
   TransactionHistoryViewmodel({this.walletInfo});
   final log = getLogger('TransactionHistoryViewmodel');
-  BuildContext context;
+  late BuildContext context;
   List<TransactionHistory> txHistoryToView = [];
-  TransactionHistoryDatabaseService transactionHistoryDatabaseService =
+  TransactionHistoryDatabaseService? transactionHistoryDatabaseService =
       locator<TransactionHistoryDatabaseService>();
-  final storageService = locator<LocalStorageService>();
-  final walletService = locator<WalletService>();
-  final apiService = locator<ApiService>();
-  SharedService sharedService = locator<SharedService>();
-  final navigationService = locator<NavigationService>();
-  final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
-  final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
+  final LocalStorageService? storageService = locator<LocalStorageService>();
+  final WalletService? walletService = locator<WalletService>();
+  final ApiService? apiService = locator<ApiService>();
+  SharedService? sharedService = locator<SharedService>();
+  final NavigationService? navigationService = locator<NavigationService>();
+  final UserSettingsDatabaseService? userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
+  final CoreWalletDatabaseService? coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
 
   bool isChinese = false;
   bool isDialogUp = false;
-  int decimalLimit = 6;
+  int? decimalLimit = 6;
   bool isCustomToken = false;
   var walletUtil = WalletUtil();
 
   @override
   Future futureToRun() async =>
       // tickerName.isEmpty ?
-      await transactionHistoryDatabaseService.getByName(walletInfo.tickerName);
+      await transactionHistoryDatabaseService!.getByName(walletInfo!.tickerName);
 
 /*----------------------------------------------------------------------
                   After Future Data is ready
@@ -74,47 +74,47 @@ class TransactionHistoryViewmodel extends FutureViewModel {
   @override
   void onData(data) async {
     setBusy(true);
-    String tickerName = walletInfo.tickerName;
+    String? tickerName = walletInfo!.tickerName;
     log.i('tx length ${data.length}');
     List<TransactionHistory> txHistoryFromDb = [];
     List<TransactionHistory> txHistoryEvents = [];
     txHistoryFromDb = data;
-    String fabAddress =
-        await walletService.getAddressFromCoreWalletDatabaseByTickerName('FAB');
-    txHistoryEvents = await apiService.getTransactionHistoryEvents(fabAddress);
+    String? fabAddress =
+        await walletService!.getAddressFromCoreWalletDatabaseByTickerName('FAB');
+    txHistoryEvents = await apiService!.getTransactionHistoryEvents(fabAddress);
     if (txHistoryEvents.isNotEmpty) {
       for (var txFromApi in txHistoryEvents) {
         if (txFromApi.tickerName == tickerName) {
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'ETH_DSC' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'ETH_DSC' &&
             tickerName == 'DSCE') {
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'ETH_BST' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'ETH_BST' &&
             tickerName == 'BSTE') {
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'ETH_FAB' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'ETH_FAB' &&
             tickerName == 'FABE') {
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'ETH_EXG' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'ETH_EXG' &&
             tickerName == 'EXGE') {
           // element.tickerName = 'EXG(ERC20)';
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'TRON_USDT' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'TRON_USDT' &&
             tickerName == 'USDTX') {
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'BNB_USDT' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'BNB_USDT' &&
             tickerName == 'USDTB') {
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'MATIC_USDT' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'MATIC_USDT' &&
             tickerName == 'USDTM') {
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'BNB_FAB' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'BNB_FAB' &&
             tickerName == 'FABB') {
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'POLYGON_MATIC' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'POLYGON_MATIC' &&
             tickerName == 'MATICM') {
           txHistoryToView.add(txFromApi);
-        } else if (txFromApi.tickerName.toUpperCase() == 'POLYGON_USDT' &&
+        } else if (txFromApi.tickerName!.toUpperCase() == 'POLYGON_USDT' &&
             tickerName == 'USDTM') {
           txHistoryToView.add(txFromApi);
         }
@@ -125,16 +125,16 @@ class TransactionHistoryViewmodel extends FutureViewModel {
       for (var t in txHistoryFromDb) {
         if (t.tag == 'send' &&
             (t.tickerName == tickerName ||
-                t.tickerName == updateTickers(tickerName))) {
+                t.tickerName == updateTickers(tickerName!))) {
           txHistoryToView.add(t);
         }
       }
     }
 
     txHistoryToView.sort(
-        (a, b) => DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
+        (a, b) => DateTime.parse(b.date!).compareTo(DateTime.parse(a.date!)));
 
-    String customTokenStringData = storageService.customTokenData;
+    String customTokenStringData = storageService!.customTokenData;
 
     try {
       if (customTokenStringData.isNotEmpty) {
@@ -150,7 +150,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     }
     if (!isCustomToken) {
       decimalLimit =
-          await walletService.getSingleCoinWalletDecimalLimit(tickerName);
+          await walletService!.getSingleCoinWalletDecimalLimit(tickerName);
       if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
     }
     setBusy(false);
@@ -179,22 +179,22 @@ class TransactionHistoryViewmodel extends FutureViewModel {
   getTransaction(String tickerName) async {
     setBusy(true);
     txHistoryToView = [];
-    await transactionHistoryDatabaseService
+    await transactionHistoryDatabaseService!
         .getByNameOrderByDate(tickerName)
         .then((data) async {
       txHistoryToView = data;
-      await walletService
+      await walletService!
           .getSingleCoinWalletDecimalLimit(tickerName)
           .then((data) => decimalLimit = data);
 
       for (var t in txHistoryToView) {
         log.e(t.toJson);
-        if (t.tag.startsWith('sent')) {
-          await walletService.checkTxStatus(t);
+        if (t.tag!.startsWith('sent')) {
+          await walletService!.checkTxStatus(t);
         }
       }
       txHistoryToView.sort(
-          (a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)));
+          (a, b) => DateTime.parse(a.date!).compareTo(DateTime.parse(b.date!)));
       for (var t in txHistoryToView) {
         log.w(t.toJson);
       }
@@ -208,11 +208,11 @@ class TransactionHistoryViewmodel extends FutureViewModel {
 /*----------------------------------------------------------------------
                   Copy Address
 ----------------------------------------------------------------------*/
-  copyAddress(String txId) {
+  copyAddress(String? txId) {
     Clipboard.setData(ClipboardData(text: txId));
     showSimpleNotification(
         Center(
-            child: Text(AppLocalizations.of(context).copiedSuccessfully,
+            child: Text(AppLocalizations.of(context)!.copiedSuccessfully,
                 style: Theme.of(context).textTheme.headlineSmall)),
         position: NotificationPosition.bottom,
         background: primaryColor);
@@ -226,13 +226,13 @@ class TransactionHistoryViewmodel extends FutureViewModel {
     isDialogUp = true;
     log.i('showTxDetailDialog isDialogUp $isDialogUp');
     setBusy(false);
-    if (transactionHistory.chainName.isEmpty ||
+    if (transactionHistory.chainName!.isEmpty ||
         transactionHistory.chainName == null) {
-      transactionHistory.chainName = walletInfo.tokenType.isEmpty
-          ? updateTickers(walletInfo.tickerName)
-          : walletInfo.tokenType;
+      transactionHistory.chainName = walletInfo!.tokenType!.isEmpty
+          ? updateTickers(walletInfo!.tickerName!)
+          : walletInfo!.tokenType;
       log.i(
-          'transactionHistory.chainName empty so showing wallet token type ${walletInfo.tokenType}');
+          'transactionHistory.chainName empty so showing wallet token type ${walletInfo!.tokenType}');
     }
     showDialog(
         barrierDismissible: false,
@@ -245,10 +245,10 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                     title: Container(
                       child: Center(
                           child: Text(
-                        '${AppLocalizations.of(context).transactionDetails}....',
+                        '${AppLocalizations.of(context)!.transactionDetails}....',
                         style: Theme.of(context)
                             .textTheme
-                            .headlineMedium
+                            .headlineMedium!
                             .copyWith(
                                 color: primaryColor,
                                 fontWeight: FontWeight.w500),
@@ -261,7 +261,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           UIHelper.verticalSpaceSmall,
                           transactionHistory.tag != send
                               ? Text(
-                                  '${AppLocalizations.of(context).kanban} Txid',
+                                  '${AppLocalizations.of(context)!.kanban} Txid',
                                   style: Theme.of(context).textTheme.bodyLarge,
                                 )
                               : Container(),
@@ -284,26 +284,26 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                                     true);
                                               },
                                             text: transactionHistory
-                                                    .kanbanTxId.isEmpty
+                                                    .kanbanTxId!.isEmpty
                                                 ? transactionHistory
-                                                        .kanbanTxStatus.isEmpty
+                                                        .kanbanTxStatus!.isEmpty
                                                     ? AppLocalizations.of(
-                                                            context)
+                                                            context)!
                                                         .inProgress
                                                     : firstCharToUppercase(
                                                         transactionHistory
-                                                            .kanbanTxStatus)
+                                                            .kanbanTxStatus!)
                                                 : transactionHistory.kanbanTxId
                                                     .toString(),
                                             style: Theme.of(context)
                                                 .textTheme
-                                                .bodyLarge
+                                                .bodyLarge!
                                                 .copyWith(color: Colors.blue),
                                           ),
                                         ),
                                       ),
                                     ),
-                                    transactionHistory.kanbanTxId.isEmpty
+                                    transactionHistory.kanbanTxId!.isEmpty
                                         ? Container()
                                         : CupertinoButton(
                                             child: const Icon(
@@ -319,7 +319,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           UIHelper.verticalSpaceMedium,
                           Text(
                             //AppLocalizations.of(context).quantity,
-                            '${transactionHistory.chainName} ${AppLocalizations.of(context).chain} Txid',
+                            '${transactionHistory.chainName} ${AppLocalizations.of(context)!.chain} Txid',
                             style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           Row(
@@ -339,10 +339,10 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                               false);
                                         },
                                       text: transactionHistory
-                                              .tickerChainTxId.isEmpty
+                                              .tickerChainTxId!.isEmpty
                                           ? transactionHistory
-                                                  .tickerChainTxStatus.isEmpty
-                                              ? AppLocalizations.of(context)
+                                                  .tickerChainTxStatus!.isEmpty
+                                              ? AppLocalizations.of(context)!
                                                   .inProgress
                                               : transactionHistory
                                                   .tickerChainTxStatus
@@ -350,13 +350,13 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                               .toString(),
                                       style: Theme.of(context)
                                           .textTheme
-                                          .bodyLarge
+                                          .bodyLarge!
                                           .copyWith(color: Colors.blue),
                                     ),
                                   ),
                                 ),
                               ),
-                              transactionHistory.tickerChainTxId.isEmpty
+                              transactionHistory.tickerChainTxId!.isEmpty
                                   ? Container()
                                   : CupertinoButton(
                                       child: const Icon(FontAwesomeIcons.copy,
@@ -380,10 +380,10 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(4)),
                               child: Text(
-                                AppLocalizations.of(context).close,
+                                AppLocalizations.of(context)!.close,
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyMedium
+                                    .bodyMedium!
                                     .copyWith(
                                         fontWeight: FontWeight.bold,
                                         color: primaryColor),
@@ -408,11 +408,11 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                     color: secondaryColor.withOpacity(0.5),
                     child: Center(
                         child: Text(
-                            AppLocalizations.of(context).transactionDetails)),
+                            AppLocalizations.of(context)!.transactionDetails)),
                   ),
                   titleTextStyle: Theme.of(context)
                       .textTheme
-                      .headlineMedium
+                      .headlineMedium!
                       .copyWith(fontWeight: FontWeight.bold),
                   contentTextStyle: const TextStyle(color: grey),
                   content: Column(
@@ -421,7 +421,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                       transactionHistory.tag != send
                           ? Text(
                               //AppLocalizations.of(context).,
-                              '${AppLocalizations.of(context).kanban} Txid',
+                              '${AppLocalizations.of(context)!.kanban} Txid',
                               style: Theme.of(context).textTheme.bodyLarge,
                             )
                           : Container(),
@@ -442,25 +442,25 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                                 true);
                                           },
                                         text: transactionHistory
-                                                .kanbanTxId.isEmpty
+                                                .kanbanTxId!.isEmpty
                                             ? transactionHistory
-                                                    .kanbanTxStatus.isEmpty
-                                                ? AppLocalizations.of(context)
+                                                    .kanbanTxStatus!.isEmpty
+                                                ? AppLocalizations.of(context)!
                                                     .inProgress
                                                 : firstCharToUppercase(
                                                     transactionHistory
-                                                        .kanbanTxStatus)
+                                                        .kanbanTxStatus!)
                                             : transactionHistory.kanbanTxId
                                                 .toString(),
                                         style: Theme.of(context)
                                             .textTheme
-                                            .bodyLarge
+                                            .bodyLarge!
                                             .copyWith(color: Colors.blue),
                                       ),
                                     ),
                                   ),
                                 ),
-                                transactionHistory.kanbanTxId.isEmpty
+                                transactionHistory.kanbanTxId!.isEmpty
                                     ? Container()
                                     : IconButton(
                                         icon: const Icon(Icons.copy_outlined,
@@ -474,7 +474,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                       UIHelper.verticalSpaceMedium,
                       Text(
                         //AppLocalizations.of(context).quantity,
-                        '${transactionHistory.chainName} ${AppLocalizations.of(context).chain} Txid',
+                        '${transactionHistory.chainName} ${AppLocalizations.of(context)!.chain} Txid',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       Row(
@@ -494,10 +494,10 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                           false);
                                     },
                                   text:
-                                      transactionHistory.tickerChainTxId.isEmpty
+                                      transactionHistory.tickerChainTxId!.isEmpty
                                           ? transactionHistory
-                                                  .tickerChainTxStatus.isEmpty
-                                              ? AppLocalizations.of(context)
+                                                  .tickerChainTxStatus!.isEmpty
+                                              ? AppLocalizations.of(context)!
                                                   .inProgress
                                               : transactionHistory
                                                   .tickerChainTxStatus
@@ -505,7 +505,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                                               .toString(),
                                   style: Theme.of(context)
                                       .textTheme
-                                      .bodyLarge
+                                      .bodyLarge!
                                       .copyWith(color: Colors.blue),
                                 ),
                               ),
@@ -528,7 +528,7 @@ class TransactionHistoryViewmodel extends FutureViewModel {
                           setBusy(false);
                         },
                         child: Text(
-                          AppLocalizations.of(context).close,
+                          AppLocalizations.of(context)!.close,
                           style: Theme.of(context).textTheme.button,
                         ),
                       )
@@ -540,50 +540,50 @@ class TransactionHistoryViewmodel extends FutureViewModel {
 /*----------------------------------------------------------------------
                   Launch URL
 ----------------------------------------------------------------------*/
-  launchUrl(String txId, String chain, bool isKanban) async {
+  launchUrl(String? txId, String? chain, bool isKanban) async {
     // copyAddress(txId);
     if (isKanban) {
-      String exchangilyExplorerUrl = ExchangilyExplorerUrl + txId;
+      String exchangilyExplorerUrl = ExchangilyExplorerUrl + txId!;
       log.i('Kanban - explorer url - $exchangilyExplorerUrl');
       openExplorer(exchangilyExplorerUrl);
-    } else if (chain.toUpperCase() == 'FAB') {
-      String fabExplorerUrl = FabExplorerUrl + txId;
+    } else if (chain!.toUpperCase() == 'FAB') {
+      String fabExplorerUrl = FabExplorerUrl + txId!;
       log.i('FAB - chainame $chain explorer url - $fabExplorerUrl');
       openExplorer(fabExplorerUrl);
     } else if (chain.toUpperCase() == 'BTC') {
-      String bitcoinExplorerUrl = BitcoinExplorerUrl + txId;
+      String bitcoinExplorerUrl = BitcoinExplorerUrl + txId!;
       log.i('BTC - chainame $chain explorer url - $bitcoinExplorerUrl');
       openExplorer(bitcoinExplorerUrl);
     } else if (chain.toUpperCase() == 'ETH') {
       String ethereumExplorerUrl = isProduction
-          ? EthereumExplorerUrl + txId
-          : TestnetEthereumExplorerUrl + txId;
+          ? EthereumExplorerUrl + txId!
+          : TestnetEthereumExplorerUrl + txId!;
       log.i('ETH - chainame $chain explorer url - $ethereumExplorerUrl');
       openExplorer(ethereumExplorerUrl);
     } else if (chain.toUpperCase() == 'BNB') {
-      log.i('chainame $chain explorer url - ${bnbExplorerUrl + txId}');
+      log.i('chainame $chain explorer url - ${bnbExplorerUrl + txId!}');
       openExplorer(bnbExplorerUrl + txId);
     } else if (chain.toUpperCase() == 'MATICM' ||
         chain.toUpperCase() == 'POLYGON') {
-      log.i('chainame $chain explorer url - ${maticmExplorerUrl + txId}');
+      log.i('chainame $chain explorer url - ${maticmExplorerUrl + txId!}');
       openExplorer(maticmExplorerUrl + txId);
     } else if (chain.toUpperCase() == 'LTC') {
-      String litecoinExplorerUrl = LitecoinExplorerUrl + txId;
+      String litecoinExplorerUrl = LitecoinExplorerUrl + txId!;
       log.i('LTC - chainame $chain explorer url - $litecoinExplorerUrl');
       openExplorer(litecoinExplorerUrl);
     } else if (chain.toUpperCase() == 'DOGE') {
-      String dogeExplorerUrl = DogeExplorerUrl + txId;
+      String dogeExplorerUrl = DogeExplorerUrl + txId!;
       log.i('doge - chainame $chain explorer url - $dogeExplorerUrl');
       openExplorer(dogeExplorerUrl);
     } else if (chain.toUpperCase() == 'TRON' || chain.toUpperCase() == 'TRX') {
-      if (txId.startsWith('0x')) {
+      if (txId!.startsWith('0x')) {
         txId = txId.substring(2);
       }
       String tronExplorerUrl = TronExplorerUrl + txId;
       log.i('tron - chainame $chain explorer url - $tronExplorerUrl');
       openExplorer(tronExplorerUrl);
     } else if (chain.toUpperCase() == 'BCH') {
-      String bitcoinCashExplorerUrl = BitcoinCashExplorerUrl + txId;
+      String bitcoinCashExplorerUrl = BitcoinCashExplorerUrl + txId!;
       log.i('BCH - chainame $chain explorer url - $bitcoinCashExplorerUrl');
       openExplorer(bitcoinCashExplorerUrl);
     } else {

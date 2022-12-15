@@ -39,7 +39,7 @@ class _LoadHTMLFileToWEbViewState extends State<LoadHTMLFileToWEbView> {
   Widget build(BuildContext context) {
     return ViewModelBuilder.reactive(
       viewModelBuilder: () => TradingChartViewModel(),
-      onModelReady: (model) {
+      onModelReady: (dynamic model) {
         model.init();
       },
       builder: (context, TradingChartViewModel model, _) => Column(
@@ -110,11 +110,11 @@ class _LoadHTMLFileToWEbViewState extends State<LoadHTMLFileToWEbView> {
         .replaceAll('BTC', pairArray[0])
         .replaceAll('USDT', pairArray[1])
         .replaceAll('en_US', lang)
-        .replaceAll('30m', model.tradingChartInterval)
+        .replaceAll('30m', model.tradingChartInterval!)
         .replaceAll('https://kanbantest.fabcoinapi.com/',
-            model.configService.getKanbanBaseUrl())
+            model.configService!.getKanbanBaseUrl()!)
         .replaceAll('wss://kanbantest.fabcoinapi.com/ws/',
-            model.configService.getKanbanBaseWSUrl());
+            model.configService!.getKanbanBaseWSUrl()!);
 
     model.webViewController.loadUrl(Uri.dataFromString(fileText,
             mimeType: 'text/html', encoding: Encoding.getByName('utf-8'))

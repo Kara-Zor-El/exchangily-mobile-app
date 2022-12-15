@@ -22,8 +22,8 @@ import '../shared/globals.dart' as globals;
 import 'package:exchangilymobileapp/localizations.dart';
 
 class OrderUpdateDialogManager extends StatefulWidget {
-  final Widget child;
-  const OrderUpdateDialogManager({Key key, this.child}) : super(key: key);
+  final Widget? child;
+  const OrderUpdateDialogManager({Key? key, this.child}) : super(key: key);
 
   @override
   _OrderUpdateDialogManagerState createState() =>
@@ -32,20 +32,20 @@ class OrderUpdateDialogManager extends StatefulWidget {
 
 class _OrderUpdateDialogManagerState extends State<OrderUpdateDialogManager> {
   final log = getLogger('OrderUpdateDialogManager');
-  final DialogService _dialogService = locator<DialogService>();
+  final DialogService? _dialogService = locator<DialogService>();
   TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
     log.w(widget.child);
     super.initState();
-    _dialogService.registerDialogListener(_showdOrderUpdateDialog);
+    _dialogService!.registerDialogListener(_showdOrderUpdateDialog);
     controller.text = '';
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return widget.child!;
   }
 
   void _showdOrderUpdateDialog(DialogRequest request) {
@@ -54,17 +54,17 @@ class _OrderUpdateDialogManagerState extends State<OrderUpdateDialogManager> {
             animationType: AnimationType.grow,
             isOverlayTapDismiss: true,
             backgroundColor: globals.priceColor,
-            descStyle: Theme.of(context).textTheme.bodyLarge,
+            descStyle: Theme.of(context).textTheme.bodyLarge!,
             titleStyle: Theme.of(context)
                 .textTheme
-                .displaySmall
+                .displaySmall!
                 .copyWith(fontWeight: FontWeight.bold)),
         context: context,
         title: request.title,
         desc: request.description,
         closeFunction: () {
           FocusScope.of(context).requestFocus(FocusNode());
-          _dialogService.dialogComplete(
+          _dialogService!.dialogComplete(
               DialogResponse(returnedText: 'Closed', confirmed: false));
         },
         content: Column(
@@ -76,13 +76,13 @@ class _OrderUpdateDialogManagerState extends State<OrderUpdateDialogManager> {
               decoration: InputDecoration(
                 labelStyle: Theme.of(context)
                     .textTheme
-                    .bodyLarge
+                    .bodyLarge!
                     .copyWith(color: globals.white),
                 icon: const Icon(
                   Icons.event_note,
                   color: globals.primaryColor,
                 ),
-                labelText: AppLocalizations.of(context).paymentDescription,
+                labelText: AppLocalizations.of(context)!.paymentDescription,
               ),
             ),
           ],
@@ -94,7 +94,7 @@ class _OrderUpdateDialogManagerState extends State<OrderUpdateDialogManager> {
               FocusScope.of(context).requestFocus(FocusNode());
             },
             child: Text(
-              request.buttonTitle,
+              request.buttonTitle!,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ),
@@ -104,7 +104,7 @@ class _OrderUpdateDialogManagerState extends State<OrderUpdateDialogManager> {
               FocusScope.of(context).requestFocus(FocusNode());
             },
             child: Text(
-              request.cancelButton,
+              request.cancelButton!,
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           )

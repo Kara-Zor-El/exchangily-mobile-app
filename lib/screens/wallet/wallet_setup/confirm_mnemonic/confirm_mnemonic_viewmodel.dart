@@ -40,7 +40,7 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
   bool isTap = true;
   List<String> tappedMnemonicList = [];
   List<String> shuffledList = [];
-  final navigationService = locator<NavigationService>();
+  final NavigationService? navigationService = locator<NavigationService>();
   List<int> lastIndexList = [];
 /*----------------------------------------------------------------------
                     init
@@ -53,7 +53,7 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
                     onBackButtonPressed
 ----------------------------------------------------------------------*/
   onBackButtonPressed() async {
-    await navigationService.navigateTo(BackupMnemonicViewRoute);
+    await navigationService!.navigateTo(BackupMnemonicViewRoute);
   }
 
 /*----------------------------------------------------------------------
@@ -199,24 +199,24 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
           importWallet(listToStringMnemonic, context);
         } else {
           showSimpleNotification(
-              Text(AppLocalizations.of(context).invalidMnemonic,
+              Text(AppLocalizations.of(context)!.invalidMnemonic,
                   style: Theme.of(context)
                       .textTheme
-                      .headlineMedium
+                      .headlineMedium!
                       .copyWith(color: red, fontWeight: FontWeight.bold)),
               position: NotificationPosition.bottom,
-              subtitle: Text(AppLocalizations.of(context)
+              subtitle: Text(AppLocalizations.of(context)!
                   .pleaseFillAllTheTextFieldsCorrectly));
         }
       } else {
         showSimpleNotification(
-            Text(AppLocalizations.of(context).invalidMnemonic,
+            Text(AppLocalizations.of(context)!.invalidMnemonic,
                 style: Theme.of(context)
                     .textTheme
-                    .headlineMedium
+                    .headlineMedium!
                     .copyWith(color: red, fontWeight: FontWeight.bold)),
             position: NotificationPosition.bottom,
-            subtitle: Text(AppLocalizations.of(context)
+            subtitle: Text(AppLocalizations.of(context)!
                 .pleaseFillAllTheTextFieldsCorrectly));
       }
     } else {
@@ -241,24 +241,24 @@ class ConfirmMnemonicViewModel extends BaseViewModel {
         Navigator.of(context).pushNamed('/createPassword', arguments: args);
       } else {
         showSimpleNotification(
-            Text(AppLocalizations.of(context).invalidMnemonic,
+            Text(AppLocalizations.of(context)!.invalidMnemonic,
                 style: Theme.of(context)
                     .textTheme
-                    .headlineMedium
+                    .headlineMedium!
                     .copyWith(color: red)),
             position: NotificationPosition.bottom,
-            subtitle: Text(AppLocalizations.of(context)
+            subtitle: Text(AppLocalizations.of(context)!
                 .pleaseFillAllTheTextFieldsCorrectly));
       }
     } else {
       showSimpleNotification(
-          Text(AppLocalizations.of(context).invalidMnemonic,
+          Text(AppLocalizations.of(context)!.invalidMnemonic,
               style: Theme.of(context)
                   .textTheme
-                  .headlineMedium
+                  .headlineMedium!
                   .copyWith(color: red)),
           position: NotificationPosition.bottom,
-          subtitle: Text(AppLocalizations.of(context)
+          subtitle: Text(AppLocalizations.of(context)!
               .pleaseFillAllTheTextFieldsCorrectly));
     }
   }

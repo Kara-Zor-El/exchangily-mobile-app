@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:async';
 
 import 'package:decimal/decimal.dart';
 import 'package:exchangilymobileapp/constants/api_routes.dart';
@@ -25,16 +26,16 @@ import 'package:exchangilymobileapp/services/api_service.dart';
 class MoveToExchangeViewModel extends BaseViewModel {
   final log = getLogger('MoveToExchangeViewModel');
 
-  final DialogService _dialogService = locator<DialogService>();
-  WalletService walletService = locator<WalletService>();
-  ApiService apiService = locator<ApiService>();
-  SharedService sharedService = locator<SharedService>();
-  TokenInfoDatabaseService tokenListDatabaseService =
+  final DialogService? _dialogService = locator<DialogService>();
+  WalletService? walletService = locator<WalletService>();
+  ApiService? apiService = locator<ApiService>();
+  SharedService? sharedService = locator<SharedService>();
+  TokenInfoDatabaseService? tokenListDatabaseService =
       locator<TokenInfoDatabaseService>();
-  CoreWalletDatabaseService coreWalletDatabaseService =
+  CoreWalletDatabaseService? coreWalletDatabaseService =
       locator<CoreWalletDatabaseService>();
-  WalletInfo walletInfo;
-  BuildContext context;
+  WalletInfo? walletInfo;
+  late BuildContext context;
   final gasPriceTextController = TextEditingController();
   final gasLimitTextController = TextEditingController();
   final satoshisPerByteTextController = TextEditingController();
@@ -43,8 +44,8 @@ class MoveToExchangeViewModel extends BaseViewModel {
   double transFee = 0.0;
   double kanbanTransFee = 0.0;
   bool transFeeAdvance = false;
-  String coinName = '';
-  String tokenType = '';
+  String? coinName = '';
+  String? tokenType = '';
   String message = '';
   final amountController = TextEditingController();
   //bool isValid = false;
@@ -52,14 +53,14 @@ class MoveToExchangeViewModel extends BaseViewModel {
   bool isShowErrorDetailsButton = false;
   bool isShowDetailsMessage = false;
   String serverError = '';
-  String specialTicker = '';
+  String? specialTicker = '';
   var res;
   double amount = 0.0;
   String feeUnit = '';
   final coinUtils = CoinUtils();
-  int decimalLimit = 8;
-  double chainBalance = 0.0;
-  String fabAddress = '';
+  int? decimalLimit = 8;
+  double? chainBalance = 0.0;
+  String? fabAddress = '';
   bool isValidAmount = true;
   var walletUtil = WalletUtil();
   var erc20Util = Erc20Util();
@@ -67,16 +68,16 @@ class MoveToExchangeViewModel extends BaseViewModel {
   // Init
   void initState() async {
     setBusy(true);
-    coinName = walletInfo.tickerName;
-    if (coinName == 'FAB') walletInfo.tokenType = '';
-    if (coinName == 'USDTX') walletInfo.tokenType = 'TRX';
-    tokenType = walletInfo.tokenType;
+    coinName = walletInfo!.tickerName;
+    if (coinName == 'FAB') walletInfo!.tokenType = '';
+    if (coinName == 'USDTX') walletInfo!.tokenType = 'TRX';
+    tokenType = walletInfo!.tokenType;
     await setFee();
 
     await getGasBalance();
 
     specialTicker = walletUtil
-        .updateSpecialTokensTickerName(walletInfo.tickerName)['tickerName'];
+        .updateSpecialTokensTickerName(walletInfo!.tickerName!)['tickerName'];
     await refreshBalance();
 
     if (coinName == 'BTC') {
@@ -93,24 +94,24 @@ class MoveToExchangeViewModel extends BaseViewModel {
       feeUnit = 'BNB';
     }
     decimalLimit =
-        await walletService.getSingleCoinWalletDecimalLimit(coinName);
+        await walletService!.getSingleCoinWalletDecimalLimit(coinName);
     if (decimalLimit == null || decimalLimit == 0) decimalLimit = 8;
     fabAddress =
-        await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
-    if (tokenType.isNotEmpty) await getNativeChainTickerBalance();
+        await coreWalletDatabaseService!.getWalletAddressByTickerName('FAB');
+    if (tokenType!.isNotEmpty) await getNativeChainTickerBalance();
     setBusy(false);
   }
 
   // get native chain ticker balance
   getNativeChainTickerBalance() async {
-    if (fabAddress.isEmpty) {
+    if (fabAddress!.isEmpty) {
       fabAddress =
-          await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
+          await coreWalletDatabaseService!.getWalletAddressByTickerName('FAB');
     }
     var _tokenType = tokenType == 'POLYGON' ? 'MATICM' : tokenType;
-    await apiService
-        .getSingleWalletBalance(fabAddress, _tokenType, walletInfo.address)
-        .then((walletBalance) => chainBalance = walletBalance.first.balance);
+    await apiService!
+        .getSingleWalletBalance(fabAddress, _tokenType, walletInfo!.address)
+        .then((walletBalance) => chainBalance = walletBalance!.first.balance);
   }
 
   showDetailsMessageToggle() {
@@ -144,15 +145,15 @@ class MoveToExchangeViewModel extends BaseViewModel {
     if (!isTrx()) await updateTransFee();
     // if tron coins then assign fee accordingly
     if (isTrx()) {
-      if (walletInfo.tickerName == 'USDTX') {
+      if (walletInfo!.tickerName == 'USDTX') {
         transFee = 15;
         finalAmount = amount;
-        finalAmount <= walletInfo.availableBalance
+        finalAmount <= walletInfo!.availableBalance
             ? isValidAmount = true
             : isValidAmount = false;
       }
 
-      if (walletInfo.tickerName == 'TRX') {
+      if (walletInfo!.tickerName == 'TRX') {
         transFee = 1.0;
         finalAmount = isMaxAmount ? amount - transFee : amount + transFee;
       }
@@ -160,7 +161,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       // in any token transfer, gas fee is paid in native tokens so
       // in case of non-native tokens, need to check the balance of native tokens
       // so that there is fee to pay when transffering non-native tokens
-      if (tokenType.isEmpty) {
+      if (tokenType!.isEmpty) {
         if (isMaxAmount) {
           finalAmount = (Decimal.parse(amount.toString()) -
                   Decimal.parse(transFee.toString()))
@@ -179,7 +180,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
     }
     finalAmount = NumberUtil()
         .truncateDoubleWithoutRouding(finalAmount, precision: decimalLimit);
-    finalAmount <= walletInfo.availableBalance
+    finalAmount <= walletInfo!.availableBalance
         ? isValidAmount = true
         : isValidAmount = false;
     log.i(
@@ -196,7 +197,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
   fillMaxAmount() async {
     setBusy(true);
 
-    amount = walletInfo.availableBalance;
+    amount = walletInfo!.availableBalance;
     amountController.text = amount.toString();
 
     if (!isTrx()) await updateTransFee();
@@ -210,8 +211,8 @@ class MoveToExchangeViewModel extends BaseViewModel {
           .truncateDoubleWithoutRouding(finalAmount, precision: decimalLimit)
           .toString();
     } else {
-      sharedService.sharedSimpleNotification(
-          AppLocalizations.of(context).insufficientGasAmount);
+      sharedService!.sharedSimpleNotification(
+          AppLocalizations.of(context)!.insufficientGasAmount);
     }
     setBusy(false);
   }
@@ -233,7 +234,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
     } else if (coinName == 'ETH' || tokenType == 'ETH') {
       //gasPriceTextController.text =
       //    environment["chains"]["ETH"]["gasPrice"].toString();
-      var gasPriceReal = await walletService.getEthGasPrice();
+      var gasPriceReal = await walletService!.getEthGasPrice();
       gasPriceTextController.text = gasPriceReal.toString();
       gasLimitTextController.text =
           environment["chains"]["ETH"]["gasLimit"].toString();
@@ -243,7 +244,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
             environment["chains"]["ETH"]["gasLimitToken"].toString();
       }
     } else if (coinName == 'BNB' || tokenType == 'BNB') {
-      var gasPriceReal = await erc20Util.getGasPrice(bnbBaseUrl);
+      var gasPriceReal = await erc20Util.getGasPrice(bnbBaseUrl!);
       gasPriceTextController.text = gasPriceReal.toString();
       gasLimitTextController.text =
           environment["chains"]["BNB"]["gasLimit"].toString();
@@ -253,7 +254,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
             environment["chains"]["BNB"]["gasLimitToken"].toString();
       }
     } else if (coinName == 'MATICM' || tokenType == 'POLYGON') {
-      var gasPriceReal = await erc20Util.getGasPrice(maticmBaseUrl);
+      var gasPriceReal = await erc20Util.getGasPrice(maticmBaseUrl!);
       gasPriceTextController.text = gasPriceReal.toString();
       gasLimitTextController.text =
           environment["chains"]["MATICM"]["gasLimit"].toString();
@@ -291,13 +292,13 @@ class MoveToExchangeViewModel extends BaseViewModel {
 --------------------------------------------------- */
 
   getGasBalance() async {
-    String address = await sharedService.getExgAddressFromWalletDatabase();
-    await walletService.gasBalance(address).then((data) {
+    String address = await (sharedService!.getExgAddressFromWalletDatabase() as FutureOr<String>);
+    await walletService!.gasBalance(address).then((data) {
       gasAmount = data;
       if (gasAmount == 0) {
-        sharedService.alertDialog(
-          AppLocalizations.of(context).notice,
-          AppLocalizations.of(context).insufficientGasAmount,
+        sharedService!.alertDialog(
+          AppLocalizations.of(context)!.notice,
+          AppLocalizations.of(context)!.insufficientGasAmount,
         );
       }
     }).catchError((onError) => log.e(onError));
@@ -307,8 +308,8 @@ class MoveToExchangeViewModel extends BaseViewModel {
 
   bool isTrx() {
     log.w(
-        'tickername ${walletInfo.tickerName}:  isTrx ${walletInfo.tickerName == 'TRX' || walletInfo.tokenType == 'TRX'}');
-    return walletInfo.tickerName == 'TRX' || walletInfo.tokenType == 'TRX'
+        'tickername ${walletInfo!.tickerName}:  isTrx ${walletInfo!.tickerName == 'TRX' || walletInfo!.tokenType == 'TRX'}');
+    return walletInfo!.tickerName == 'TRX' || walletInfo!.tokenType == 'TRX'
         ? true
         : false;
   }
@@ -317,35 +318,35 @@ class MoveToExchangeViewModel extends BaseViewModel {
     setBusy(true);
 
     if (amountController.text.isEmpty) {
-      sharedService.sharedSimpleNotification(
-          AppLocalizations.of(context).amountMissing,
-          subtitle: AppLocalizations.of(context).pleaseEnterValidNumber);
+      sharedService!.sharedSimpleNotification(
+          AppLocalizations.of(context)!.amountMissing,
+          subtitle: AppLocalizations.of(context)!.pleaseEnterValidNumber);
 
       setBusy(false);
       return;
     }
     if (gasAmount == 0.0 || gasAmount < kanbanTransFee || transFee == 0.0) {
-      sharedService.sharedSimpleNotification(
-          AppLocalizations.of(context).notice,
-          subtitle: AppLocalizations.of(context).insufficientGasAmount);
+      sharedService!.sharedSimpleNotification(
+          AppLocalizations.of(context)!.notice,
+          subtitle: AppLocalizations.of(context)!.insufficientGasAmount);
 
       setBusy(false);
       return;
     }
     var checkTransFeeAgainst;
-    if (tokenType.isEmpty) {
-      checkTransFeeAgainst = walletInfo.availableBalance;
+    if (tokenType!.isEmpty) {
+      checkTransFeeAgainst = walletInfo!.availableBalance;
     } else {
       checkTransFeeAgainst = chainBalance;
     }
     if (transFee > checkTransFeeAgainst &&
-        walletInfo.tickerName != 'TRX' &&
-        walletInfo.tickerName != 'USDTX' &&
-        walletInfo.tokenType != 'TRX') {
-      sharedService.sharedSimpleNotification(
-          AppLocalizations.of(context).insufficientBalance,
+        walletInfo!.tickerName != 'TRX' &&
+        walletInfo!.tickerName != 'USDTX' &&
+        walletInfo!.tokenType != 'TRX') {
+      sharedService!.sharedSimpleNotification(
+          AppLocalizations.of(context)!.insufficientBalance,
           subtitle:
-              '${AppLocalizations.of(context).gasFee} $transFee > ${AppLocalizations.of(context).walletbalance} ${walletInfo.availableBalance}');
+              '${AppLocalizations.of(context)!.gasFee} $transFee > ${AppLocalizations.of(context)!.walletbalance} ${walletInfo!.availableBalance}');
 
       setBusy(false);
       return;
@@ -359,13 +360,13 @@ class MoveToExchangeViewModel extends BaseViewModel {
     }
 
     if (amount == null ||
-        finalAmount > walletInfo.availableBalance ||
+        finalAmount > walletInfo!.availableBalance ||
         amount == 0 ||
         amount.isNegative) {
       log.e(
-          'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo.availableBalance}');
-      sharedService.alertDialog(AppLocalizations.of(context).invalidAmount,
-          AppLocalizations.of(context).insufficientBalance,
+          'amount $amount --- final amount with fee: $finalAmount -- wallet bal: ${walletInfo!.availableBalance}');
+      sharedService!.alertDialog(AppLocalizations.of(context)!.invalidAmount,
+          AppLocalizations.of(context)!.insufficientBalance,
           isWarning: false);
       setBusy(false);
       return;
@@ -373,47 +374,47 @@ class MoveToExchangeViewModel extends BaseViewModel {
 
     /// check chain balance to check
     /// whether native token has enough balance to cover transaction fee
-    if (tokenType.isNotEmpty) {
-      bool hasSufficientChainBalance = await walletService
-          .hasSufficientWalletBalance(transFee, walletInfo.tokenType);
+    if (tokenType!.isNotEmpty) {
+      bool hasSufficientChainBalance = await walletService!
+          .hasSufficientWalletBalance(transFee, walletInfo!.tokenType);
       if (!hasSufficientChainBalance) {
         log.e('Chain $tokenType -- insufficient balance');
-        sharedService.sharedSimpleNotification(walletInfo.tokenType,
-            subtitle: AppLocalizations.of(context).insufficientBalance);
+        sharedService!.sharedSimpleNotification(walletInfo!.tokenType!,
+            subtitle: AppLocalizations.of(context)!.insufficientBalance);
         setBusy(false);
         return;
       }
     }
 
 // * checking trx balance required
-    if (walletInfo.tickerName == 'USDTX') {
-      log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
+    if (walletInfo!.tickerName == 'USDTX') {
+      log.e('amount $amount --- wallet bal: ${walletInfo!.availableBalance}');
       bool isCorrectAmount = true;
-      await walletService
+      await walletService!
           .hasSufficientWalletBalance(15, 'TRX')
           .then((res) => isCorrectAmount = res);
       log.w('isCorrectAmount $isCorrectAmount');
       if (!isCorrectAmount) {
-        sharedService.alertDialog(
-            '${AppLocalizations.of(context).fee} ${AppLocalizations.of(context).notice}',
-            'TRX ${AppLocalizations.of(context).insufficientBalance}',
+        sharedService!.alertDialog(
+            '${AppLocalizations.of(context)!.fee} ${AppLocalizations.of(context)!.notice}',
+            'TRX ${AppLocalizations.of(context)!.insufficientBalance}',
             isWarning: false);
         setBusy(false);
         return;
       }
     }
 
-    if (walletInfo.tickerName == 'TRX') {
-      log.e('amount $amount --- wallet bal: ${walletInfo.availableBalance}');
+    if (walletInfo!.tickerName == 'TRX') {
+      log.e('amount $amount --- wallet bal: ${walletInfo!.availableBalance}');
       bool isCorrectAmount = true;
       double trxFee = 1.0;
-      if (amount + trxFee > walletInfo.availableBalance) {
+      if (amount + trxFee > walletInfo!.availableBalance) {
         isCorrectAmount = false;
       }
       if (!isCorrectAmount) {
-        sharedService.alertDialog(
-            '${AppLocalizations.of(context).fee} ${AppLocalizations.of(context).notice}',
-            'TRX ${AppLocalizations.of(context).insufficientBalance}',
+        sharedService!.alertDialog(
+            '${AppLocalizations.of(context)!.fee} ${AppLocalizations.of(context)!.notice}',
+            'TRX ${AppLocalizations.of(context)!.insufficientBalance}',
             isWarning: false);
         setBusy(false);
         return;
@@ -421,17 +422,17 @@ class MoveToExchangeViewModel extends BaseViewModel {
     }
 
     message = '';
-    var res = await _dialogService.showDialog(
-        title: AppLocalizations.of(context).enterPassword,
+    var res = await _dialogService!.showDialog(
+        title: AppLocalizations.of(context)!.enterPassword,
         description:
-            AppLocalizations.of(context).dialogManagerTypeSamePasswordNote,
-        buttonTitle: AppLocalizations.of(context).confirm);
-    if (res.confirmed) {
+            AppLocalizations.of(context)!.dialogManagerTypeSamePasswordNote,
+        buttonTitle: AppLocalizations.of(context)!.confirm);
+    if (res.confirmed!) {
       setBusy(true);
       var seed;
-      String mnemonic = res.returnedText;
-      if (walletInfo.tickerName != 'TRX' && walletInfo.tickerName != 'USDTX') {
-        seed = walletService.generateSeed(mnemonic);
+      String? mnemonic = res.returnedText;
+      if (walletInfo!.tickerName != 'TRX' && walletInfo!.tickerName != 'USDTX') {
+        seed = walletService!.generateSeed(mnemonic!);
       }
 
       var gasPrice = int.tryParse(gasPriceTextController.text);
@@ -439,21 +440,21 @@ class MoveToExchangeViewModel extends BaseViewModel {
       var satoshisPerBytes = int.tryParse(satoshisPerByteTextController.text);
       var kanbanGasPrice = int.tryParse(kanbanGasPriceTextController.text);
       var kanbanGasLimit = int.tryParse(kanbanGasLimitTextController.text);
-      String tickerName = walletInfo.tickerName;
-      int decimal;
+      String? tickerName = walletInfo!.tickerName;
+      int? decimal;
       //  BigInt bigIntAmount = BigInt.tryParse(amountController.text);
       // log.w('Big int amount $bigIntAmount');
-      String contractAddr = '';
-      if (walletInfo.tokenType.isNotEmpty) {
+      String? contractAddr = '';
+      if (walletInfo!.tokenType!.isNotEmpty) {
         contractAddr = environment["addresses"]["smartContract"][tickerName];
       }
       if (contractAddr == null && tokenType != '') {
         log.i(
             '$tickerName with token type $tokenType contract is null so fetching from token database');
-        await tokenListDatabaseService
+        await tokenListDatabaseService!
             .getByTickerName(tickerName)
             .then((token) {
-          contractAddr = token.contract;
+          contractAddr = token!.contract;
           decimal = token.decimal;
         });
       }
@@ -464,39 +465,39 @@ class MoveToExchangeViewModel extends BaseViewModel {
         "satoshisPerBytes": satoshisPerBytes ?? 0,
         'kanbanGasPrice': kanbanGasPrice,
         'kanbanGasLimit': kanbanGasLimit,
-        'tokenType': walletInfo.tokenType,
+        'tokenType': walletInfo!.tokenType,
         'contractAddress': contractAddr,
         'decimal': decimal
       };
-      log.i('3 - -- ${walletInfo.tickerName}, --   $amount, - - $option');
+      log.i('3 - -- ${walletInfo!.tickerName}, --   $amount, - - $option');
 
       // TRON Transaction
-      if (walletInfo.tickerName == 'TRX' || walletInfo.tickerName == 'USDTX') {
+      if (walletInfo!.tickerName == 'TRX' || walletInfo!.tickerName == 'USDTX') {
         setBusy(true);
-        log.i('depositing tron ${walletInfo.tickerName}');
+        log.i('depositing tron ${walletInfo!.tickerName}');
 
-        await walletService
+        await walletService!
             .depositTron(
                 mnemonic: mnemonic,
-                walletInfo: walletInfo,
+                walletInfo: walletInfo!,
                 amount: amount,
-                isTrxUsdt: walletInfo.tickerName == 'USDTX' ? true : false,
+                isTrxUsdt: walletInfo!.tickerName == 'USDTX' ? true : false,
                 isBroadcast: false,
                 options: option)
             .then((res) {
           bool success = res["success"];
           if (success) {
             amountController.text = '';
-            String txId = res['data']['transactionID'];
+            String? txId = res['data']['transactionID'];
 
             isShowErrorDetailsButton = false;
             isShowDetailsMessage = false;
             message = txId.toString();
 
-            sharedService.sharedSimpleNotification(
-                AppLocalizations.of(context).depositTransactionSuccess,
+            sharedService!.sharedSimpleNotification(
+                AppLocalizations.of(context)!.depositTransactionSuccess,
                 subtitle:
-                    '$specialTicker ${AppLocalizations.of(context).isOnItsWay}',
+                    '$specialTicker ${AppLocalizations.of(context)!.isOnItsWay}',
                 isError: false);
             Future.delayed(const Duration(seconds: 3), () {
               refreshBalance();
@@ -513,13 +514,13 @@ class MoveToExchangeViewModel extends BaseViewModel {
         }).timeout(const Duration(seconds: 25), onTimeout: () {
           log.e('In time out');
           setBusy(false);
-          sharedService.alertDialog(AppLocalizations.of(context).notice,
-              AppLocalizations.of(context).serverTimeoutPleaseTryAgainLater,
+          sharedService!.alertDialog(AppLocalizations.of(context)!.notice,
+              AppLocalizations.of(context)!.serverTimeoutPleaseTryAgainLater,
               isWarning: false);
         }).catchError((error) {
           log.e('In Catch error - $error');
-          sharedService.alertDialog(AppLocalizations.of(context).networkIssue,
-              '$tickerName ${AppLocalizations.of(context).transanctionFailed}',
+          sharedService!.alertDialog(AppLocalizations.of(context)!.networkIssue,
+              '$tickerName ${AppLocalizations.of(context)!.transanctionFailed}',
               isWarning: false);
 
           setBusy(false);
@@ -529,8 +530,8 @@ class MoveToExchangeViewModel extends BaseViewModel {
       // Normal DEPOSIT
 
       else {
-        await walletService
-            .depositDo(seed, walletInfo.tickerName, walletInfo.tokenType,
+        await walletService!
+            .depositDo(seed, walletInfo!.tickerName, walletInfo!.tokenType,
                 finalAmount, option)
             .then((ret) {
           log.w('deposit res $ret');
@@ -538,7 +539,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
           bool success = ret["success"];
           if (success) {
             amountController.text = '';
-            String txId = ret['data']['transactionID'];
+            String? txId = ret['data']['transactionID'];
 
             //  var allTxids = ret["txids"];
             // walletService.addTxids(allTxids);
@@ -560,19 +561,19 @@ class MoveToExchangeViewModel extends BaseViewModel {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     success
-                        ? Text(AppLocalizations.of(context)
+                        ? Text(AppLocalizations.of(context)!
                             .depositTransactionSuccess)
-                        : Text(AppLocalizations.of(context)
+                        : Text(AppLocalizations.of(context)!
                             .depositTransactionFailed),
                     success
                         ? const Text("")
                         : ret["data"] != null
                             ? Text(ret["data"] ==
                                     'incorrect amount for two transactions'
-                                ? AppLocalizations.of(context)
+                                ? AppLocalizations.of(context)!
                                     .incorrectDepositAmountOfTwoTx
                                 : ret["data"])
-                            : Text(AppLocalizations.of(context).networkIssue),
+                            : Text(AppLocalizations.of(context)!.networkIssue),
                   ]),
               position: NotificationPosition.bottom,
               background: primaryColor);
@@ -593,26 +594,26 @@ class MoveToExchangeViewModel extends BaseViewModel {
         }).catchError((onError) {
           log.e('Deposit Catch $onError');
 
-          sharedService.alertDialog(
-              AppLocalizations.of(context).depositTransactionFailed,
-              AppLocalizations.of(context).networkIssue,
+          sharedService!.alertDialog(
+              AppLocalizations.of(context)!.depositTransactionFailed,
+              AppLocalizations.of(context)!.networkIssue,
               isWarning: false);
           serverError = onError.toString();
         });
       }
-    } else if (res.returnedText == 'Closed' && !res.confirmed) {
+    } else if (res.returnedText == 'Closed' && !res.confirmed!) {
       log.e('Dialog Closed By User');
 
       setBusy(false);
-    } else if (res.isRequiredUpdate) {
+    } else if (res.isRequiredUpdate!) {
       log.e('Wallet update required');
       setBusy(false);
-      sharedService.sharedSimpleNotification(
-          AppLocalizations.of(context).importantWalletUpdateNotice);
+      sharedService!.sharedSimpleNotification(
+          AppLocalizations.of(context)!.importantWalletUpdateNotice);
     } else {
       log.e('Wrong pass');
       setBusy(false);
-      sharedService.inCorrectpasswordNotification(context);
+      sharedService!.inCorrectpasswordNotification(context);
     }
     setBusy(false);
   }
@@ -621,16 +622,16 @@ class MoveToExchangeViewModel extends BaseViewModel {
                     Refresh Balance
 ----------------------------------------------------------------------*/
   refreshBalance() async {
-    String fabAddress =
-        await sharedService.getFabAddressFromCoreWalletDatabase();
-    await apiService
+    String? fabAddress =
+        await sharedService!.getFabAddressFromCoreWalletDatabase();
+    await apiService!
         .getSingleWalletBalance(
-            fabAddress, walletInfo.tickerName, walletInfo.address)
+            fabAddress, walletInfo!.tickerName, walletInfo!.address)
         .then((walletBalance) {
       if (walletBalance != null) {
         log.w('refreshed balance ${walletBalance[0].balance}');
         setBusyForObject(walletInfo, true);
-        walletInfo.availableBalance = walletBalance[0].balance;
+        walletInfo!.availableBalance = walletBalance[0].balance!;
         setBusyForObject(walletInfo, false);
       }
     }).catchError((err) {
@@ -663,14 +664,14 @@ class MoveToExchangeViewModel extends BaseViewModel {
       "gasPrice": gasPrice,
       "gasLimit": gasLimit,
       "satoshisPerBytes": satoshisPerBytes,
-      "tokenType": walletInfo.tokenType,
+      "tokenType": walletInfo!.tokenType,
       "getTransFeeOnly": true
     };
-    var address = walletInfo.address;
+    var address = walletInfo!.address;
 
-    await walletService
+    await walletService!
         .sendTransaction(
-            walletInfo.tickerName,
+            walletInfo!.tickerName,
             Uint8List.fromList(
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
             [0],
@@ -693,7 +694,7 @@ class MoveToExchangeViewModel extends BaseViewModel {
       //   log.w(
       //       'Func: updateTransFee total amount with fee: amount $amount + kanbantransfee $kanbanTransFee + gasFee $transFee = ${amount + kanbanTransFee + transFee}');
       log.i(
-          'Func: updateTransFee availableBalance ${walletInfo.availableBalance} -- amount entered $amount');
+          'Func: updateTransFee availableBalance ${walletInfo!.availableBalance} -- amount entered $amount');
     }).catchError((onError) {
       setBusy(false);
       log.e(onError);
@@ -704,6 +705,6 @@ class MoveToExchangeViewModel extends BaseViewModel {
 
 // Copy txid and display flushbar
   copyAndShowNotification(String message) {
-    sharedService.copyAddress(context, message);
+    sharedService!.copyAddress(context, message);
   }
 }

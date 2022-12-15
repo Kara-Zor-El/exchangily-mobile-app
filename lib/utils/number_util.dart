@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/widgets.dart';
 
 class NumberUtil {
-  int maxDecimalDigits;
+  int? maxDecimalDigits;
   final log = getLogger('NumberUtil');
 
   static int getDecimalLength(double number) {
@@ -21,7 +21,7 @@ class NumberUtil {
     }
   }
 
-  double truncateDoubleWithoutRouding(double input, {int precision = 2}) {
+  double truncateDoubleWithoutRouding(double input, {int? precision = 2}) {
     double res = 0.0;
     bool isInputContainsE = input.toString().contains('e');
     if (!input.isNaN && !isInputContainsE) {
@@ -35,7 +35,7 @@ class NumberUtil {
       // we add +1 as we need 6 precisions
       // 2+6+1 = 9
       // 54.321299
-      if (decimalPart.length > precision) {
+      if (decimalPart.length > precision!) {
         res = double.parse(
             '$input'.substring(0, '$input'.indexOf('.') + precision + 1));
       } else {
@@ -91,7 +91,7 @@ class NumberUtil {
   }
 
   double truncateDouble(double val, int places) {
-    double mod = pow(10.0, places);
+    double mod = pow(10.0, places) as double;
     return ((val * mod).round().toDouble() / mod);
   }
 
@@ -107,7 +107,7 @@ class NumberUtil {
   }
 
   static BigInt decimalToBigInt(Decimal value, {int decimalPrecision = 18}) {
-    return (value * Decimal.fromInt(pow(10, decimalPrecision))).toBigInt();
+    return (value * Decimal.fromInt(pow(10, decimalPrecision) as int)).toBigInt();
   }
 
 // To Big Int
@@ -144,7 +144,7 @@ class NumberUtil {
   }
 
 // pass value to format with decimal digits needed
-  static String currencyFormat(double value, int decimalDigits) {
+  static String currencyFormat(double? value, int decimalDigits) {
     String holder = '';
     holder =
         NumberFormat.simpleCurrency(decimalDigits: decimalDigits).format(value);
@@ -176,7 +176,7 @@ class NumberUtil {
 
 class DecimalTextInputFormatter extends TextInputFormatter {
   final log = getLogger('DecimalTextInputFormatter');
-  DecimalTextInputFormatter({int decimalRange, bool activatedNegativeValues})
+  DecimalTextInputFormatter({int? decimalRange, required bool activatedNegativeValues})
       : assert(decimalRange == null || decimalRange >= 0,
             'DecimalTextInputFormatter declaretion error') {
     String dp = (decimalRange != null && decimalRange > 0)
@@ -191,7 +191,7 @@ class DecimalTextInputFormatter extends TextInputFormatter {
     }
   }
 
-  RegExp _exp;
+  late RegExp _exp;
 
   @override
   TextEditingValue formatEditUpdate(

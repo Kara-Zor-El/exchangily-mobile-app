@@ -116,7 +116,7 @@ class MyApp extends StatelessWidget {
               Locale("hi", ""), // Hindi India
             ],
             onGenerateTitle: (BuildContext context) =>
-                AppLocalizations.of(context).title,
+                AppLocalizations.of(context)!.title,
 
             onGenerateRoute: RouteGenerator.generateRoute,
             title: 'Exchangily Wallet',

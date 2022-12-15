@@ -8,8 +8,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../shared/globals.dart' as globals;
 
 class CampaignLoginScreen extends StatelessWidget {
-  final String errorMessage;
-  const CampaignLoginScreen({Key key, this.errorMessage}) : super(key: key);
+  final String? errorMessage;
+  const CampaignLoginScreen({Key? key, this.errorMessage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +23,10 @@ class CampaignLoginScreen extends StatelessWidget {
         onWillPop: () {
           model.onBackButtonPressed();
           return;
-        },
+        } as Future<bool> Function()?,
         child: Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context).login,
+            title: Text(AppLocalizations.of(context)!.login,
                 style: Theme.of(context).textTheme.displaySmall),
             centerTitle: true,
           ),
@@ -49,7 +49,7 @@ class CampaignLoginScreen extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 7.0),
                               child: Text(
-                                AppLocalizations.of(context).email,
+                                AppLocalizations.of(context)!.email,
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                                 //  textAlign: TextAlign.center,
@@ -81,7 +81,7 @@ class CampaignLoginScreen extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(top: 7.0),
                               child: Text(
-                                AppLocalizations.of(context).password,
+                                AppLocalizations.of(context)!.password,
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
@@ -96,7 +96,7 @@ class CampaignLoginScreen extends StatelessWidget {
                                       isDense: true,
                                       suffixIcon: IconButton(
                                           iconSize: 18,
-                                          tooltip: AppLocalizations.of(context)
+                                          tooltip: AppLocalizations.of(context)!
                                               .clickToSeeThePassword,
                                           onPressed: () {
                                             model.setBusy(true);
@@ -117,7 +117,7 @@ class CampaignLoginScreen extends StatelessWidget {
                                   decoration: InputDecoration(
                                       suffixIcon: IconButton(
                                           iconSize: 18,
-                                          tooltip: AppLocalizations.of(context)
+                                          tooltip: AppLocalizations.of(context)!
                                               .clickToSeeThePassword,
                                           onPressed: () {
                                             model.setBusy(true);
@@ -137,7 +137,7 @@ class CampaignLoginScreen extends StatelessWidget {
                     UIHelper.verticalSpaceMedium,
                     InkWell(
                       child: Text(
-                        AppLocalizations.of(context).forgotPassword + '?',
+                        AppLocalizations.of(context)!.forgotPassword + '?',
                         style: const TextStyle(
                             decoration: TextDecoration.underline,
                             color: globals.white),
@@ -148,12 +148,12 @@ class CampaignLoginScreen extends StatelessWidget {
                     // Error goes here
                     Visibility(
                         visible: model.hasErrorMessage,
-                        child: Text(model.errorMessage,
+                        child: Text(model.errorMessage!,
                             style: model.isLogging && model.busy
                                 ? Theme.of(context).textTheme.bodyMedium
                                 : Theme.of(context)
                                     .textTheme
-                                    .bodyMedium
+                                    .bodyMedium!
                                     .copyWith(color: Colors.yellow))),
                     Visibility(
                         visible: errorMessage != null &&
@@ -202,7 +202,7 @@ class CampaignLoginScreen extends StatelessWidget {
                                 padding: const EdgeInsets.all(2.0),
                                 elevation: 5,
                               ),
-                              child: Text(AppLocalizations.of(context).register,
+                              child: Text(AppLocalizations.of(context)!.register,
                                   style: Theme.of(context)
                                       .textTheme
                                       .headlineMedium),
@@ -254,13 +254,13 @@ class CampaignLoginScreen extends StatelessWidget {
                                     baseColor: globals.primaryColor,
                                     highlightColor: globals.grey,
                                     child: Text(
-                                      (AppLocalizations.of(context).login),
+                                      (AppLocalizations.of(context)!.login),
                                       style: Theme.of(context)
                                           .textTheme
                                           .headlineMedium,
                                     ))
                                 : Text(
-                                    (AppLocalizations.of(context).login),
+                                    (AppLocalizations.of(context)!.login),
                                     style: Theme.of(context)
                                         .textTheme
                                         .headlineMedium,

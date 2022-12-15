@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 
 import 'package:bitbox/bitbox.dart' as bitbox;
 import 'package:exchangilymobileapp/constants/api_routes.dart';
@@ -61,6 +62,7 @@ import 'db/transaction_history_database_service.dart';
 import 'package:exchangilymobileapp/utils/exaddr.dart';
 import 'package:web3dart/crypto.dart' as crypto_web3;
 import 'package:crypto/crypto.dart' as crypto_hash;
+import 'package:exchangilymobileapp/screens/exchange/exchange_balance_model.dart';
 
 import 'package:exchangilymobileapp/utils/tron_util/trx_generate_address_util.dart'
     as tron_address_util;
@@ -71,25 +73,28 @@ import 'package:exchangilymobileapp/utils/tron_util/trx_transaction_util.dart'
 class WalletService {
   final log = getLogger('Wallet Service');
 
-  TokenInfoDatabaseService tokenListDatabaseService =
+  TokenInfoDatabaseService? tokenListDatabaseService =
       locator<TokenInfoDatabaseService>();
-  ApiService apiService = locator<ApiService>();
+  ApiService? apiService = locator<ApiService>();
 
-  SharedService sharedService = locator<SharedService>();
-  final storageService = locator<LocalStorageService>();
-  TransactionHistoryDatabaseService transactionHistoryDatabaseService =
+  SharedService? sharedService = locator<SharedService>();
+  final LocalStorageService? storageService = locator<LocalStorageService>();
+  TransactionHistoryDatabaseService? transactionHistoryDatabaseService =
       locator<TransactionHistoryDatabaseService>();
-  final coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
-  final walletDatabaseService = locator<WalletDatabaseService>();
-  final coinService = locator<CoinService>();
+  final CoreWalletDatabaseService? coreWalletDatabaseService =
+      locator<CoreWalletDatabaseService>();
+  final WalletDatabaseService? walletDatabaseService =
+      locator<WalletDatabaseService>();
+  final CoinService? coinService = locator<CoinService>();
 
-  final userSettingsDatabaseService = locator<UserSettingsDatabaseService>();
-  double currentTickerUsdValue;
+  final UserSettingsDatabaseService? userSettingsDatabaseService =
+      locator<UserSettingsDatabaseService>();
+  double? currentTickerUsdValue;
   var txids = [];
   var httpClient = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
-  double coinUsdBalance;
+  double? coinUsdBalance;
 
-  Completer<DialogResponse> _completer;
+  Completer<DialogResponse>? _completer;
   final fabUtils = FabUtils();
   final btcUtils = BtcUtils();
   final abiUtils = AbiUtils();
@@ -100,7 +105,7 @@ class WalletService {
   var walletUtil = WalletUtil();
   final erc20Util = Erc20Util();
 
-  final _vaultService = locator<VaultService>();
+  final VaultService? _vaultService = locator<VaultService>();
 
   // verify wallet address
   Future<Map<String, bool>> verifyWalletAddresses(String mnemonic) async {
@@ -115,13 +120,13 @@ class WalletService {
 
     // get the walletbalancebody from the DB
     var walletBalancesBodyFromStorage;
-    if (storageService.walletBalancesBody.isNotEmpty) {
+    if (storageService!.walletBalancesBody.isNotEmpty) {
       walletBalancesBodyFromStorage =
-          jsonDecode(storageService.walletBalancesBody);
+          jsonDecode(storageService!.walletBalancesBody);
     } else {
-      await walletDatabaseService.initDb();
-      var fabWallet = await walletDatabaseService.getWalletBytickerName('FAB');
-      var trxWallet = await walletDatabaseService.getWalletBytickerName('TRX');
+      await walletDatabaseService!.initDb();
+      var fabWallet = await walletDatabaseService!.getWalletBytickerName('FAB');
+      var trxWallet = await walletDatabaseService!.getWalletBytickerName('TRX');
       if (fabWallet != null && trxWallet != null) {
         walletBalancesBodyFromStorage = {
           "fabAddress": fabWallet.address,
@@ -132,34 +137,34 @@ class WalletService {
 
     // Compare the address if matched then don't notify otherwise raise flag
 
-    String fabAddressFromCreate = jsonDecode(
-        walletDataFromCreateOfflineWalletV1.walletBalancesBody)['fabAddress'];
-    String trxAddressFromCreate = jsonDecode(
-        walletDataFromCreateOfflineWalletV1.walletBalancesBody)['trxAddress'];
+    String? fabAddressFromCreate = jsonDecode(
+        walletDataFromCreateOfflineWalletV1.walletBalancesBody!)['fabAddress'];
+    String? trxAddressFromCreate = jsonDecode(
+        walletDataFromCreateOfflineWalletV1.walletBalancesBody!)['trxAddress'];
 
-    String fabAddressFromStorage = '';
-    String trxAddressFromStorage = '';
+    String? fabAddressFromStorage = '';
+    String? trxAddressFromStorage = '';
 
-    String fabAddressFromCoreWalletDb = '';
-    String trxAddressFromCoreWalletDb = '';
+    String? fabAddressFromCoreWalletDb = '';
+    String? trxAddressFromCoreWalletDb = '';
 
     if (walletBalancesBodyFromStorage != null) {
       fabAddressFromStorage = walletBalancesBodyFromStorage['fabAddress'];
 
       trxAddressFromStorage = walletBalancesBodyFromStorage['trxAddress'];
-    } else if (await coreWalletDatabaseService.getWalletBalancesBody() !=
+    } else if (await coreWalletDatabaseService!.getWalletBalancesBody() !=
         null) {
-      fabAddressFromCoreWalletDb =
-          await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
-      trxAddressFromCoreWalletDb =
-          await coreWalletDatabaseService.getWalletAddressByTickerName('TRX');
+      fabAddressFromCoreWalletDb = await (coreWalletDatabaseService!
+          .getWalletAddressByTickerName('FAB') as FutureOr<String>);
+      trxAddressFromCoreWalletDb = await (coreWalletDatabaseService!
+          .getWalletAddressByTickerName('TRX') as FutureOr<String>);
     }
     log.i(
         'fabAddressFromCreate $fabAddressFromCreate -- fabAddressFromStorage $fabAddressFromStorage -- fabAddressFromCoreWalletDb $fabAddressFromCoreWalletDb');
-    var fabAddressFromStorageToCompare = fabAddressFromStorage.isEmpty
+    String? fabAddressFromStorageToCompare = fabAddressFromStorage!.isEmpty
         ? fabAddressFromCoreWalletDb
         : fabAddressFromStorage;
-    var trxAddressFromStorageToCompare = trxAddressFromStorage.isEmpty
+    String? trxAddressFromStorageToCompare = trxAddressFromStorage!.isEmpty
         ? trxAddressFromCoreWalletDb
         : trxAddressFromStorage;
     if (fabAddressFromCreate == fabAddressFromStorageToCompare) {
@@ -178,7 +183,7 @@ class WalletService {
               walletDataFromCreateOfflineWalletV1.walletBalancesBody,
         );
         // store in single core database
-        await coreWalletDatabaseService.update(walletCoreModel);
+        await coreWalletDatabaseService!.update(walletCoreModel);
       } else {
         res["trxAddressCheck"] = false;
       }
@@ -192,41 +197,41 @@ class WalletService {
   Future deleteWallet() async {
     log.w('deleting wallet');
     try {
-      await walletDatabaseService
+      await walletDatabaseService!
           .deleteDb()
           .whenComplete(() => log.e('wallet database deleted!!'))
           .catchError((err) => log.e('wallet database CATCH $err'));
 
-      await transactionHistoryDatabaseService
+      await transactionHistoryDatabaseService!
           .deleteDb()
           .whenComplete(() => log.e('trnasaction history database deleted!!'))
           .catchError((err) => log.e('tx history database CATCH $err'));
 
-      await _vaultService
+      await _vaultService!
           .deleteEncryptedData()
           .whenComplete(() => log.e('encrypted data deleted!!'))
           .catchError((err) => log.e('delete encrypted CATCH $err'));
 
-      await coreWalletDatabaseService
+      await coreWalletDatabaseService!
           .deleteDb()
           .whenComplete(() => log.e('coreWalletDatabaseService data deleted!!'))
           .catchError((err) => log.e('coreWalletDatabaseService  CATCH $err'));
 
-      await tokenListDatabaseService
+      await tokenListDatabaseService!
           .deleteDb()
           .whenComplete(() => log.e('Token list database deleted!!'))
           .catchError((err) => log.e('token list database CATCH $err'));
 
-      await userSettingsDatabaseService
+      await userSettingsDatabaseService!
           .deleteDb()
           .whenComplete(() => log.e('User settings database deleted!!'))
           .catchError((err) => log.e('user setting database CATCH $err'));
 
-      storageService.walletBalancesBody = '';
-      storageService.isShowCaseView = true;
-      storageService.clearStorage();
+      storageService!.walletBalancesBody = '';
+      storageService!.isShowCaseView = true;
+      storageService!.clearStorage();
       debugPrint(
-          'Checking has verified key value after clearing local storage : ${storageService.hasWalletVerified.toString()}');
+          'Checking has verified key value after clearing local storage : ${storageService!.hasWalletVerified.toString()}');
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       log.e('before wallet removal, local storage has ${prefs.getKeys()}');
@@ -243,12 +248,12 @@ class WalletService {
     }
   }
 
-  Future<String> getAddressFromCoreWalletDatabaseByTickerName(
+  Future<String?> getAddressFromCoreWalletDatabaseByTickerName(
       String tickerName) async {
-    String address = '';
+    String? address = '';
 
-    address = await coreWalletDatabaseService
-        .getWalletAddressByTickerName(tickerName);
+    address = await (coreWalletDatabaseService!
+        .getWalletAddressByTickerName(tickerName) as FutureOr<String>);
 
     return address;
   }
@@ -258,7 +263,7 @@ class WalletService {
         'Store token TIME START ${DateTime.now().toLocal().toIso8601String()}');
     List existingTokensInTokenDatabase;
     try {
-      existingTokensInTokenDatabase = await tokenListDatabaseService.getAll();
+      existingTokensInTokenDatabase = await tokenListDatabaseService!.getAll();
     } catch (err) {
       existingTokensInTokenDatabase = [];
       log.e('getTokenList tokenListDatabaseService.getAll CATCH err $err');
@@ -266,16 +271,16 @@ class WalletService {
     await getTokenListUpdates().then((newTokenListFromTokenUpdateApi) async {
       if (newTokenListFromTokenUpdateApi != null &&
           newTokenListFromTokenUpdateApi.isNotEmpty) {
-        existingTokensInTokenDatabase ??= [];
+        // existingTokensInTokenDatabase ??= [];
         if (existingTokensInTokenDatabase.length !=
             newTokenListFromTokenUpdateApi.length) {
-          await tokenListDatabaseService.deleteDb().whenComplete(() => log.e(
+          await tokenListDatabaseService!.deleteDb().whenComplete(() => log.e(
               'token list database cleared before inserting updated token data from api'));
 
           /// Fill the token list database with new data from the api
 
           for (var singleNewToken in newTokenListFromTokenUpdateApi) {
-            await tokenListDatabaseService.insert(singleNewToken);
+            await tokenListDatabaseService!.insert(singleNewToken);
           }
         } else {
           log.i('storeTokenListInDB -- local token db same length as api\'s ');
@@ -290,8 +295,8 @@ class WalletService {
                       Get decimal data
 ----------------------------------------------------------------------*/
 
-  Future<int> getSingleCoinWalletDecimalLimit(String coinName) async {
-    int res = 0;
+  Future<int?> getSingleCoinWalletDecimalLimit(String? coinName) async {
+    int? res = 0;
 // first look coin in the local storage
 // TODO uncomment code below once save decimaldata in local storage works in wallet service
     // List<Map<String, int>> decimalDataFromStorage =
@@ -303,8 +308,8 @@ class WalletService {
 
     // if res not found in local storage then call old token list api
     if (res == null || res == 0) {
-      await apiService.getTokenList().then((token) {
-        for (var token in token) {
+      await apiService!.getTokenList().then((token) {
+        for (var token in token!) {
           if (token.tickerName == coinName) res = token.decimal;
         }
       });
@@ -312,8 +317,8 @@ class WalletService {
 
     // if res not found in local storage then call new token list api
     if (res == null || res == 0) {
-      await apiService.getTokenListUpdates().then((token) {
-        for (var token in token) {
+      await apiService!.getTokenListUpdates().then((token) {
+        for (var token in token!) {
           //    await tokenListDatabaseService.insert(token);
           if (token.tickerName == coinName) res = token.decimal;
         }
@@ -323,25 +328,25 @@ class WalletService {
   }
 
   Future<bool> hasSufficientWalletBalance(
-      double amount, String chainType) async {
+      double? amount, String? chainType) async {
     bool isValidAmount = true;
-    String thirdPartyTicker = '';
-    String fabAddress =
-        await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
+    String? thirdPartyTicker = '';
+    String? fabAddress =
+        await coreWalletDatabaseService!.getWalletAddressByTickerName('FAB');
     if (chainType == 'BNB' || chainType == "MATICM") {
       thirdPartyTicker = 'ETH';
     } else {
       thirdPartyTicker = chainType;
     }
-    String thirdPartyAddress = await coreWalletDatabaseService
-        .getWalletAddressByTickerName(thirdPartyTicker);
+    String? thirdPartyAddress = await coreWalletDatabaseService!
+        .getWalletAddressByTickerName(thirdPartyTicker!);
     log.w('coinAddress $thirdPartyAddress');
-    await apiService
+    await apiService!
         .getSingleWalletBalance(fabAddress, chainType, thirdPartyAddress)
         .then((walletBalance) {
       if (walletBalance != null) {
         log.w(walletBalance[0].balance);
-        if (walletBalance[0].balance < amount) {
+        if (walletBalance[0].balance! < amount!) {
           isValidAmount = false;
         } else {
           isValidAmount = true;
@@ -360,7 +365,7 @@ class WalletService {
 ----------------------------------------------------------------------*/
   Future<List<TokenModel>> getTokenListUpdates() async {
     List<TokenModel> newTokens = [];
-    await apiService.getTokenListUpdates().then((tokenList) {
+    await apiService!.getTokenListUpdates().then((tokenList) {
       if (tokenList != null) {
         log.w(
             'getTokenListUpdates token list from api length ${tokenList.length}');
@@ -472,12 +477,12 @@ class WalletService {
     bip32.BIP32 node =
         root.derivePath("m/44'/" + ct + "'/0'/0/" + 0.toString());
     debugPrint('node $node');
-    var privKey = node.privateKey;
+    var privKey = node.privateKey!;
     //  var pubKey = node.publicKey;
     //  log.w('pub key $pubKey -- length ${pubKey.length}');
     var uncompressedPubKey =
         bitcoin_flutter.ECPair.fromPrivateKey(privKey, compressed: false)
-            .publicKey;
+            .publicKey!;
     log.e('uncompressedPubKey  length ${uncompressedPubKey.length}');
     log.w('uncompressedPubKey ${uint8ListToHex(uncompressedPubKey)}');
 
@@ -568,7 +573,7 @@ class WalletService {
   }
 
   // get BCH address details
-  Future getBchAddressDetails(String bchAddress) async {
+  Future getBchAddressDetails(String? bchAddress) async {
     final addressDetails = await bitbox.Address.details(bchAddress);
     log.e('Address $bchAddress -- address details $addressDetails');
     return addressDetails;
@@ -584,7 +589,7 @@ class WalletService {
     //  log.w('coin type $coinType');
     var node = root.derivePath("m/44'/3'/0'/0/" + index.toString());
 
-    String address1 = bitcoin_flutter
+    String? address1 = bitcoin_flutter
         .P2PKH(
             data: bitcoin_flutter.PaymentData(pubkey: node.publicKey),
             network: dogeCoinMainnetNetwork)
@@ -625,7 +630,7 @@ class WalletService {
 ----------------------------------------------------------------------*/
 
   Future coinBalanceByAddress(
-      String name, String address, String tokenType) async {
+      String name, String? address, String tokenType) async {
     log.w(' coinBalanceByAddress $name $address $tokenType');
     var bal = await coinUtils.getCoinBalanceByAddress(name, address,
         tokenType: tokenType);
@@ -639,7 +644,7 @@ class WalletService {
   }
 
   Future getEthGasPrice() async {
-    var gasPrice = await apiService.getEthGasPrice();
+    var gasPrice = await apiService!.getEthGasPrice();
     return gasPrice;
   }
 
@@ -672,12 +677,12 @@ class WalletService {
                 Get Current Market Price For The Coin By Name
 ----------------------------------------------------------------------*/
 
-  Future<double> getCoinMarketPriceByTickerName(String tickerName) async {
+  Future<double?> getCoinMarketPriceByTickerName(String tickerName) async {
     currentTickerUsdValue = 0;
     if (tickerName == 'DUSD') {
       return currentTickerUsdValue = 1.0;
     }
-    await apiService.getCoinCurrencyUsdPrice().then((res) {
+    await apiService!.getCoinCurrencyUsdPrice().then((res) {
       if (res != null) {
         currentTickerUsdValue = res['data'][tickerName]['USD'].toDouble();
         log.i('getting price for $tickerName - $currentTickerUsdValue');
@@ -702,7 +707,7 @@ class WalletService {
   Future<CoreWalletModel> createOfflineWalletsV1(String mnemonic, String key,
       {isVerifying = false}) async {
     CoreWalletModel walletCoreModel = CoreWalletModel();
-    var vaultService = locator<VaultService>();
+    VaultService? vaultService = locator<VaultService>();
     Map<String, dynamic> wbb = {
       'btcAddress': '',
       'ethAddress': '',
@@ -735,14 +740,14 @@ class WalletService {
       for (int i = 0; i < coinTickers.length; i++) {
         String tickerName = coinTickers[i];
         String token = '';
-        String address = '';
+        String? address = '';
         if (tickerName == 'BCH') {
           address = bchAddress;
         } else if (tickerName == 'TRX') {
           address = trxAddress;
         } else {
-          address = await coinUtils.getAddressForCoin(root, tickerName,
-              tokenType: token);
+          address = await (coinUtils.getAddressForCoin(root, tickerName,
+              tokenType: token) as FutureOr<String>);
         }
         if (tickerName == 'BTC') {
           wbb['btcAddress'] = address;
@@ -789,7 +794,7 @@ class WalletService {
 
           // store in single core database
           try {
-            await coreWalletDatabaseService.insert(walletCoreModel);
+            await coreWalletDatabaseService!.insert(walletCoreModel);
           } catch (err) {
             log.e('WALLET data insertion failed in corewalletDB');
           }
@@ -823,14 +828,14 @@ class WalletService {
         String tickerName = walletUtil.coinTickers[i];
         String name = walletUtil.coinNames[i];
         String token = walletUtil.tokenType[i];
-        String addr = '';
+        String? addr = '';
         if (tickerName == 'BCH') {
           addr = bchAddress;
         } else if (tickerName == 'TRX') {
           addr = trxAddress;
         } else {
-          addr = await coinUtils.getAddressForCoin(root, tickerName,
-              tokenType: token);
+          addr = await (coinUtils.getAddressForCoin(root, tickerName,
+              tokenType: token) as FutureOr<String>);
         }
         WalletInfo wi = WalletInfo(
             id: null,
@@ -869,11 +874,11 @@ class WalletService {
   checkWithdrawTxStatus(TransactionHistory transaction) async {
     int baseTime = 30;
     List result = [];
-    String kanbanTxId = transaction.kanbanTxId;
+    String? kanbanTxId = transaction.kanbanTxId;
     TransactionHistory transactionByTxid = TransactionHistory();
     Timer.periodic(Duration(seconds: baseTime), (Timer t) async {
       log.w('Base time $baseTime -- local t.id $kanbanTxId');
-      await apiService.withdrawTxStatus().then((res) async {
+      await apiService!.withdrawTxStatus().then((res) async {
         if (res != null) {
           // result = res;
           //  log.e(' -- res $res');
@@ -896,13 +901,14 @@ class WalletService {
                 log.i('Blockchain Txid $blockchainTxid -- timer cancel');
                 t.cancel();
 
-                var storedTx = await transactionHistoryDatabaseService
-                    .getByKanbanTxId(transaction.kanbanTxId);
+                var storedTx = await (transactionHistoryDatabaseService!
+                        .getByKanbanTxId(transaction.kanbanTxId)
+                    as FutureOr<TransactionHistory>);
                 showSimpleNotification(
                     Row(
                       children: [
                         Text('${singleTx['coinName']} '),
-                        Text(transaction.tag),
+                        Text(transaction.tag!),
                         UIHelper.horizontalSpaceSmall,
                         const Icon(Icons.check)
                         //  Text(AppLocalizations.of(context).completed),
@@ -921,7 +927,7 @@ class WalletService {
                     tickerChainTxStatus: 'Complete',
                     quantity: storedTx.quantity,
                     tag: storedTx.tag);
-                transactionHistoryDatabaseService.update(transactionByTxid);
+                transactionHistoryDatabaseService!.update(transactionByTxid);
               }
             }
           });
@@ -932,13 +938,13 @@ class WalletService {
   }
 
   // DEPOSIT TX status
-  Future<String> checkDepositTransactionStatus(
+  Future<String?> checkDepositTransactionStatus(
       TransactionHistory transaction) async {
-    String result = '';
+    String? result = '';
     Timer.periodic(const Duration(minutes: 1), (Timer t) async {
       TransactionHistory transactionHistory = TransactionHistory();
-      TransactionHistory transactionByTxId = TransactionHistory();
-      var res = await apiService.getTransactionStatus(transaction.kanbanTxId);
+      TransactionHistory? transactionByTxId = TransactionHistory();
+      var res = await apiService!.getTransactionStatus(transaction.kanbanTxId!);
 
       log.w('checkDepositTransactionStatus $res');
 // 0 is confirmed
@@ -959,14 +965,15 @@ class WalletService {
         String date = DateTime.now().toString();
 
         if (transaction != null) {
-          transactionByTxId = await transactionHistoryDatabaseService
-              .getByKanbanTxId(transaction.kanbanTxId);
+          transactionByTxId = await (transactionHistoryDatabaseService!
+                  .getByKanbanTxId(transaction.kanbanTxId)
+              as FutureOr<TransactionHistory>);
           showSimpleNotification(
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text('${transactionByTxId.tickerName} '),
-                  Text(transactionByTxId.tag),
+                  Text(transactionByTxId.tag!),
                   Text(string_utils.firstCharToUppercase(result.toString())),
                 ],
               ),
@@ -1033,8 +1040,8 @@ class WalletService {
           // await transactionHistoryDatabaseService.update(transactionHistory);
         }
       }
-      await transactionHistoryDatabaseService.update(transactionHistory);
-      await transactionHistoryDatabaseService
+      await transactionHistoryDatabaseService!.update(transactionHistory);
+      await transactionHistoryDatabaseService!
           .getByKanbanTxId(transaction.kanbanTxId);
     });
     return result;
@@ -1043,7 +1050,7 @@ class WalletService {
 
   // Completer the _dialogCompleter to resume the Future's execution
   void transactionComplete(DialogResponse response) {
-    _completer.complete(response);
+    _completer!.complete(response);
     _completer = null;
   }
 
@@ -1052,16 +1059,16 @@ class WalletService {
   void insertTransactionInDatabase(
       TransactionHistory transactionHistory) async {
     log.w('Transaction History ${transactionHistory.toJson()}');
-    await transactionHistoryDatabaseService
+    await transactionHistoryDatabaseService!
         .insert(transactionHistory)
         .then((data) async {
       log.w('Saved in transaction history database $data');
-      await transactionHistoryDatabaseService.getAll();
+      await transactionHistoryDatabaseService!.getAll();
     }).catchError((onError) async {
       log.e('Could not save in database $onError');
-      await transactionHistoryDatabaseService.deleteDb().then((value) async {
+      await transactionHistoryDatabaseService!.deleteDb().then((value) async {
         log.e('transactionHistoryDatabase deleted');
-        await transactionHistoryDatabaseService
+        await transactionHistoryDatabaseService!
             .insert(transactionHistory)
             .then((data) async {
           log.w('Saved in transaction history database $data');
@@ -1076,7 +1083,7 @@ class WalletService {
 
   Future<double> gasBalance(String addr) async {
     double gasAmount = 0.0;
-    await apiService.getGasBalance(addr).then((res) {
+    await apiService!.getGasBalance(addr).then((res) {
       if (res != null &&
           res['balance'] != null &&
           res['balance']['FAB'] != null) {
@@ -1098,11 +1105,13 @@ class WalletService {
 
   Future getAllExchangeBalances(String exgAddress) async {
     if (exgAddress.isEmpty) {
-      exgAddress = await sharedService.getExgAddressFromWalletDatabase();
+      exgAddress = await (sharedService!.getExgAddressFromWalletDatabase()
+          as FutureOr<String>);
     }
     try {
       List<Map<String, dynamic>> bal = [];
-      var res = await apiService.getAssetsBalance(exgAddress);
+      var res = await (apiService!.getAssetsBalance(exgAddress)
+          as FutureOr<List<ExchangeBalanceModel>>);
       log.w('assetsBalance exchange $res');
       for (var i = 0; i < res.length; i++) {
         var tempBal = res[i];
@@ -1110,7 +1119,7 @@ class WalletService {
         var unlockedAmount = res[i].unlockedAmount;
         var lockedAmount = res[i].lockedAmount;
         var finalBal = {
-          'coin': coin_list.newCoinTypeMap[coinType],
+          'coin': coin_list.newCoinTypeMap[coinType!],
           'amount': unlockedAmount,
           'lockedAmount': lockedAmount
         };
@@ -1128,11 +1137,11 @@ class WalletService {
                 Calculate Only Usd Balance For Individual Coin
 ----------------------------------------------------------------------*/
 
-  double calculateCoinUsdBalance(
-      double marketPrice, double actualWalletBalance, double lockedBalance) {
+  double? calculateCoinUsdBalance(
+      double? marketPrice, double actualWalletBalance, double? lockedBalance) {
     if (marketPrice != null) {
       if (actualWalletBalance.isNegative) actualWalletBalance = 0.0;
-      if (lockedBalance.isNegative) lockedBalance = 0.0;
+      if (lockedBalance!.isNegative) lockedBalance = 0.0;
       log.w(
           'market price $marketPrice -- available bal $actualWalletBalance-- locked bal $lockedBalance');
       coinUsdBalance = marketPrice * (actualWalletBalance + lockedBalance);
@@ -1170,9 +1179,9 @@ class WalletService {
 ----------------------------------------------------------------------*/
   Future<Map<String, dynamic>> withdrawDo(
       seed,
-      String coinName,
-      String coinAddress,
-      String tokenType,
+      String? coinName,
+      String? coinAddress,
+      String? tokenType,
       double amount,
       kanbanPrice,
       kanbanGasLimit,
@@ -1205,33 +1214,33 @@ class WalletService {
       addressInWallet = btcUtils.btcToBase58Address(addressInWallet);
       //no 0x appended
     } else if (tokenType == 'FAB') {
-      addressInWallet = fabUtils.exgToFabAddress(addressInWallet);
+      addressInWallet = fabUtils.exgToFabAddress(addressInWallet!);
       addressInWallet = btcUtils.btcToBase58Address(addressInWallet);
     }
 
-    int coinType;
-    await coinService
+    int? coinType;
+    await coinService!
         .getCoinTypeByTickerName(coinName)
         .then((value) => coinType = value);
     log.i('cointype $coinType');
 
-    int sepcialcoinType;
+    int? sepcialcoinType;
     var abiHex;
 
     if (coinName == 'DSCE' || coinName == 'DSC') {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('DSC');
+      sepcialcoinType = await coinService!.getCoinTypeByTickerName('DSC');
       abiHex = abiUtils.getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
           isSpecialToken: true, chain: tokenType);
       log.e('cointype $coinType -- abihex $abiHex');
     } else if (coinName == 'BSTE' || coinName == 'BST') {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('BST');
+      sepcialcoinType = await coinService!.getCoinTypeByTickerName('BST');
       abiHex = abiUtils.getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
           isSpecialToken: true, chain: tokenType);
       log.e('cointype $coinType -- abihex $abiHex');
     } else if (coinName == 'EXGE' || coinName == 'EXG') {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('EXG');
+      sepcialcoinType = await coinService!.getCoinTypeByTickerName('EXG');
       abiHex = abiUtils.getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
           isSpecialToken: true, chain: tokenType);
@@ -1240,7 +1249,7 @@ class WalletService {
         (coinName == 'FAB' && tokenType == 'ETH') ||
         (walletUtil.isSpecialFab(coinName) &&
             (tokenType == 'BNB' || tokenType == 'ETH'))) {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('FAB');
+      sepcialcoinType = await coinService!.getCoinTypeByTickerName('FAB');
       abiHex = abiUtils.getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
           isSpecialToken: true, chain: tokenType);
@@ -1251,7 +1260,7 @@ class WalletService {
     // token type, we use coinname as token type is empty
     // because Matic is native coin on polygon
     else if (coinName == 'MATICM') {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('MATIC');
+      sepcialcoinType = await coinService!.getCoinTypeByTickerName('MATIC');
       abiHex = abiUtils.getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
           isSpecialToken: true,
@@ -1260,7 +1269,7 @@ class WalletService {
       log.e('cointype $coinType -- abihex $abiHex');
     } else if (tokenType == 'POLYGON' &&
         (walletUtil.isSpecialUsdt(coinName) || coinName == 'USDT')) {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
+      sepcialcoinType = await coinService!.getCoinTypeByTickerName('USDT');
       abiHex = abiUtils.getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
           isSpecialToken: true, chain: 'POLYGON');
@@ -1268,7 +1277,7 @@ class WalletService {
       log.e('cointype $coinType -- abihex $abiHex');
     } else if (tokenType == 'BNB' &&
         (walletUtil.isSpecialUsdt(coinName) || coinName == 'USDT')) {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
+      sepcialcoinType = await coinService!.getCoinTypeByTickerName('USDT');
       abiHex = abiUtils.getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
           isSpecialToken: true, chain: 'BNB');
@@ -1296,7 +1305,8 @@ class WalletService {
         kanbanPrice,
         kanbanGasLimit);
 
-    var res = await kanbanUtils.sendRawKanbanTransaction(txKanbanHex);
+    var res = await (kanbanUtils.sendRawKanbanTransaction(txKanbanHex)
+        as FutureOr<Map<String, dynamic>>);
     if (res['transactionHash'] == null) {
       return res;
     }
@@ -1315,9 +1325,9 @@ class WalletService {
 ----------------------------------------------------------------------*/
   Future<Map<String, dynamic>> withdrawTron(
       seed,
-      String coinName,
+      String? coinName,
       String coinAddress,
-      String tokenType,
+      String? tokenType,
       double amount,
       kanbanPrice,
       kanbanGasLimit) async {
@@ -1330,16 +1340,16 @@ class WalletService {
     var addressInWallet = coinAddress;
     addressInWallet = btcUtils.btcToBase58Address(addressInWallet);
 
-    int coinType;
-    await coinService
+    int? coinType;
+    await coinService!
         .getCoinTypeByTickerName(coinName)
         .then((value) => coinType = value);
     log.i('cointype $coinType');
 
-    int sepcialcoinType;
+    int? sepcialcoinType;
     var abiHex;
     if (coinName == 'USDTX') {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
+      sepcialcoinType = await coinService!.getCoinTypeByTickerName('USDT');
       abiHex = abiUtils.getWithdrawFuncABI(
           sepcialcoinType, amountInLink, addressInWallet,
           isSpecialToken: true, chain: tokenType);
@@ -1360,7 +1370,8 @@ class WalletService {
         kanbanPrice,
         kanbanGasLimit);
 
-    var res = await kanbanUtils.sendRawKanbanTransaction(txKanbanHex);
+    var res = await (kanbanUtils.sendRawKanbanTransaction(txKanbanHex)
+        as FutureOr<Map<String, dynamic>>);
 
     if (res['transactionHash'] != '') {
       res['success'] = true;
@@ -1376,16 +1387,16 @@ class WalletService {
                     Tron Deposit
 ----------------------------------------------------------------------*/
   Future depositTron(
-      {String mnemonic,
-      WalletInfo walletInfo,
-      double amount,
-      bool isTrxUsdt,
-      bool isBroadcast,
-      @required options}) async {
+      {String? mnemonic,
+      required WalletInfo walletInfo,
+      double? amount,
+      bool? isTrxUsdt,
+      bool? isBroadcast,
+      required options}) async {
     log.i(
         'depositTron -- amount $amount -- istrxusdt $isTrxUsdt -- isBroadcast $isBroadcast');
-    int kanbanGasPrice = options['kanbanGasPrice'];
-    int kanbanGasLimit = options['kanbanGasLimit'];
+    int? kanbanGasPrice = options['kanbanGasPrice'];
+    int? kanbanGasLimit = options['kanbanGasLimit'];
 
     debugPrint('kanbanGasPrice $kanbanGasPrice');
     debugPrint('kanbanGasLimit $kanbanGasLimit');
@@ -1396,19 +1407,19 @@ class WalletService {
       //errRes['data'] = 'no official address';
       return;
     }
-    var privateKey = tron_address_util.generateTrxPrivKey(mnemonic);
+    var privateKey = tron_address_util.generateTrxPrivKey(mnemonic!);
 
     /// get signed raw transaction hash(txid) and hashed raw tx before sign(txhash)
     /// use that to submit deposit
     ///
     var rawTxRes = await tron_transaction_util.generateTrxTransactionContract(
         privateKey: privateKey,
-        fromAddr: walletInfo.address,
+        fromAddr: walletInfo.address!,
         toAddr: officalAddress,
-        amount: amount,
-        isTrxUsdt: isTrxUsdt,
+        amount: amount!,
+        isTrxUsdt: isTrxUsdt!,
         tickerName: walletInfo.tickerName,
-        isBroadcast: isBroadcast);
+        isBroadcast: isBroadcast!);
 
     log.w('depositTron signed raw tx $rawTxRes');
     String txHash;
@@ -1419,8 +1430,8 @@ class WalletService {
 
 // code  from depositDo
 
-    var coinType =
-        await coinService.getCoinTypeByTickerName(walletInfo.tickerName);
+    var coinType = await (coinService!
+        .getCoinTypeByTickerName(walletInfo.tickerName) as FutureOr<int>);
     log.i('coin type $coinType');
 
     var amountInLink = BigInt.parse(NumberUtil.toBigInt(amount));
@@ -1443,10 +1454,10 @@ class WalletService {
 
     /// assinging coin type accoringly
     /// If special deposits then take the coin type of the respective chain coin
-    int sepcialcoinType;
+    int? sepcialcoinType;
     var abiHex;
     if (walletInfo.tickerName == 'USDTX') {
-      sepcialcoinType = await coinService.getCoinTypeByTickerName('USDT');
+      sepcialcoinType = await coinService!.getCoinTypeByTickerName('USDT');
       abiHex = abiUtils.getDepositFuncABI(
           sepcialcoinType, txHash, amountInLink, addressInKanban, signedMess,
           chain: walletInfo.tokenType, isSpecialDeposit: true);
@@ -1476,7 +1487,7 @@ class WalletService {
   }
 
   Future<Map<String, dynamic>> depositDo(
-      seed, String coinName, String tokenType, double amount, option) async {
+      seed, String? coinName, String? tokenType, double amount, option) async {
     Map<String, dynamic> errRes = <String, dynamic>{};
     errRes['success'] = false;
 
@@ -1549,13 +1560,13 @@ class WalletService {
       }
     }
 
-    var coinType = await coinService.getCoinTypeByTickerName(coinName);
+    var coinType = await coinService!.getCoinTypeByTickerName(coinName);
     // if (tokenType == 'POLYGON') {
     //   coinType = await coinService.getCoinTypeByTickerName('MATIC');
     // }
     log.i('coin type $coinType');
     if (coinType == 0) {
-      errRes['data'] = 'invalid coinType for ' + coinName;
+      errRes['data'] = 'invalid coinType for ' + coinName!;
       return errRes;
     }
 
@@ -1564,7 +1575,7 @@ class WalletService {
     debugPrint('txHash=' + txHash);
 
     var originalMessage = getOriginalMessage(
-        coinType,
+        coinType!,
         string_utils.trimHexPrefix(txHash),
         amountInLink,
         string_utils.trimHexPrefix(addressInKanban));
@@ -1578,7 +1589,7 @@ class WalletService {
 
     /// assinging coin type accoringly
     /// If special deposits then take the coin type of the respective chain coin
-    int specialCoinType;
+    int? specialCoinType;
     var abiHex;
     bool isSpecial = false;
 
@@ -1586,8 +1597,8 @@ class WalletService {
       if (coinName == specialTokenTicker) isSpecial = true;
     }
     if (isSpecial) {
-      specialCoinType = await coinService
-          .getCoinTypeByTickerName(coinName.substring(0, coinName.length - 1));
+      specialCoinType = await coinService!
+          .getCoinTypeByTickerName(coinName!.substring(0, coinName.length - 1));
     }
 
     var coinTypeUsed = isSpecial ? specialCoinType : coinType;
@@ -1609,7 +1620,8 @@ class WalletService {
         kanbanGasPrice,
         kanbanGasLimit);
 
-    var res = await kanbanUtils.submitDeposit(txHex, txKanbanHex);
+    var res = await (kanbanUtils.submitDeposit(txHex, txKanbanHex)
+        as FutureOr<Map<String, dynamic>>);
 
     res['txids'] = txids;
     return res;
@@ -1642,7 +1654,8 @@ class WalletService {
                 Future Add Gas Do
 ----------------------------------------------------------------------*/
 
-  Future<Map<String, dynamic>> addGasDo(seed, double amount, {options}) async {
+  Future<Map<String, dynamic>> addGasDo(seed, double amount,
+      {required options}) async {
     var satoshisPerBytes = 14;
     var scarContractAddress = await kanbanUtils.getScarAddress();
     scarContractAddress = string_utils.trimHexPrefix(scarContractAddress);
@@ -1656,7 +1669,7 @@ class WalletService {
     var txHex = res1['txHex'];
     var errMsg = res1['errMsg'];
 
-    var txHash = '';
+    String? txHash = '';
     if (txHex != null && txHex != '') {
       var res = await btcUtils.postFabTx(txHex);
       txHash = res['txHash'];
@@ -1677,7 +1690,7 @@ class WalletService {
     if (idx != 0) {
       return false;
     }
-    var response = await apiService.getFabTransactionJson(txid);
+    var response = await apiService!.getFabTransactionJson(txid);
 
     if ((response['vin'] != null) && (response['vin'].length > 0)) {
       var vin = response['vin'][0];
@@ -1702,14 +1715,14 @@ class WalletService {
       int satoshisPerBytes,
       addressList,
       getTransFeeOnly) async {
-    amount = amount ?? 0.0;
+    amount = amount;
     final txb = bitcoin_flutter.TransactionBuilder(
         network: environment["chains"]["BTC"]["network"]);
     final root = bip32.BIP32.fromSeed(seed);
     var totalInput = 0;
     var amountInTx = BigInt.from(0);
     var allTxids = [];
-    var changeAddress = '';
+    String? changeAddress = '';
     var finished = false;
     var receivePrivateKeyArr = [];
 
@@ -1736,7 +1749,7 @@ class WalletService {
         changeAddress = fromAddress;
       }
       final privateKey = fabCoinChild.privateKey;
-      var utxos = await apiService.getFabUtxos(fromAddress);
+      var utxos = await apiService!.getFabUtxos(fromAddress!);
       if ((utxos != null) && (utxos.length > 0)) {
         for (var j = 0; j < utxos.length; j++) {
           var utxo = utxos[j];
@@ -1770,10 +1783,10 @@ class WalletService {
 
           txb.addInput(txid, idx);
           receivePrivateKeyArr.add(privateKey);
-          totalInput += value;
+          totalInput += value as int;
 
           amountNum -= value;
-          amountNum += feePerInput;
+          amountInTx += feePerInput as BigInt;
           if (amountNum <= 0) {
             finished = true;
             break;
@@ -1917,28 +1930,28 @@ class WalletService {
                 Send Transaction
 ----------------------------------------------------------------------*/
   Future sendTransaction(
-      String coin,
+      String? coin,
       seed,
       List addressIndexList,
       List addressList,
-      String toAddress,
+      String? toAddress,
       double amount,
       options,
       bool doSubmit) async {
     final root = bip32.BIP32.fromSeed(seed);
     var totalInput = 0;
     var finished = false;
-    var gasPrice = 0;
-    var gasLimit = 0;
-    var satoshisPerBytes = 0;
-    var bytesPerInput = 0;
-    var allTxids = [];
-    var getTransFeeOnly = false;
-    var txHex = '';
-    var txHash = '';
-    var errMsg = '';
+    int? gasPrice = 0;
+    int? gasLimit = 0;
+    int? satoshisPerBytes = 0;
+    int? bytesPerInput = 0;
+    List<dynamic>? allTxids = [];
+    bool? getTransFeeOnly = false;
+    String? txHex = '';
+    String? txHash = '';
+    String? errMsg = '';
 
-    var amountInTx = BigInt.from(0);
+    BigInt? amountInTx = BigInt.from(0);
     var transFeeDouble = 0.0;
 
     var receivePrivateKeyArr = [];
@@ -1946,7 +1959,7 @@ class WalletService {
     var tokenType = options['tokenType'] ?? '';
     var decimal = options['decimal'];
     var contractAddress = options['contractAddress'] ?? '';
-    var changeAddress = '';
+    String? changeAddress = '';
 
     if (options != null) {
       if (options["gasPrice"] != null) {
@@ -1979,7 +1992,7 @@ class WalletService {
         satoshisPerBytes = environment["chains"]["BTC"]["satoshisPerBytes"];
       }
       var amountNum = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
-      amountNum += (2 * 34 + 10) * satoshisPerBytes;
+      amountNum += (2 * 34 + 10) * satoshisPerBytes!;
       final txb = bitcoin_flutter.TransactionBuilder(
           network: environment["chains"]["BTC"]["network"]);
       // txb.setVersion(1);
@@ -1998,7 +2011,7 @@ class WalletService {
           changeAddress = fromAddress;
         }
         final privateKey = bitCoinChild.privateKey;
-        var utxos = await btcUtils.getBtcUtxos(fromAddress);
+        var utxos = await btcUtils.getBtcUtxos(fromAddress!);
         //debugPrint('utxos=');
         //debugPrint(utxos);
         if ((utxos == null) || (utxos.length == 0)) {
@@ -2010,9 +2023,9 @@ class WalletService {
             continue;
           }
           txb.addInput(tx['txid'], tx['idx']);
-          amountNum -= tx['value'];
-          amountNum += bytesPerInput * satoshisPerBytes;
-          totalInput += tx['value'];
+          amountNum -= tx['value'] as int;
+          amountNum += bytesPerInput! * satoshisPerBytes;
+          totalInput += tx['value'] as int;
           receivePrivateKeyArr.add(privateKey);
           if (amountNum <= 0) {
             finished = true;
@@ -2034,7 +2047,7 @@ class WalletService {
       }
 
       var transFee =
-          (receivePrivateKeyArr.length) * bytesPerInput * satoshisPerBytes +
+          (receivePrivateKeyArr.length) * bytesPerInput! * satoshisPerBytes +
               (2 * 34 + 10) * satoshisPerBytes;
 
       var output1 = (totalInput -
@@ -2047,7 +2060,7 @@ class WalletService {
       }
 
       transFeeDouble = transFee / 1e8;
-      if (getTransFeeOnly) {
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2076,7 +2089,7 @@ class WalletService {
       var tx = txb.build();
       txHex = tx.toHex();
       if (doSubmit) {
-        var res = await apiService.postBtcTx(txHex);
+        var res = await apiService!.postBtcTx(txHex);
         txHash = res['txHash'];
         errMsg = res['errMsg'];
         return {'txHash': txHash, 'errMsg': errMsg, 'amountInTx': amountInTx};
@@ -2094,7 +2107,7 @@ class WalletService {
         satoshisPerBytes = environment["chains"]["BCH"]["satoshisPerBytes"];
       }
       var amountNum = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
-      amountNum += (2 * 34 + 10) * satoshisPerBytes;
+      amountNum += (2 * 34 + 10) * satoshisPerBytes!;
 
       final txb = bitbox.Bitbox.transactionBuilder(
           testnet: environment["chains"]["BCH"]["testnet"]);
@@ -2105,7 +2118,7 @@ class WalletService {
       final accountNode = masterNode.derivePath(childNode);
       final address = accountNode.toCashAddress();
 
-      final utxos = await apiService.getBchUtxos(address);
+      final utxos = await apiService!.getBchUtxos(address);
 
       if ((utxos == null) || (utxos.length == 0)) {
         return {
@@ -2132,9 +2145,9 @@ class WalletService {
           "original_amount": tx['value']
         });
 
-        amountNum -= tx['value'];
-        amountNum += bytesPerInput * satoshisPerBytes;
-        totalInput += tx['value'];
+        amountNum -= tx['value'] as int;
+        amountNum += bytesPerInput! * satoshisPerBytes;
+        totalInput += tx['value'] as int;
         if (amountNum <= 0) {
           finished = true;
           break;
@@ -2145,11 +2158,11 @@ class WalletService {
         return {'txHex': '', 'txHash': '', 'errMsg': 'not enough fund'};
       }
 
-      var transFee = (signatures.length) * bytesPerInput * satoshisPerBytes +
+      var transFee = (signatures.length) * bytesPerInput! * satoshisPerBytes +
           (2 * 34 + 10) * satoshisPerBytes;
       transFeeDouble = transFee / 1e8;
 
-      if (getTransFeeOnly) {
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2179,7 +2192,7 @@ class WalletService {
       final tx = txb.build();
       txHex = tx.toHex();
       if (doSubmit) {
-        var res = await apiService.postBchTx(txHex);
+        var res = await apiService!.postBchTx(txHex);
         txHash = res['txHash'];
         errMsg = res['errMsg'];
         return {'txHash': txHash, 'errMsg': errMsg, 'amountInTx': amountInTx};
@@ -2197,7 +2210,7 @@ class WalletService {
         satoshisPerBytes = environment["chains"]["LTC"]["satoshisPerBytes"];
       }
       var amountNum = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
-      amountNum += (2 * 34 + 10) * satoshisPerBytes;
+      amountNum += (2 * 34 + 10) * satoshisPerBytes!;
       final txb = bitcoin_flutter.TransactionBuilder(
           network: environment["chains"]["LTC"]["network"]);
 
@@ -2215,7 +2228,7 @@ class WalletService {
           changeAddress = fromAddress;
         }
         final privateKey = node.privateKey;
-        var utxos = await apiService.getLtcUtxos(fromAddress);
+        var utxos = await apiService!.getLtcUtxos(fromAddress!);
 
         if ((utxos == null) || (utxos.length == 0)) {
           continue;
@@ -2226,9 +2239,9 @@ class WalletService {
             continue;
           }
           txb.addInput(tx['txid'], tx['idx']);
-          amountNum -= tx['value'];
-          amountNum += bytesPerInput * satoshisPerBytes;
-          totalInput += tx['value'];
+          amountNum -= tx['value'] as int;
+          amountNum += bytesPerInput! * satoshisPerBytes;
+          totalInput += tx['value'] as int;
           receivePrivateKeyArr.add(privateKey);
           if (amountNum <= 0) {
             finished = true;
@@ -2250,11 +2263,11 @@ class WalletService {
       }
 
       var transFee =
-          (receivePrivateKeyArr.length) * bytesPerInput * satoshisPerBytes +
+          (receivePrivateKeyArr.length) * bytesPerInput! * satoshisPerBytes +
               (2 * 34 + 10) * satoshisPerBytes;
       transFeeDouble = transFee / 1e8;
 
-      if (getTransFeeOnly) {
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2283,7 +2296,7 @@ class WalletService {
       var tx = txb.build();
       txHex = tx.toHex();
       if (doSubmit) {
-        var res = await apiService.postLtcTx(txHex);
+        var res = await apiService!.postLtcTx(txHex);
         txHash = res['txHash'];
         errMsg = res['errMsg'];
         return {'txHash': txHash, 'errMsg': errMsg, 'amountInTx': amountInTx};
@@ -2301,7 +2314,7 @@ class WalletService {
         satoshisPerBytes = environment["chains"]["DOGE"]["satoshisPerBytes"];
       }
       var amountNum = BigInt.parse(NumberUtil.toBigInt(amount, 8)).toInt();
-      amountNum += (2 * 34 + 10) * satoshisPerBytes;
+      amountNum += (2 * 34 + 10) * satoshisPerBytes!;
       final txb = bitcoin_flutter.TransactionBuilder(
           network: environment["chains"]["DOGE"]["network"]);
 
@@ -2311,7 +2324,7 @@ class WalletService {
             environment["CoinType"]["DOGE"].toString() +
             "'/0'/0/" +
             index.toString());
-        var fromAddress = getDogeAddressForNode(node);
+        var fromAddress = getDogeAddressForNode(node)!;
         debugPrint('fromAddress==' + fromAddress);
         if (addressList.isNotEmpty) {
           fromAddress = addressList[i];
@@ -2321,7 +2334,7 @@ class WalletService {
         }
 
         final privateKey = node.privateKey;
-        var utxos = await apiService.getDogeUtxos(fromAddress);
+        var utxos = await apiService!.getDogeUtxos(fromAddress);
         //debugPrint('utxos=');
         //debugPrint(utxos);
         if ((utxos == null) || (utxos.length == 0)) {
@@ -2333,9 +2346,9 @@ class WalletService {
             continue;
           }
           txb.addInput(tx['txid'], tx['idx']);
-          amountNum -= tx['value'];
-          amountNum += bytesPerInput * satoshisPerBytes;
-          totalInput += tx['value'];
+          amountNum -= tx['value'] as int;
+          amountNum += bytesPerInput! * satoshisPerBytes;
+          totalInput += tx['value'] as int;
           receivePrivateKeyArr.add(privateKey);
           if (amountNum <= 0) {
             finished = true;
@@ -2357,11 +2370,11 @@ class WalletService {
       }
 
       var transFee =
-          (receivePrivateKeyArr.length) * bytesPerInput * satoshisPerBytes +
+          (receivePrivateKeyArr.length) * bytesPerInput! * satoshisPerBytes +
               (2 * 34 + 10) * satoshisPerBytes;
       transFeeDouble = transFee / 1e8;
 
-      if (getTransFeeOnly) {
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2393,7 +2406,7 @@ class WalletService {
       var tx = txb.build();
       txHex = tx.toHex();
       if (doSubmit) {
-        var res = await apiService.postDogeTx(txHex);
+        var res = await apiService!.postDogeTx(txHex);
         txHash = res['txHash'];
         errMsg = res['errMsg'];
         return {'txHash': txHash, 'errMsg': errMsg, 'amountInTx': amountInTx};
@@ -2410,7 +2423,7 @@ class WalletService {
               BigInt.parse('1000000000'))
           .toDouble();
 
-      if (getTransFeeOnly) {
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2424,7 +2437,7 @@ class WalletService {
       final chainId = environment["chains"][coin]["chainId"];
       final ethCoinChild = root.derivePath(
           "m/44'/" + environment["CoinType"]["ETH"].toString() + "'/0'/0/0");
-      final privateKey = HEX.encode(ethCoinChild.privateKey);
+      final privateKey = HEX.encode(ethCoinChild.privateKey!);
       var amountSentInt = BigInt.parse(NumberUtil.toBigInt(amount));
 
       Credentials credentials = EthPrivateKey.fromHex(privateKey);
@@ -2432,7 +2445,7 @@ class WalletService {
       final address = await credentials.extractAddress();
       final addressHex = address.hex;
 
-      String baseUrl = '';
+      String? baseUrl = '';
       if (coin == 'BNB') {
         baseUrl = bnbBaseUrl;
       } else if (coin == 'MATICM') {
@@ -2440,7 +2453,7 @@ class WalletService {
       }
 
       final nonce = await erc20Util.getNonce(
-          smartContractAddress: addressHex, baseUrl: baseUrl);
+          smartContractAddress: addressHex, baseUrl: baseUrl!);
 
       var apiUrl =
           environment["chains"]["ETH"]["infura"]; //Replace with your API
@@ -2452,7 +2465,7 @@ class WalletService {
           credentials,
           Transaction(
             nonce: nonce,
-            to: EthereumAddress.fromHex(toAddress),
+            to: EthereumAddress.fromHex(toAddress!),
             gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, gasPrice),
             maxGas: gasLimit,
             value: EtherAmount.fromUnitAndValue(EtherUnit.wei, amountSentInt),
@@ -2488,7 +2501,7 @@ class WalletService {
               BigInt.parse('1000000000'))
           .toDouble();
 
-      if (getTransFeeOnly) {
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2502,7 +2515,7 @@ class WalletService {
       final chainId = environment["chains"]["ETH"]["chainId"];
       final ethCoinChild = root.derivePath(
           "m/44'/" + environment["CoinType"]["ETH"].toString() + "'/0'/0/0");
-      final privateKey = HEX.encode(ethCoinChild.privateKey);
+      final privateKey = HEX.encode(ethCoinChild.privateKey!);
       var amountSentInt = BigInt.parse(NumberUtil.toBigInt(amount, 18));
 
       Credentials credentials = EthPrivateKey.fromHex(privateKey);
@@ -2521,7 +2534,7 @@ class WalletService {
           credentials,
           Transaction(
             nonce: nonce,
-            to: EthereumAddress.fromHex(toAddress),
+            to: EthereumAddress.fromHex(toAddress!),
             gasPrice: EtherAmount.fromUnitAndValue(EtherUnit.gwei, gasPrice),
             maxGas: gasLimit,
             value: EtherAmount.fromUnitAndValue(EtherUnit.wei, amountSentInt),
@@ -2550,8 +2563,8 @@ class WalletService {
       }
 
       var res1 = await getFabTransactionHex(seed, addressIndexList, toAddress,
-          amount, 0, satoshisPerBytes, addressList, getTransFeeOnly);
-      if (getTransFeeOnly) {
+          amount, 0, satoshisPerBytes!, addressList, getTransFeeOnly);
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2573,7 +2586,7 @@ class WalletService {
           txHash = res['txHash'];
           errMsg = res['errMsg'];
         } else {
-          var tx = bitcoin_flutter.Transaction.fromHex(txHex);
+          var tx = bitcoin_flutter.Transaction.fromHex(txHex!);
           txHash = '0x' + tx.getId();
         }
       }
@@ -2605,7 +2618,7 @@ class WalletService {
       var amountSentHex = amountSentInt.toRadixString(16);
 
       var fxnCallHex = transferAbi +
-          string_utils.fixLength(string_utils.trimHexPrefix(toAddress), 64) +
+          string_utils.fixLength(string_utils.trimHexPrefix(toAddress!), 64) +
           string_utils.fixLength(string_utils.trimHexPrefix(amountSentHex), 64);
 
       contractAddress = string_utils.trimHexPrefix(contractAddress);
@@ -2626,7 +2639,7 @@ class WalletService {
           contractInfo['contract'],
           0,
           contractInfo['totalFee'],
-          satoshisPerBytes,
+          satoshisPerBytes!,
           addressList,
           getTransFeeOnly);
 
@@ -2634,7 +2647,7 @@ class WalletService {
       debugPrint(res1.toString());
       log.w('res1: $res1');
 
-      if (getTransFeeOnly) {
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2672,7 +2685,7 @@ class WalletService {
               BigInt.parse('1000000000'))
           .toDouble();
       log.i('transFeeDouble===' + transFeeDouble.toString());
-      if (getTransFeeOnly) {
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2686,7 +2699,7 @@ class WalletService {
       final chainId = environment["chains"]["ETH"]["chainId"];
       final ethCoinChild = root.derivePath(
           "m/44'/" + environment["CoinType"]["ETH"].toString() + "'/0'/0/0");
-      final privateKey = HEX.encode(ethCoinChild.privateKey);
+      final privateKey = HEX.encode(ethCoinChild.privateKey!);
       Credentials credentials = EthPrivateKey.fromHex(privateKey);
 
       final address = await credentials.extractAddress();
@@ -2728,7 +2741,7 @@ class WalletService {
       amountInTx = convertedDecimalAmount;
       var transferAbi = 'a9059cbb';
       var fxnCallHex = transferAbi +
-          string_utils.fixLength(string_utils.trimHexPrefix(toAddress), 64) +
+          string_utils.fixLength(string_utils.trimHexPrefix(toAddress!), 64) +
           string_utils.fixLength(
               string_utils
                   .trimHexPrefix(convertedDecimalAmount.toRadixString(16)),
@@ -2768,7 +2781,7 @@ class WalletService {
               BigInt.parse('1000000000'))
           .toDouble();
       log.i('transFeeDouble===' + transFeeDouble.toString());
-      if (getTransFeeOnly) {
+      if (getTransFeeOnly!) {
         return {
           'txHex': '',
           'txHash': '',
@@ -2782,12 +2795,12 @@ class WalletService {
       final chainId = environment["chains"][tokenType]["chainId"];
       final ethCoinChild = root.derivePath(
           "m/44'/" + environment["CoinType"]["ETH"].toString() + "'/0'/0/0");
-      final privateKey = HEX.encode(ethCoinChild.privateKey);
+      final privateKey = HEX.encode(ethCoinChild.privateKey!);
       Credentials credentials = EthPrivateKey.fromHex(privateKey);
 
       final address = await credentials.extractAddress();
       final addressHex = address.hex;
-      String baseUrl = '';
+      String? baseUrl = '';
 
       if (tokenType == 'BNB') {
         baseUrl = bnbBaseUrl;
@@ -2795,7 +2808,7 @@ class WalletService {
         baseUrl = maticmBaseUrl;
       }
       final nonce = await erc20Util.getNonce(
-          baseUrl: baseUrl, smartContractAddress: addressHex);
+          baseUrl: baseUrl!, smartContractAddress: addressHex);
 
       //gasLimit = 100000;
 
@@ -2805,7 +2818,7 @@ class WalletService {
       amountInTx = convertedDecimalAmount;
       var transferAbi = 'a9059cbb';
       var fxnCallHex = transferAbi +
-          string_utils.fixLength(string_utils.trimHexPrefix(toAddress), 64) +
+          string_utils.fixLength(string_utils.trimHexPrefix(toAddress!), 64) +
           string_utils.fixLength(
               string_utils
                   .trimHexPrefix(convertedDecimalAmount.toRadixString(16)),

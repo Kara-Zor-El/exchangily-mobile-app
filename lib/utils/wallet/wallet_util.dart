@@ -9,15 +9,16 @@ import 'package:exchangilymobileapp/service_locator.dart';
 import 'package:exchangilymobileapp/services/db/token_info_database_service.dart';
 import 'package:exchangilymobileapp/utils/abi_util.dart';
 import 'package:path_provider/path_provider.dart';
+import 'dart:async';
 
 class WalletUtil {
   final log = getLogger('WalletUtil');
 
-  final tokenListDatabaseService = locator<TokenInfoDatabaseService>();
+  final TokenInfoDatabaseService? tokenListDatabaseService = locator<TokenInfoDatabaseService>();
 
   var abiUtils = AbiUtils();
-  final coinService = locator<CoinService>();
-  var coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
+  final CoinService? coinService = locator<CoinService>();
+  CoreWalletDatabaseService? coreWalletDatabaseService = locator<CoreWalletDatabaseService>();
 
   Map<String, String> coinTickerAndNameList = {
     'BTC': 'Bitcoin',
@@ -143,13 +144,13 @@ class WalletUtil {
   List<String> bstSpecialTokens = ["BSTE"];
   List<String> dscSpecialTokens = ["DSCE"];
 
-  bool isSpecialUsdt(String tickerName) {
+  bool isSpecialUsdt(String? tickerName) {
     var res = usdtSpecialTokens.contains(tickerName);
     log.w('isSpecialUsdt - ticker $tickerName = res $res');
     return res;
   }
 
-  bool isSpecialFab(String tickerName) {
+  bool isSpecialFab(String? tickerName) {
     return fabSpecialTokens.contains(tickerName);
   }
 
@@ -161,10 +162,10 @@ class WalletUtil {
     // take the tickername and then get the coin type
     // either from token or token updates api/local storage
 
-    String tickerName = wallet.coin.toUpperCase();
-    String walletAddress = '';
+    String tickerName = wallet.coin!.toUpperCase();
+    String? walletAddress = '';
 
-    int coinType = await coinService.getCoinTypeByTickerName(tickerName);
+    int coinType = await (coinService!.getCoinTypeByTickerName(tickerName) as FutureOr<int>);
 
     // use coin type to get the token type
     String tokenType = getChainNameByTokenType(coinType);
@@ -177,24 +178,24 @@ class WalletUtil {
         tickerName == "BNB" ||
         tokenType == "BNB") {
       walletAddress =
-          await coreWalletDatabaseService.getWalletAddressByTickerName('ETH');
+          await (coreWalletDatabaseService!.getWalletAddressByTickerName('ETH') as FutureOr<String>);
     } else if (tickerName == 'FAB' || tokenType == 'FAB') {
       walletAddress =
-          await coreWalletDatabaseService.getWalletAddressByTickerName('FAB');
+          await (coreWalletDatabaseService!.getWalletAddressByTickerName('FAB') as FutureOr<String>);
     } else if (tickerName == 'TRX' ||
         tickerName == 'TRON' ||
         tokenType == 'TRON' ||
         tokenType == 'TRX') {
       walletAddress =
-          await coreWalletDatabaseService.getWalletAddressByTickerName('TRX');
+          await (coreWalletDatabaseService!.getWalletAddressByTickerName('TRX') as FutureOr<String>);
     } else {
-      walletAddress = await coreWalletDatabaseService
-          .getWalletAddressByTickerName(tickerName);
+      walletAddress = await (coreWalletDatabaseService!
+          .getWalletAddressByTickerName(tickerName) as FutureOr<String>);
     }
-    String coinName = '';
+    String? coinName = '';
     for (var i = 0; i < coinTickerAndNameList.length; i++) {
       if (coinTickerAndNameList.containsKey(wallet.coin)) {
-        coinName = coinTickerAndNameList[wallet.coin];
+        coinName = coinTickerAndNameList[wallet.coin!];
       }
       break;
     }
@@ -204,7 +205,7 @@ class WalletUtil {
         tickerName: wallet.coin,
         availableBalance: wallet.balance,
         tokenType: tokenType,
-        usdValue: wallet.balance * wallet.usdValue.usd,
+        usdValue: wallet.balance! * wallet.usdValue!.usd!,
         inExchange: wallet.unlockedExchangeBalance,
         address: walletAddress,
         name: coinName);
@@ -289,7 +290,7 @@ class WalletUtil {
 
   Future<int> getCoinTypeIdByName(String coinName) async {
     int coinType = 0;
-    MapEntry<int, String> hardCodedCoinList;
+    MapEntry<int, String>? hardCodedCoinList;
     bool isOldToken = coin_list.newCoinTypeMap.containsValue(coinName);
     debugPrint('is old token value $isOldToken');
     if (isOldToken) {
@@ -301,7 +302,7 @@ class WalletUtil {
     if (hardCodedCoinList != null) {
       coinType = hardCodedCoinList.key;
     } else {
-      await tokenListDatabaseService
+      await tokenListDatabaseService!
           .getCoinTypeByTickerName(coinName)
           .then((value) => coinType = value);
     }

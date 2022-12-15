@@ -29,7 +29,7 @@ import 'custom_http_util.dart';
 class BtcUtils {
   var client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
   final log = getLogger('BtcUtils');
-  final String btcBaseUrl = environment["endpoints"]["btc"];
+  final String? btcBaseUrl = environment["endpoints"]["btc"];
 
   btcToBase58Address(address) {
     var bytes = bs58check.decode(address);
@@ -46,7 +46,7 @@ class BtcUtils {
 
   // Get BtcUtxos
   Future getBtcUtxos(String address) async {
-    var url = btcBaseUrl + getUtxosApiRoute + address;
+    var url = btcBaseUrl! + getUtxosApiRoute + address;
     log.w(url);
     var json;
     try {
@@ -58,9 +58,9 @@ class BtcUtils {
 
   //  Post Tx
   Future postFabTx(String txHex) async {
-    var url = fabBaseUrl + postRawTxApiRoute;
-    var txHash = '';
-    var errMsg = '';
+    var url = fabBaseUrl! + postRawTxApiRoute;
+    String? txHash = '';
+    String? errMsg = '';
     if (txHex != '') {
       var data = {'rawtx': txHex};
       try {
@@ -83,8 +83,8 @@ class BtcUtils {
   }
 
   Future getBtcTransactionStatus(String txid) async {
-    Response response;
-    var url = btcBaseUrl + 'gettransactionjson/' + txid;
+    Response? response;
+    var url = btcBaseUrl! + 'gettransactionjson/' + txid;
     try {
       response = await client.get(Uri.parse(url));
     } catch (e) {}
@@ -93,7 +93,7 @@ class BtcUtils {
   }
 
   Future getBtcBalanceByAddress(String address) async {
-    var url = btcBaseUrl + 'getbalance/' + address;
+    var url = btcBaseUrl! + 'getbalance/' + address;
     var btcBalance = 0.0;
     try {
       var response = await client.get(Uri.parse(url));
@@ -102,14 +102,14 @@ class BtcUtils {
     return {'balance': btcBalance, 'lockbalance': 0.0};
   }
 
-  getBtcNode(root, {String tickerName, index = 0}) {
+  getBtcNode(root, {String? tickerName, index = 0}) {
     var coinType = environment["CoinType"][tickerName].toString();
     var node =
         root.derivePath("m/44'/" + coinType + "'/0'/0/" + index.toString());
     return node;
   }
 
-  String getBtcAddressForNode(node, {String tickerName}) {
+  String? getBtcAddressForNode(node, {String? tickerName}) {
     return P2PKH(
             data: PaymentData(pubkey: node.publicKey),
             //  new P2PKHData(pubkey: node.publicKey),

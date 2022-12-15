@@ -148,7 +148,7 @@ class AnnouncementList extends StatelessWidget {
                                                   ["title"],
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .displaySmall
+                                                  .displaySmall!
                                                   .copyWith(
                                                       fontWeight:
                                                           FontWeight.bold)),

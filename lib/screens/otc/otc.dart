@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../../shared/globals.dart' as globals;
 
 class OtcScreen extends StatelessWidget {
-  const OtcScreen({Key key}) : super(key: key);
+  const OtcScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class OtcScreen extends StatelessWidget {
                                     'Merchant:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineSmall
+                                        .headlineSmall!
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
@@ -74,7 +74,7 @@ class OtcScreen extends StatelessWidget {
                                     'Quantity:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineSmall
+                                        .headlineSmall!
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
@@ -83,7 +83,7 @@ class OtcScreen extends StatelessWidget {
                                     'Price:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineSmall
+                                        .headlineSmall!
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
@@ -92,7 +92,7 @@ class OtcScreen extends StatelessWidget {
                                     'Limits:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineSmall
+                                        .headlineSmall!
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
@@ -101,7 +101,7 @@ class OtcScreen extends StatelessWidget {
                                     'Payment:',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineSmall
+                                        .headlineSmall!
                                         .copyWith(
                                             color: globals.grey,
                                             fontWeight: FontWeight.bold),
@@ -122,7 +122,7 @@ class OtcScreen extends StatelessWidget {
                                       'Paul Liu',
                                       style: Theme.of(context)
                                           .textTheme
-                                          .headlineSmall
+                                          .headlineSmall!
                                           .copyWith(
                                               fontWeight: FontWeight.bold),
                                     ),
@@ -148,7 +148,7 @@ class OtcScreen extends StatelessWidget {
                                     '21000--3212154',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .headlineSmall
+                                        .headlineSmall!
                                         .copyWith(color: globals.grey),
                                   ),
                                   // Payment icons
@@ -224,7 +224,7 @@ class OtcScreen extends StatelessWidget {
                                                   child: CupertinoButton(
                                                       child: Text(
                                                           AppLocalizations.of(
-                                                                  context)
+                                                                  context)!
                                                               .buy,
                                                           style: Theme.of(
                                                                   context)

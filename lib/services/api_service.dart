@@ -13,6 +13,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 import 'package:exchangilymobileapp/constants/api_routes.dart';
 import 'package:exchangilymobileapp/models/app_update_model.dart';
 import 'package:exchangilymobileapp/models/shared/pair_decimal_config_model.dart';
@@ -44,16 +45,16 @@ class ApiService {
 
   final client = CustomHttpUtil.createLetsEncryptUpdatedCertClient();
 
-  ConfigService configService = locator<ConfigService>();
-  SharedService sharedService = locator<SharedService>();
-  LocalStorageService storageService = locator<LocalStorageService>();
-  WalletDatabaseService walletDatabaseService =
+  ConfigService? configService = locator<ConfigService>();
+  SharedService? sharedService = locator<SharedService>();
+  LocalStorageService? storageService = locator<LocalStorageService>();
+  WalletDatabaseService? walletDatabaseService =
       locator<WalletDatabaseService>();
 
   postAppUpdate() async {
     String url = postAppUpdateVersionUrl;
     log.i('postAppUpdate url $url');
-    var versionInfo = await sharedService.getLocalAppVersion();
+    var versionInfo = await sharedService!.getLocalAppVersion();
     log.i('getAppVersion $versionInfo');
     var versionName = versionInfo['name'];
     var body = AppUpdateModel(
@@ -64,7 +65,7 @@ class ApiService {
       var response = await client.post(Uri.parse(url), body: body);
       var json = jsonDecode(response.body);
       var data = json['data'];
-      var parsedTokenList = data as List;
+      var parsedTokenList = data as List?;
       log.w('postAppUpdate  $parsedTokenList');
     } catch (err) {
       log.e('postAppUpdate CATCH $err');
@@ -73,7 +74,7 @@ class ApiService {
   }
 
   // Get unstoppable supported tlds
-  Future<List<String>> getDomainSupportedTlds() async {
+  Future<List<String>?> getDomainSupportedTlds() async {
     var url = "https://resolve.unstoppabledomains.com/supported_tlds";
     log.i('getDomainSupportedTlds url $url');
     try {
@@ -116,7 +117,7 @@ class ApiService {
 
 // Get issue tokens
 
-  Future<List<CustomTokenModel>> getCustomTokens() async {
+  Future<List<CustomTokenModel>?> getCustomTokens() async {
     String url = baseBlockchainGateV2Url +
         getIsueTokenApiRoute +
         '/' +
@@ -147,7 +148,7 @@ class ApiService {
                 Get Tron Ts wallet balance
 ----------------------------------------------------------------------*/
 
-  Future getTronTsWalletBalance(String address) async {
+  Future getTronTsWalletBalance(String? address) async {
     var body = {"address": address, "visible": true};
 
     log.i('getTronTsWalletBalance url $tronGetAccountUrl - body $body');
@@ -170,7 +171,7 @@ class ApiService {
 ----------------------------------------------------------------------*/
 
   Future getTronUsdtTsWalletBalance(
-      String officialTrxAddress, String smartContractAddress) async {
+      String officialTrxAddress, String? smartContractAddress) async {
     String officialTrxAddressToHex =
         string_utils.convertFabAddressToHex(officialTrxAddress);
     var abiHex =
@@ -232,11 +233,11 @@ class ApiService {
                 Get Tx History for withdraw and deposit
 ----------------------------------------------------------------------*/
   Future<List<TransactionHistory>> getTransactionHistoryEvents(
-      String fabAddress) async {
+      String? fabAddress) async {
     List<TransactionHistory> transactionHistory = [];
 
     String url =
-        configService.getKanbanBaseUrl() + withDrawDepositTxHistoryApiRoute;
+        configService!.getKanbanBaseUrl()! + withDrawDepositTxHistoryApiRoute;
     Map<String, dynamic> body = {"fabAddress": fabAddress};
 
     log.i('getTransactionHistoryEvents url $url -- body $body');
@@ -253,18 +254,18 @@ class ApiService {
 
           int index = 1;
           for (var element in data) {
-            var tag = element['action'] as String;
-            var ticker = element['coin'] as String;
+            var tag = element['action'] as String?;
+            var ticker = element['coin'] as String?;
             var timestamp = element['timestamp'];
             var tickerChainTxStatus;
             var kanbanTxStatus;
             var kanbanTxId;
             var tickerTxId;
-            String chainName;
+            String? chainName;
             List transactionsInside = element['transactions'] as List;
             // It has only 2 objects inside
             for (var element in transactionsInside) {
-              String chain = element['chain'];
+              String? chain = element['chain'];
               if (chain == 'KANBAN') {
                 kanbanTxStatus = element['status'];
                 if (element['transactionId'] != null) {
@@ -324,11 +325,11 @@ class ApiService {
 /*----------------------------------------------------------------------
                 Get LightningRemit History
 ----------------------------------------------------------------------*/
-  Future getLightningRemitHistoryEvents(String fabAddress) async {
+  Future getLightningRemitHistoryEvents(String? fabAddress) async {
     List<TransactionHistory> transactionHistory = [];
 
     String url =
-        configService.getKanbanBaseUrl() + lightningRemitTxHHistoryApiRoute;
+        configService!.getKanbanBaseUrl()! + lightningRemitTxHHistoryApiRoute;
     Map<String, dynamic> body = {"fabAddress": fabAddress};
 
     log.i('getLightningRemitHistoryEvents url $url -- body $body');
@@ -346,7 +347,7 @@ class ApiService {
           for (var element in data) {
             var holder = LightningRemitHistoryModel.fromJson(element);
             debugPrint(holder.toJson().toString());
-            var timestamp = holder.time;
+            var timestamp = holder.time!;
 
             var date =
                 DateTime.fromMillisecondsSinceEpoch(timestamp * 1000).toLocal();
@@ -404,9 +405,10 @@ class ApiService {
                 Withdraw Tx Status
 ----------------------------------------------------------------------*/
   Future withdrawTxStatus() async {
-    String exgAddress = await sharedService.getExgAddressFromWalletDatabase();
+    String exgAddress = await (sharedService!.getExgAddressFromWalletDatabase()
+        as FutureOr<String>);
     //  String exgAddress = await getExchangilyAddress();
-    String url = configService.getKanbanBaseUrl() +
+    String url = configService!.getKanbanBaseUrl()! +
         withdrawTxStatusApiRoute +
         exgAddress;
     log.e('withdrawTxStatus url $url');
@@ -427,13 +429,15 @@ class ApiService {
 /*----------------------------------------------------------------------
                     Get All coin exchange balance
 ----------------------------------------------------------------------*/
-  Future<List<ExchangeBalanceModel>> getAssetsBalance(String exgAddress) async {
+  Future<List<ExchangeBalanceModel>?> getAssetsBalance(
+      String exgAddress) async {
     if (exgAddress.isEmpty) {
-      exgAddress = await sharedService.getExgAddressFromWalletDatabase();
+      exgAddress = await (sharedService!.getExgAddressFromWalletDatabase()
+          as FutureOr<String>);
     }
-    ExchangeBalanceModelList exchangeBalanceList;
+    late ExchangeBalanceModelList exchangeBalanceList;
     String url =
-        configService.getKanbanBaseUrl() + assetsBalanceApiRoute + exgAddress;
+        configService!.getKanbanBaseUrl()! + assetsBalanceApiRoute + exgAddress;
     log.i('get assets balance url $url');
     try {
       final res = await client.get(Uri.parse(url));
@@ -452,17 +456,18 @@ class ApiService {
 /*----------------------------------------------------------------------
                     Get single coin exchange balance
 ----------------------------------------------------------------------*/
-  Future<ExchangeBalanceModel> getSingleCoinExchangeBalance(
+  Future<ExchangeBalanceModel?> getSingleCoinExchangeBalance(
       String tickerName) async {
-    String exgAddress = await sharedService.getExgAddressFromWalletDatabase();
+    String exgAddress = await (sharedService!.getExgAddressFromWalletDatabase()
+        as FutureOr<String>);
     //  String exgAddress = await getExchangilyAddress();
-    String url = configService.getKanbanBaseUrl() +
+    String url = configService!.getKanbanBaseUrl()! +
         getSingleCoinExchangeBalApiRoute +
         exgAddress +
         '/' +
         tickerName;
     log.e('getSingleCoinExchangeBalance url $url');
-    ExchangeBalanceModel exchangeBalance;
+    ExchangeBalanceModel? exchangeBalance;
     try {
       var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
@@ -481,8 +486,9 @@ class ApiService {
                     Get Token List Updates
 ----------------------------------------------------------------------*/
 
-  Future<List<TokenModel>> getTokenListUpdates() async {
-    String url = configService.getKanbanBaseUrl() + getTokenListUpdatesApiRoute;
+  Future<List<TokenModel>?> getTokenListUpdates() async {
+    String url =
+        configService!.getKanbanBaseUrl()! + getTokenListUpdatesApiRoute;
     log.i('getTokenListUpdates url $url');
     try {
       var response = await client.get(Uri.parse(url));
@@ -502,8 +508,8 @@ class ApiService {
                     Get Token List
 ----------------------------------------------------------------------*/
 
-  Future<List<TokenModel>> getTokenList() async {
-    String url = configService.getKanbanBaseUrl() + getTokenListApiRoute;
+  Future<List<TokenModel>?> getTokenList() async {
+    String url = configService!.getKanbanBaseUrl()! + getTokenListApiRoute;
     log.i('getTokenList url $url');
     try {
       var response = await client.get(Uri.parse(url));
@@ -524,7 +530,7 @@ class ApiService {
 ----------------------------------------------------------------------*/
 
   Future getApiAppVersion() async {
-    String url = configService.getKanbanBaseUrl() + GetAppVersionRoute;
+    String url = configService!.getKanbanBaseUrl()! + GetAppVersionRoute;
     log.i('getApiAppVersion url $url');
     try {
       var response = await client.get(Uri.parse(url));
@@ -541,8 +547,8 @@ class ApiService {
                     Get free fab
 ----------------------------------------------------------------------*/
 
-  Future getFreeFab(String address) async {
-    String ipAddress;
+  Future getFreeFab(String? address) async {
+    String? ipAddress;
     address ??= '';
     await NetworkInterface.list(type: InternetAddressType.IPv4)
         .then((networkData) => ipAddress = networkData[0].addresses[0].address);
@@ -565,7 +571,7 @@ class ApiService {
     var ethBaseUrl = environment['endpoints']['eth'];
     // _configService.getEthBaseUrl();
     var url = ethBaseUrl + 'getgasprice';
-    var ethGasPrice = 0;
+    int? ethGasPrice = 0;
     try {
       var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
@@ -581,11 +587,11 @@ class ApiService {
       log.e('In getEthGasPrice catch $err');
     }
 
-    if (ethGasPrice < environment['chains']['ETH']['gasPrice']) {
+    if (ethGasPrice! < environment['chains']['ETH']['gasPrice']) {
       ethGasPrice = environment['chains']['ETH']['gasPrice'];
     }
 
-    if (ethGasPrice > environment['chains']['ETH']['gasPriceMax']) {
+    if (ethGasPrice! > environment['chains']['ETH']['gasPriceMax']) {
       ethGasPrice = environment['chains']['ETH']['gasPriceMax'];
     }
     debugPrint('ethGasPrice=====');
@@ -597,7 +603,8 @@ class ApiService {
 ----------------------------------------------------------------------*/
 
   Future getTransactionStatus(String transactionId) async {
-    var url = configService.getKanbanBaseUrl() + 'checkstatus/' + transactionId;
+    var url =
+        configService!.getKanbanBaseUrl()! + 'checkstatus/' + transactionId;
     log.e(url);
     try {
       var response = await client.get(Uri.parse(url));
@@ -613,9 +620,10 @@ class ApiService {
                       Get all wallet balance
 -------------------------------------------------------------------------------------*/
 
-  Future<List<WalletBalance>> getSingleWalletBalance(String fabAddress,
-      String tickerName, String thirdPartyChainAddress) async {
-    String url = configService.getKanbanBaseUrl() + singleWalletBalanceApiRoute;
+  Future<List<WalletBalance>?> getSingleWalletBalance(String? fabAddress,
+      String? tickerName, String? thirdPartyChainAddress) async {
+    String url =
+        configService!.getKanbanBaseUrl()! + singleWalletBalanceApiRoute;
     log.i('getWalletBalance URL $url');
     var body = {
       "fabAddress": fabAddress,
@@ -628,7 +636,7 @@ class ApiService {
     WalletBalanceList balanceList;
     try {
       var response = await client.post(Uri.parse(url), body: body);
-      bool success = jsonDecode(response.body)['success'];
+      bool? success = jsonDecode(response.body)['success'];
       if (success == true) {
         var jsonList = jsonDecode(response.body)['data'] as List;
         log.i('json list getWalletBalance $jsonList');
@@ -653,14 +661,14 @@ class ApiService {
                       Get all wallet balance
 -------------------------------------------------------------------------------------*/
 
-  Future<List<WalletBalance>> getWalletBalance(body) async {
-    String url = configService.getKanbanBaseUrl() + walletBalancesApiRoute;
+  Future<List<WalletBalance>?> getWalletBalance(body) async {
+    String url = configService!.getKanbanBaseUrl()! + walletBalancesApiRoute;
     log.i('getWalletBalance URL $url --getWalletBalance body $body');
 
     WalletBalanceList balanceList;
     try {
       var response = await client.post(Uri.parse(url), body: body);
-      bool success = jsonDecode(response.body)['success'];
+      bool? success = jsonDecode(response.body)['success'];
       if (success == true) {
         var jsonList = jsonDecode(response.body)['data'] as List;
         //  log.i('json list getWalletBalance $jsonList');
@@ -686,8 +694,8 @@ class ApiService {
                 Get Current Market Price For The Coin By Name
 ----------------------------------------------------------------------*/
 
-  Future<double> getCoinMarketPriceByTickerName(String tickerName) async {
-    double currentTickerUsdValue = 0;
+  Future<double?> getCoinMarketPriceByTickerName(String tickerName) async {
+    double? currentTickerUsdValue = 0;
     if (tickerName == 'DUSD') {
       return currentTickerUsdValue = 1.0;
     }
@@ -706,7 +714,7 @@ class ApiService {
   Future getCoinCurrencyUsdPrice() async {
     try {
       String url =
-          configService.getKanbanBaseUrl() + CoinCurrencyUsdValueApiRoute;
+          configService!.getKanbanBaseUrl()! + CoinCurrencyUsdValueApiRoute;
       log.e('getCoinCurrencyUsdPrice $url');
       var response = await client.get(Uri.parse(url));
       var json = jsonDecode(response.body);
@@ -730,7 +738,7 @@ class ApiService {
   // Get Gas Balance
   Future getGasBalance(String exgAddress) async {
     try {
-      String url = configService.getKanbanBaseUrl() +
+      String url = configService!.getKanbanBaseUrl()! +
           kanbanApiRoute +
           getBalanceApiRoute +
           exgAddress;
@@ -749,7 +757,7 @@ class ApiService {
   // Get Orders by address
   Future getOrdersTest(String exgAddress) async {
     String url =
-        configService.getKanbanBaseUrl() + ordersByAddrApiRoute + exgAddress;
+        configService!.getKanbanBaseUrl()! + ordersByAddrApiRoute + exgAddress;
     log.w('get my orders url $url');
     try {
       throw Exception('Catch Exception');
@@ -763,7 +771,7 @@ class ApiService {
   //Future<Order>
   Future getMyOrders(String exgAddress) async {
     try {
-      String url = configService.getKanbanBaseUrl() +
+      String url = configService!.getKanbanBaseUrl()! +
           getOrdersByAddrApiRoute +
           exgAddress;
       log.w('get my orders url $url');
@@ -772,7 +780,7 @@ class ApiService {
       var jsonList = jsonDecode(res.body) as List;
       log.i('jsonList $jsonList');
       OrderList orderList = OrderList.fromJson(jsonList);
-      debugPrint('after order list ${orderList.orders.length}');
+      debugPrint('after order list ${orderList.orders!.length}');
       //  throw Exception('Catch Exception');
       //return jsonList;
       return orderList.orders;
@@ -785,7 +793,7 @@ class ApiService {
   // Get Orders by tickername
   Future getMyOrdersPagedByFabHexAddressAndTickerName(
       String exgAddress, String tickerName) async {
-    String url = configService.getKanbanBaseUrl() +
+    String url = configService!.getKanbanBaseUrl()! +
         getOrdersByTickerApiRoute +
         exgAddress +
         '/' +
@@ -810,7 +818,7 @@ class ApiService {
 
   // Get FabUtxos
   Future getFabUtxos(String address) async {
-    var url = fabBaseUrl + getUtxosApiRoute + address;
+    var url = fabBaseUrl! + getUtxosApiRoute + address;
     log.w(url);
     var json;
     try {
@@ -825,7 +833,7 @@ class ApiService {
 
   // Get LtcUtxos
   Future getLtcUtxos(String address) async {
-    var url = ltcBaseUrl + getUtxosApiRoute + address;
+    var url = ltcBaseUrl! + getUtxosApiRoute + address;
     log.w(url);
 
     try {
@@ -839,7 +847,7 @@ class ApiService {
   }
 
   Future getBchUtxos(String address) async {
-    var url = bchBaseUrl + getUtxosApiRoute + address;
+    var url = bchBaseUrl! + getUtxosApiRoute + address;
     log.w(url);
 
     try {
@@ -854,7 +862,7 @@ class ApiService {
 
   // Get DogeUtxos
   Future getDogeUtxos(String address) async {
-    var url = dogeBaseUrl + getUtxosApiRoute + address;
+    var url = dogeBaseUrl! + getUtxosApiRoute + address;
     log.w(url);
 
     try {
@@ -869,10 +877,10 @@ class ApiService {
 
   // Post Btc Transaction
   Future postBtcTx(String txHex) async {
-    var url = btcBaseUrl + postRawTxApiRoute;
+    var url = btcBaseUrl! + postRawTxApiRoute;
     var json;
     var txHash = '';
-    var errMsg = '';
+    String? errMsg = '';
     try {
       var data = {'rawtx': txHex};
       var response = await client.post(Uri.parse(url), body: data);
@@ -895,10 +903,10 @@ class ApiService {
 
   // Post Ltc Transaction
   Future postLtcTx(String txHex) async {
-    var url = ltcBaseUrl + postRawTxApiRoute;
+    var url = ltcBaseUrl! + postRawTxApiRoute;
     var json;
     var txHash = '';
-    var errMsg = '';
+    String? errMsg = '';
     try {
       var data = {'rawtx': txHex};
       var response = await client.post(Uri.parse(url), body: data);
@@ -922,10 +930,10 @@ class ApiService {
 
   // Post Bch Transaction
   Future postBchTx(String txHex) async {
-    var url = bchBaseUrl + postRawTxApiRoute;
+    var url = bchBaseUrl! + postRawTxApiRoute;
     var json;
     var txHash = '';
-    var errMsg = '';
+    String? errMsg = '';
     try {
       var data = {'rawtx': txHex};
       var response = await client.post(Uri.parse(url), body: data);
@@ -949,10 +957,10 @@ class ApiService {
 
   // Post Ltc Transaction
   Future postDogeTx(String txHex) async {
-    var url = dogeBaseUrl + postRawTxApiRoute;
+    var url = dogeBaseUrl! + postRawTxApiRoute;
     var json;
     var txHash = '';
-    var errMsg = '';
+    String? errMsg = '';
     try {
       var data = {'rawtx': txHex};
       var response = await client.post(Uri.parse(url), body: data);
@@ -977,7 +985,7 @@ class ApiService {
   // Get Fab Transaction
   Future getFabTransactionJson(String txid) async {
     txid = string_utils.trimHexPrefix(txid);
-    var url = fabBaseUrl + 'gettransactionjson/' + txid;
+    var url = fabBaseUrl! + 'gettransactionjson/' + txid;
     var json;
     try {
       var response = await client.get(Uri.parse(url));
@@ -991,9 +999,9 @@ class ApiService {
 /*----------------------------------------------------------------------
                   Get Decimal configuration for the coins
 ----------------------------------------------------------------------*/
-  Future<List<PairDecimalConfig>> getPairDecimalConfig() async {
-    List<PairDecimalConfig> result = [];
-    var url = configService.getKanbanBaseUrl() + getDecimalPairConfigApiRoute;
+  Future<List<PairDecimalConfig>?> getPairDecimalConfig() async {
+    List<PairDecimalConfig>? result = [];
+    var url = configService!.getKanbanBaseUrl()! + getDecimalPairConfigApiRoute;
     log.e('getPairDecimalConfig $url');
     try {
       var response = await client.get(Uri.parse(url));
@@ -1019,10 +1027,11 @@ class ApiService {
     try {
       final res = await client.get(
           // kanbanBaseUrl + "/kanban/getadvconfig"
-          Uri.parse(configService.getKanbanBaseUrl() + "kanban/getadvconfig"));
+          Uri.parse(
+              configService!.getKanbanBaseUrl()! + "kanban/getadvconfig"));
       log.w(' get slider images ${jsonDecode(res.body)}');
       if (res.statusCode == 200 || res.statusCode == 201) {
-        var json = jsonDecode(res.body) as List;
+        var json = jsonDecode(res.body) as List?;
         return json;
       }
     } catch (e) {
@@ -1054,12 +1063,13 @@ class ApiService {
 
   Future getEvents() async {
     log.i("getEvents Url: " +
-        configService.getKanbanBaseUrl() +
+        configService!.getKanbanBaseUrl()! +
         "kanban/getCampaigns");
     try {
       final res = await client.get(
           // "http://192.168.0.12:4000/kanban/getCampaigns"
-          Uri.parse(configService.getKanbanBaseUrl() + "kanban/getCampaigns"));
+          Uri.parse(
+              configService!.getKanbanBaseUrl()! + "kanban/getCampaigns"));
       log.w('getEvents ${jsonDecode(res.body)}');
       if (res.statusCode == 200 || res.statusCode == 201) {
         debugPrint("success");
@@ -1081,11 +1091,11 @@ class ApiService {
       final res = await client.post(
         // "http://192.168.0.12:4000/kanban/getCampaignSingle",
         Uri.parse(
-            configService.getKanbanBaseUrl() + "kanban/getCampaignSingle"),
+            configService!.getKanbanBaseUrl()! + "kanban/getCampaignSingle"),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String>{
+        body: jsonEncode(<String, String?>{
           'id': id,
         }),
       );
