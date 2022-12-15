@@ -11,7 +11,8 @@ dependency_overrides:
   fixnum: any
   pointycastle: any
   hex: any
-  keccak: any
+  keccak:
+    path: ./submodules/keccak
   http: any
   collection: any
   bech32: any
@@ -94,7 +95,8 @@ dependencies:
   random_string: ^2.0.1
 
   # Keccak
-  keccak: ^1.0.3
+  keccak:
+    path: ./submodules/keccak 
 
   # Json Serialization
   # json_serializable: ^2.2.1

@@ -4,3 +4,6 @@
 [submodule "submodules/bitcoin_flutter"]
 	path = submodules/bitcoin_flutter
 	url = https://github.com/dart-bitcoin/bitcoin_flutter.git
+[submodule "submodules/keccak"]
+	path = submodules/keccak
+	url = https://github.com/rashedmyt/keccak
