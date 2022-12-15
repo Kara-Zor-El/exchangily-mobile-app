@@ -41,7 +41,8 @@ dependencies:
     path: ./submodules/bitbox-flutter
 
   # Generate LTC and DOGE coin address
-  bitcoin_flutter: ^2.0.1
+  bitcoin_flutter:
+    path: ./submodules/bitcoin_flutter
 
   #bip39: ^1.0.3
 
