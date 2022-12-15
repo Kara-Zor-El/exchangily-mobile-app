@@ -16,6 +16,7 @@ dependency_overrides:
   collection: any
   bech32: any
   convert: any
+  bip32: any
 
 
 dependencies:
@@ -58,7 +59,7 @@ dependencies:
   http: ^0.13.5
 
   # Web Sockets
-  web_socket_channel: ^1.1.0
+  web_socket_channel: ^2.2.0
 
 
 
@@ -154,7 +155,7 @@ dependencies:
   validators: ^3.0.0
 
   # cached_network_image
-  cached_network_image: ^2.0.0
+  cached_network_image: ^3.2.3
 
   #gradient_text
   gradient_text: ^1.0.2

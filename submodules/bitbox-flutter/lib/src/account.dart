@@ -4,16 +4,16 @@ import 'hdnode.dart';
 class Account {
   final HDNode accountNode;
 
-  int currentChild = 0;
+  int? currentChild = 0;
 
   Account(this.accountNode, [this.currentChild]);
 
   /// Returns address at the current position
   String getCurrentAddress([bool legacyFormat = true]) {
     if (legacyFormat) {
-      return accountNode.derive(currentChild).toLegacyAddress();
+      return accountNode.derive(currentChild!).toLegacyAddress();
     } else {
-      return accountNode.derive(currentChild).toCashAddress();
+      return accountNode.derive(currentChild!).toCashAddress();
     }
   }
 

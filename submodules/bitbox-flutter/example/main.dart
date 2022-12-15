@@ -74,7 +74,7 @@ void main() async {
         "original_amount": utxo.satoshis
       });
 
-      totalBalance += utxo.satoshis;
+      totalBalance += utxo.satoshis!;
     });
 
     // set an address to send the remaining balance to
@@ -100,7 +100,7 @@ void main() async {
       final tx = builder.build();
 
       // broadcast the transaction
-      final txid = (await Bitbox.RawTransactions.sendRawTransaction([tx.toHex()])).first;
+      final txid = (await Bitbox.RawTransactions.sendRawTransaction([tx.toHex()]))!.first;
 
       // Yatta!
       print("Transaction broadcasted: $txid");

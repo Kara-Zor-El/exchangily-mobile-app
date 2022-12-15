@@ -19,8 +19,8 @@ class RestApi {
     }
   }
 
-  static sendPostRequest(String path, String postKey, List<String> data,
-      {String returnKey}) async {
+  static sendPostRequest(String path, String postKey, List<String?> data,
+      {String? returnKey}) async {
     final response = await http.post(
       Uri.parse("$_restUrl$path"),
       headers: {"content-type": "application/json"},
@@ -34,14 +34,14 @@ class RestApi {
     if (returnKey == null) {
       return jsonDecode(response.body);
     } else {
-      final responseData = jsonDecode(response.body) as List;
+      final responseData = jsonDecode(response.body) as List?;
 
       if (!(responseData is List) || !(responseData.first is Map)) {
         throw FormatException(
             "return data (below) is not List of Maps: \n${response.body}");
       }
 
-      Map<String, dynamic> returnMap = <String, Map>{};
+      Map<String?, dynamic> returnMap = <String?, Map>{};
 
       for (int i = 0; i < responseData.length; i++) {
         final item = responseData[i] as Map;
