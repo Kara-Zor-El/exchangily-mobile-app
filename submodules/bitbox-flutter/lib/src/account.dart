@@ -20,9 +20,9 @@ class Account {
   /// moves the position forward and returns an address from the new position
   String getNextAddress([bool legacyFormat = true]) {
     if (legacyFormat) {
-      return accountNode.derive(++currentChild).toLegacyAddress();
+      return accountNode.derive(currentChild! + 1).toLegacyAddress();
     } else {
-      return accountNode.derive(++currentChild).toCashAddress();
+      return accountNode.derive(currentChild! + 1).toCashAddress();
     }
   }
 }

@@ -1,7 +1,6 @@
 import 'package:bitbox/bitbox.dart';
 
 class Bip21 {
-
   static Map<String, dynamic> decode(String uri) {
     if (uri.indexOf('bitcoincash') != 0 || uri['bitcoincash'.length] != ":")
       throw ("Invalid BIP21 URI");
@@ -60,7 +59,7 @@ class Bip21 {
         uriOptions[key] = value.toString();
       });
 
-      if (uriOptions.isEmpty) uriOptions = null;
+      if (uriOptions.isEmpty) uriOptions = Map<String, dynamic>();
       query = Uri(queryParameters: uriOptions).toString();
       // Dart isn't following RFC-3986...
       query = query.replaceAll(RegExp(r"\+"), "%20");

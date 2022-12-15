@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'utils/rest_api.dart';
+import 'dart:async';
 
 import 'package:bs58check/bs58check.dart' as bs58check;
 import 'utils/network.dart';
@@ -54,7 +55,8 @@ class Address {
   ///
   /// See https://developer.bitcoin.com/bitbox/docs/util for details about returned format
   static Future<Map<String, dynamic>?> validateAddress(String address) async =>
-      await (RestApi.sendGetRequest("util/validateAddress", address) as FutureOr<Map<String, dynamic>?>);
+      await (RestApi.sendGetRequest("util/validateAddress", address)
+          as FutureOr<Map<String, dynamic>?>);
 
   /// Returns details of the provided address or addresses
   ///
@@ -81,7 +83,8 @@ class Address {
   ///
   /// See https://developer.bitcoin.com/bitbox/docs/address#unconfirmed for details about the returned format. However
   /// note, that processing from array to map is done on the library side
-  static Future<dynamic> getUnconfirmed(addresses, [returnAsMap = false]) async {
+  static Future<dynamic> getUnconfirmed(addresses,
+      [returnAsMap = false]) async {
     final result = await _sendRequest("unconfirmed", addresses);
 
     if (result is Map) {
@@ -92,9 +95,11 @@ class Address {
 
       result.forEach((addressUtxoMap) {
         if (returnAsMap) {
-          returnMap[addressUtxoMap["cashAddr"]] = Utxo.convertMapListToUtxos(addressUtxoMap["utxos"]);
+          returnMap[addressUtxoMap["cashAddr"]] =
+              Utxo.convertMapListToUtxos(addressUtxoMap["utxos"]);
         } else {
-          addressUtxoMap["utxos"] = Utxo.convertMapListToUtxos(addressUtxoMap["utxos"]);
+          addressUtxoMap["utxos"] =
+              Utxo.convertMapListToUtxos(addressUtxoMap["utxos"]);
           returnList.add(addressUtxoMap);
         }
       });
@@ -123,9 +128,11 @@ class Address {
 
       result.forEach((addressUtxoMap) {
         if (returnAsMap) {
-          returnMap[addressUtxoMap["cashAddress"]] = Utxo.convertMapListToUtxos(addressUtxoMap["utxos"]);
+          returnMap[addressUtxoMap["cashAddress"]] =
+              Utxo.convertMapListToUtxos(addressUtxoMap["utxos"]);
         } else {
-          addressUtxoMap["utxos"] = Utxo.convertMapListToUtxos(addressUtxoMap["utxos"]);
+          addressUtxoMap["utxos"] =
+              Utxo.convertMapListToUtxos(addressUtxoMap["utxos"]);
           returnList.add(addressUtxoMap);
         }
       });
@@ -146,7 +153,7 @@ class Address {
   /// See https://developer.bitcoin.com/bitbox/docs/address#transactions for format details.
   /// Note, that conversion from List to Map when [returnAsMap] is true takes place in this library
   static Future<dynamic> transactions(addresses, [returnAsMap = false]) async =>
-    await _sendRequest("transactions", addresses, returnAsMap);
+      await _sendRequest("transactions", addresses, returnAsMap);
 
   /// Converts legacy address to cash address
   static String toCashAddress(String legacyAddress,
