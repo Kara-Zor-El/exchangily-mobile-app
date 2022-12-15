@@ -1,9 +1,9 @@
-[submodule "bitbox-flutter"]
+[submodule "submodules/bitbox-flutter"]
 	path = submodules/bitbox-flutter
-	url = https://github.com/tomasforgacbch/bitbox-flutter
+        url = https://github.com/Kara-Zor-El/bitbox-flutter.git
 [submodule "submodules/bitcoin_flutter"]
 	path = submodules/bitcoin_flutter
-	url = https://github.com/dart-bitcoin/bitcoin_flutter.git
+	url = https://github.com/Kara-Zor-El/bitcoin_flutter.git
 [submodule "submodules/keccak"]
 	path = submodules/keccak
-	url = https://github.com/rashedmyt/keccak
+	url = https://github.com/Kara-Zor-El/keccak.git
