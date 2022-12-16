@@ -4,3 +4,6 @@
 [submodule "submodules/keccak"]
 	path = submodules/keccak
 	url = https://github.com/Kara-Zor-El/keccak.git
+[submodule "submodules/bitbox-flutter"]
+	path = submodules/bitbox-flutter
+	url = https://github.com/Kara-Zor-El/bitbox-flutter.git
